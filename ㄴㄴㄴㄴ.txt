@@ -1,4 +1,0 @@
-﻿page, story, task
-"main page", "로그인한다", "로그인 구현"
-
-sdsdsdsd
