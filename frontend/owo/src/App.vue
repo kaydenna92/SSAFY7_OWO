@@ -1,12 +1,12 @@
 <template>
-<div>
+  <div>
 
-  <NavBar/>
-  <div class="main-container">
-    <router-view/>
+    <NavBar/>
+    <div class="main-container">
+      <router-view/>
+    </div>
+    <Footer/>
   </div>
-  <Footer/>
-</div>
 </template>
 
 <script>
@@ -29,6 +29,7 @@ export default {
   font-size : 14px;
   height: 100%;
   letter-spacing : -0.05em;
+  padding-bottom: 100px;
 
 }
 
