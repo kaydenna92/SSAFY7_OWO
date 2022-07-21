@@ -1,22 +1,5 @@
 <template>
   <div class="navContainer">
-    <div class="container">
-      <nav class="global-nav">
-        <div class="global-nav-links">
-          <a class="global-nav-item" href="#">Home</a>
-          <a class="global-nav-item" href="#">Rooms</a>
-          <a class="global-nav-item" href="#">MyPage</a>
-          <a class="global-nav-item" href="#">Logout</a> <!--혹은 로그인 - 들어가야 회원가입까지 유도 가능-->
-        </div>
-      </nav>
-      <nav class="local-nav">
-        <div class="local-nav-links">
-          <a href="#">내 정보 보기</a>
-          <a href="#">내 정보 수정하기</a>
-          <a href="#">운동 일지</a>
-        </div>
-      </nav>
-    </div>
     <!--오운완 내브바-->
     <div class="owo_nav">
       <nav class="navbar sticky-top">
@@ -78,9 +61,9 @@ li{
    }
 
 .navContainer {
-  margin-bottom: 50px;
-  padding-right: 30px;
-  padding-left: 30px;
+  margin-bottom: 0px;
+  padding-right: 0px;
+  padding-left: 0px;
   font-family: 'Noto Sans KR', sans-serif;
 }
 
@@ -104,7 +87,7 @@ li{
  .container-fluid {
   display: flex;
   align-items: center;
-  max-width: 980px;
+  max-width: 100%;
   margin: 0 auto;
   height: 100%;
   padding: 0 22px;

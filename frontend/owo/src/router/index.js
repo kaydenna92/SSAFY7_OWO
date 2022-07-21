@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import HomeView from '../views/HomeView.vue';
+import mainPageView from '../views/MainPage/mainPageView.vue';
 import MyPageView from '../views/MyPage/MyPageView.vue';
 import MyPageMainView from '../views/MyPage/MyPageMainView.vue';
 import MyPageUpdateView from '../views/MyPage/MyPageUpdateView.vue';
@@ -8,8 +8,8 @@ import MyPageScheduleView from '../views/MyPage/MyPageScheduleView.vue';
 const routes = [
   {
     path: '/',
-    name: 'home',
-    component: HomeView,
+    name: 'mainPageView',
+    component: mainPageView,
   },
   {
     path: '/about',

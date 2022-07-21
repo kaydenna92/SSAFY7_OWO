@@ -1,11 +1,8 @@
 <template>
-
-<div>
-  <NavBar/>
-  <div class="main-container">
-    <router-view/>
+  <div>
+    <NavBar/>
   </div>
-</div>
+  <router-view/>
 </template>
 
 <script>
@@ -24,7 +21,7 @@ export default {
    /* display: flex; */
   font-family: 'LeferiBaseType-BoldA', 'Noto Sans KR', sans-serif;
   color:#4E8AFF;
-  background-color: #F6F7F9;
+  /* background-color: #F6F7F9; */
   font-size : 14px;
   height: 100%;
 }
