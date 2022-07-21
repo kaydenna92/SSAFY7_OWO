@@ -1,12 +1,13 @@
 <template>
   <div class="navContainer">
+
     <!--오운완 내브바-->
     <div class="owo_nav">
       <nav class="navbar sticky-top">
         <div class="container-fluid">
           <!--logo-->
           <span class="navbar-brand mb-0 h1">
-            <img id="logo2" src="../assets/logo2.png" alt=""></span>
+            <img id="logo2" src="../assets/logo/logo2.png" alt=""></span>
             <!--dropdows2-mypages-->
             <li class="menu1 mypages nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#"
