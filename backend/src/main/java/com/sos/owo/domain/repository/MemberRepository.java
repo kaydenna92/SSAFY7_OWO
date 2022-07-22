@@ -18,6 +18,7 @@ public class MemberRepository {
     private final EntityManager em;
 
     public void save(Member member){
+        member.setEnable(false);
         em.persist(member);
     }
 
@@ -41,6 +42,12 @@ public class MemberRepository {
         Member findMember = em.find(Member.class, id);
         int current = findMember.getExp();
         findMember.setPoint(current+exp);
+    }
+
+    public void setVerified(Member member){
+        member.setEnable(true);
+        em.persist(member);
+        em.flush();
     }
 
 
