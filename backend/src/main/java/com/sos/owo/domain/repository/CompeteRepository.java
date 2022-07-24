@@ -19,12 +19,31 @@ public class CompeteRepository {
 
 
     //경쟁모드의 사용자 최고기록 조회
-    public List<Integer> findBestScore(int memberId){
-        //Compete findCompete = em.find(Compete.class, id);
-        Compete findCompete = em.createQuery("select c from Compete c where c.member_id = :member_id ", Compete.class)
-                .setParameter("memberId", memberId)
-                .getSingleResult();
+//    public List<Integer> findBestScore(int memberId){
+//        //Compete findCompete = em.find(Compete.class, id);
+//        Compete findCompete = em.createQuery("select c from Compete c where c.member_id = :member_id ", Compete.class)
+//                .setParameter("memberId", memberId)
+//                .getSingleResult();
+//
+//
+//        int first = findCompete.getCompeteScore1();
+//        int second = findCompete.getCompeteScore2();
+//        int third = findCompete.getCompeteScore3();
+//
+//        List<Integer> bestScore = new ArrayList<>();
+//        bestScore.add(first);
+//        bestScore.add(second);
+//        bestScore.add(third);
+//
+//        return bestScore;
+//    }
 
+    public List<Integer> findBestScore(int memberId){
+       Compete findCompete = em.createQuery("select c from Compete c join c.member m" +
+                " where m.member_id = :member_id "
+                , Compete.class)
+               .setParameter("member_id", memberId)
+               .getSingleResult();
 
         int first = findCompete.getCompeteScore1();
         int second = findCompete.getCompeteScore2();
@@ -44,8 +63,6 @@ public class CompeteRepository {
         int current = findMember.getPoint();
         findMember.setPoint(current+point);
     }
-
-
 
 
 }
