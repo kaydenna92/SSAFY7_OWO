@@ -1,5 +1,6 @@
 package com.sos.owo.service;
 
+import com.sos.owo.domain.Goal;
 import com.sos.owo.domain.Member;
 import com.sos.owo.domain.repository.CompeteRepository;
 import com.sos.owo.domain.repository.MemberRepository;
@@ -68,4 +69,18 @@ public class MemberService {
         memberRepository.saveExp(exp, id);
     }
 
+    @Transactional
+    public void saveGoal(int memberId, Goal goal){
+        memberRepository.saveGoal(memberId,goal);
+    }
+
+    @Transactional
+    public void updateGoal(int memberId,Goal goal){
+        memberRepository.updateGoal(memberId,goal);
+    }
+
+    @Transactional
+    public void deleteGoal(int memberId,int goalId){
+        memberRepository.deleteGoal(memberId,goalId);
+    }
 }

@@ -1,9 +1,11 @@
 package com.sos.owo.controller;
 
+import com.sos.owo.dto.GoalSaveRequestDto;
 import com.sos.owo.dto.MemberSaveRequestDto;
 import com.sos.owo.service.EmailTokenService;
 import com.sos.owo.service.MemberService;
 import lombok.RequiredArgsConstructor;
+import org.apache.ibatis.annotations.Delete;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
@@ -78,6 +80,50 @@ public class MemberController {
     }
 
 
+    //운동 목표 추가
+    @PostMapping("/api/user/goal/{memberId}")
+    public ResponseEntity<?> saveGoal(@PathVariable("memberId") int memberId, @RequestBody GoalSaveRequestDto goalSaveRequestDto){
+        try {
+            memberService.saveGoal(memberId,goalSaveRequestDto.toEntity());
 
+            return new ResponseEntity<String>("SUCCESS SAVE GOAL", HttpStatus.OK);
+        } catch (IllegalStateException e){
+            e.printStackTrace();
+            return new ResponseEntity<String>("OVERLAP", HttpStatus.CONFLICT);
+        } catch (Exception e){
+            e.printStackTrace();
+            return new ResponseEntity<String>("SERVER_ERROR", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
+    //운동 목표 수정 -- 수정 필요
+    @PutMapping("api/user/goal/{memberId}/{goalId}")
+    public ResponseEntity<?> updateGoal(@PathVariable("memberId") int memberId, @RequestBody GoalSaveRequestDto goalSaveRequestDto){
+        try {
+            memberService.updateGoal(memberId,goalSaveRequestDto.toEntity());
+
+            return new ResponseEntity<String>("SUCCESS UPDATE GOAL", HttpStatus.OK);
+        } catch (IllegalStateException e){
+            e.printStackTrace();
+            return new ResponseEntity<String>("OVERLAP", HttpStatus.CONFLICT);
+        } catch (Exception e){
+            e.printStackTrace();
+            return new ResponseEntity<String>("SERVER_ERROR", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    //운동 목표 삭제
+    @Delete("api/user/goal/{memberId}/{goalId}")
+    public ResponseEntity<?> deleteGoal(@PathVariable("memberId") int memberId, @PathVariable("goalId") int goalId){
+        try {
+            memberService.deleteGoal(memberId,goalId);
+
+            return new ResponseEntity<String>("SUCCESS UPDATE GOAL", HttpStatus.OK);
+        } catch (IllegalStateException e){
+            e.printStackTrace();
+            return new ResponseEntity<String>("OVERLAP", HttpStatus.CONFLICT);
+        } catch (Exception e){
+            e.printStackTrace();
+            return new ResponseEntity<String>("SERVER_ERROR", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

@@ -63,7 +63,7 @@ public class Member {
     @Column(name = "member_enable")
     private boolean enable;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Goal> goalList = new ArrayList<>();
 
 }

@@ -1,6 +1,7 @@
 package com.sos.owo.domain.repository;
 
 import com.sos.owo.domain.Compete;
+import com.sos.owo.domain.Goal;
 import com.sos.owo.domain.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -50,7 +51,20 @@ public class MemberRepository {
         em.flush();
     }
 
+    public void saveGoal(int memberId, Goal goal){
+        Member member = em.find(Member.class,memberId);
+        member.getGoalList().add(memberId,goal); // 이게 맞나..?
+//        member.getGoalList().add(goal.getExercise(),goal.getHour(),goal.getMember()); // 이게 맞나..?
+        em.persist(member);
+    }
 
+    public void updateGoal(int memberId,Goal goal){
+
+    }
+
+    public void deleteGoal(int memberId,int goalId){
+
+    }
 
 
 }
