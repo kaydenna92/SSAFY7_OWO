@@ -80,9 +80,8 @@ public class MemberServiceTest {
         compete.setCompeteId(1);
         compete.setMember(member);
         compete.setCompeteScore1(60);
-        compete.setCompeteScore1(70);
-        compete.setCompeteScore1(80);
-
+        compete.setCompeteScore2(70);
+        compete.setCompeteScore3(80);
 
         //when
         List<Integer> check = memberService.findBestScore(member.getId());
