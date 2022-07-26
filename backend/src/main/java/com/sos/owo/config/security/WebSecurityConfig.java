@@ -17,6 +17,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final JwtTokenProvider jwtTokenProvider;
 
+
     // 암호화에 필요한 PasswordEncoder를 Bean으로 등록
     @Bean
     public PasswordEncoder passwordEncoder(){
