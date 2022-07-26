@@ -20,7 +20,7 @@ public class GoalController {
     private final GoalService goalService;
 
     //운동 목표 추가
-    @PostMapping("api/user//goal/{memberId}")
+    @PostMapping("/api/user/goal/{memberId}")
     public ResponseEntity<?> saveGoal(@PathVariable("memberId") int memberId, @RequestBody GoalSaveRequestDto goalSaveRequestDto){
         try {
             goalService.saveGoal(memberId,goalSaveRequestDto.toEntity());
@@ -36,7 +36,7 @@ public class GoalController {
     }
 
     //운동 목표 수정
-    @PutMapping("api/user/goal/{memberId}")
+    @PutMapping("/api/user/goal/{memberId}")
     public ResponseEntity<?> updateGoal(@PathVariable("memberId") int memberId, @RequestBody GoalSaveRequestDto goalSaveRequestDto){
         try { //@PathVariable("goalId") int goalId,
             goalService.updateGoal(memberId,goalSaveRequestDto.toEntity());
@@ -52,7 +52,7 @@ public class GoalController {
     }
 
     //운동 목표 삭제
-    @DeleteMapping("api/user/goal/{memberId}/{goal_id}")
+    @DeleteMapping("/api/user/goal/{memberId}/{goal_id}")
     public ResponseEntity<?> deleteGoal(@PathVariable("memberId") int memberId, @PathVariable("goal_id")int goal_id){
         try {
             goalService.deleteGoal(memberId,goal_id);
@@ -68,7 +68,7 @@ public class GoalController {
     }
 
     //운동 목표 리스트 조회
-    @GetMapping("api/user/goal/{memberId}")
+    @GetMapping("/api/user/goal/{memberId}")
     public ResponseEntity<?> findGoal(@PathVariable("memberId") int memberId, Model model){
         try {
             List<Goal> goalList = goalService.findGoal(memberId);
@@ -84,7 +84,7 @@ public class GoalController {
     }
 
     //운동 주간 목표 시간 조회
-    @GetMapping("api/user/weekGoal/{memberId}")
+    @GetMapping("/api/user/weekGoal/{memberId}")
     public ResponseEntity<?> findWeekGoal(@PathVariable("memberId") int memberId, Model model){
         try {
             List<Goal> goalList = goalService.findGoal(memberId);
