@@ -64,4 +64,19 @@ public class GoalController {
             return new ResponseEntity<String>("SERVER_ERROR", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @GetMapping("goal/{memberId}")
+    public ResponseEntity<?> findGoal(@PathVariable("memberId") int memberId){
+        try {
+//            goalService.findGoal(memberId);
+
+            return new ResponseEntity<String>("SUCCESS DELETE GOAL", HttpStatus.OK);
+        } catch (IllegalStateException e){
+            e.printStackTrace();
+            return new ResponseEntity<String>("OVERLAP", HttpStatus.CONFLICT);
+        } catch (Exception e){
+            e.printStackTrace();
+            return new ResponseEntity<String>("SERVER_ERROR", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }
