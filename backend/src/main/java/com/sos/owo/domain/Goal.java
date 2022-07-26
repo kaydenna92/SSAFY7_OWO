@@ -10,6 +10,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Table(name = "goal")
 public class Goal {
 
     @Id
@@ -33,5 +34,7 @@ public class Goal {
         this.member = member;
         this.hour = hour;
     }
+
+
 
 }

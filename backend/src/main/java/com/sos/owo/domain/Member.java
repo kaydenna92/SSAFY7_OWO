@@ -70,8 +70,7 @@ public class Member implements UserDetails {
     @Column(name = "member_enable")
     private boolean enable;
 
-    @OneToMany(cascade = CascadeType.ALL)
-//    @JoinColumn(name="member_id")
+    @OneToMany(mappedBy = "member",cascade = CascadeType.ALL)
     private List<Goal> goalList = new ArrayList<>();
 
 

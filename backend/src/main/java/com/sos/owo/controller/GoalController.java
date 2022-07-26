@@ -48,11 +48,12 @@ public class GoalController {
     }
     //운동 목표 삭제
 
-    @DeleteMapping("goal/{memberId}/{exercise}") //api/user/
-    public ResponseEntity<?> deleteGoal(@PathVariable("memberId") int memberId, @PathVariable("exercise")Exercise exercise){
-        System.out.println(exercise);
+//    @DeleteMapping("goal/{memberId}/{exercise}") //api/user/
+    @DeleteMapping("goal/{memberId}/{goal_id}") //api/user/
+    public ResponseEntity<?> deleteGoal(@PathVariable("memberId") int memberId, @PathVariable("goal_id")int goal_id){
+//        System.out.println(exercise);
         try {
-            goalService.deleteGoal(memberId,exercise);
+            goalService.deleteGoal(memberId,goal_id);
 
             return new ResponseEntity<String>("SUCCESS DELETE GOAL", HttpStatus.OK);
         } catch (IllegalStateException e){
