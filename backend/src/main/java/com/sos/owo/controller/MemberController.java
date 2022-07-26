@@ -28,9 +28,6 @@ public class MemberController {
     private final MemberService memberService;
     private final EmailTokenService emailTokenService;
 
-    private final PasswordEncoder passwordEncoder;
-    private final JwtTokenProvider jwtTokenProvider;
-
 
 
 
@@ -120,12 +117,15 @@ public class MemberController {
 
     }
 
-    @PostMapping("/api/auth/login")
+    @PostMapping("/auth/login")
     public ResponseEntity<?> login(@RequestBody Map<String, String> user){
         try {
+            if(!memberService.checkEnable(user.get("email"))){
+                return new ResponseEntity<String>("DISABLED", HttpStatus.BAD_REQUEST);
+            }
             MemberLoginResponseDto member = memberService.login(user.get("email"), user.get("password"));
             return new ResponseEntity<MemberLoginResponseDto>(member, HttpStatus.OK);
-        } catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException | IllegalStateException e){
             e.printStackTrace();
             return new ResponseEntity<String>("CHECK EMAIL OR PASSWORD", HttpStatus.BAD_REQUEST);
         } catch (Exception e){
@@ -155,9 +155,14 @@ public class MemberController {
 
     }
 
-    @GetMapping("/api")
-    public ResponseEntity<?> practice() {
-        return new ResponseEntity<String>("GOOD", HttpStatus.OK);
+    @GetMapping("/api/logout")
+    public ResponseEntity<?> practice(@RequestHeader(value="REFRESH-TOKEN") String refreshToken) {
+        try {
+            memberService.logoutMember(refreshToken);
+            return new ResponseEntity<String>("SUCCESS", HttpStatus.OK);
+        } catch (Exception e){
+            return new ResponseEntity<String>("CHECK TOKEN", HttpStatus.BAD_REQUEST);
+        }
     }
 
 }
