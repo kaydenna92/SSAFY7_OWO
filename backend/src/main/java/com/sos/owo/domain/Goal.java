@@ -1,24 +1,24 @@
 package com.sos.owo.domain;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class Goal {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "goal_id")
     private int id;
 
     @Column(name = "goal_type")
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private Exercise exercise;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -27,5 +27,11 @@ public class Goal {
 
     @Column(name = "goal_hour")
     private int hour;
+
+    public Goal(Exercise exercise, Member member, int hour) {
+        this.exercise = exercise;
+        this.member = member;
+        this.hour = hour;
+    }
 
 }

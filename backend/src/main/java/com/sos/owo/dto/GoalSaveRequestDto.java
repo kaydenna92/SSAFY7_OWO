@@ -13,10 +13,12 @@ public class GoalSaveRequestDto {
     private Exercise exercise;
     private int hour;
 
+
     @Builder
     public GoalSaveRequestDto(Exercise exercise, int hour) {
         this.exercise = exercise;
         this.hour = hour;
+
     }
 
     public Goal toEntity(){
