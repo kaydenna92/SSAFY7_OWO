@@ -137,4 +137,9 @@ public class Member implements UserDetails {
     public void updateProfieImg(ProfileImg profileImg){
         this.profileImg = profileImg;
     }
+
+    public Member update(String name){
+        this.nick = name;
+        return this;
+    }
 }

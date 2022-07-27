@@ -3,11 +3,7 @@ package com.sos.owo.controller;
 
 import com.sos.owo.domain.MD5Generator;
 import com.sos.owo.domain.Member;
-import com.sos.owo.dto.FileDto;
-import com.sos.owo.dto.MemberLoginResponseDto;
-import com.sos.owo.dto.GoalSaveRequestDto;
-import com.sos.owo.dto.MemberSaveRequestDto;
-import com.sos.owo.dto.MemberUpdateDto;
+import com.sos.owo.dto.*;
 import com.sos.owo.service.EmailTokenService;
 import com.sos.owo.service.MemberService;
 import com.sos.owo.service.ProfileImgService;
@@ -24,7 +20,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.mail.Session;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.AccessDeniedException;
@@ -41,6 +39,8 @@ public class MemberController {
     private final MemberService memberService;
     private final EmailTokenService emailTokenService;
     private final ProfileImgService profileImgService;
+
+    private final HttpSession httpSession;
 
     @Value("${app.fileupload.uploadDir}")
     private String uploadFolder;
@@ -242,6 +242,38 @@ public class MemberController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileDto.getFileOriName() + "\"")
                 .body(resource);
     }
+
+    @GetMapping("/api/oauth/google")
+    public ResponseEntity<?> GoogleLogin(Model model) throws IOException {
+        try {
+            SessionUser user = (SessionUser)httpSession.getAttribute("user");
+            return new ResponseEntity<SessionUser>(user, HttpStatus.OK);
+        } catch (IllegalArgumentException | IllegalStateException e){
+            e.printStackTrace();
+            return new ResponseEntity<String>("구글 로그인 오류", HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            e.printStackTrace();
+            return new ResponseEntity<String>("SERVER_ERROR", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/api/oauth/naver")
+    public ResponseEntity<?> NaverLogin(Model model) throws IOException {
+        try {
+            SessionUser user = (SessionUser)httpSession.getAttribute("user");
+            return new ResponseEntity<SessionUser>(user, HttpStatus.OK);
+        } catch (IllegalArgumentException | IllegalStateException e){
+            e.printStackTrace();
+            return new ResponseEntity<String>("네이버 로그인 오류", HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            e.printStackTrace();
+            return new ResponseEntity<String>("SERVER_ERROR", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+
+
 
 
 }
