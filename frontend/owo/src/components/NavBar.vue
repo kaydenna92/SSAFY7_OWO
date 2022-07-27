@@ -43,7 +43,7 @@
               <div class="dropdown">
                 <img class="profile-img " src="https://picsum.photos/150" alt="">
                 <div class="dropdown-content">
-                  <router-link to="/mypage"><li>마이페이지</li></router-link>
+                  <router-link to="/mypage/main"><li>마이페이지</li></router-link>
                   <router-link to=""><li>환경설정</li></router-link>
                   <router-link to=""><li>로그아웃</li></router-link>
                 </div>

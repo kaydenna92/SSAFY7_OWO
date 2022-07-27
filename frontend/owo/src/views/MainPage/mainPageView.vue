@@ -15,7 +15,6 @@
     <TodayKing/>
     <transition name="bounce" mode="out-in">
     </transition>
-    <FooFooter/>
   </div>
 </template>>
 
