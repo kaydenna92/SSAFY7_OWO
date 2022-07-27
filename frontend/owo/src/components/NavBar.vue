@@ -10,45 +10,74 @@
             <router-link to="/" >
               <img id="logo2" src="../assets/logo/logo2.png" alt="">
             </router-link>
-            </span>
-
-            <!--dropdows1-rooms-->
+            <router-link to="/mypage"><span
+            class="welcome">안녕하세요 오운완회원님, 반갑습니다!</span></router-link>
+          </span>
+          <div v-if="!isLoggedIn()" class="d-flex">
+          <!--dropdows1-rooms-->
             <li class="menu1 mypages nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#"
-              role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                <span> Rooms</span>
-              </a>
-              <ul class="dropdown-menu">
-                <li><router-link class="dropdown-item"
-                to="/competition">Competition</router-link></li>
-                <li><router-link class="dropdown-item"
-                to="/friendchat">FriendChat</router-link></li>
-                <li><router-link class="dropdown-item"
-                to="/friendnochat">FriendNoChat</router-link></li>
-                <li><router-link class="dropdown-item"
-                to="/youtubechat">YoutubeChat</router-link></li>
-                <li><router-link class="dropdown-item"
-                to="/youtubenochat">YoutubeNoChat</router-link></li>
-              </ul>
-            </li>
-
-            <!--dropdows2-mypages-->
-            <li class="menu1 mypages nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#"
-              role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                <span> MyPage</span>
-              </a>
-              <ul class="dropdown-menu">
-                <li><router-link class="dropdown-item" to="/mypage">My Page</router-link></li>
-                <li><a class="dropdown-item" href="#">Edit My Info</a></li>
-                <li><a class="dropdown-item" href="#">Exercise Calendar</a></li>
-                <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item" href="#">LogOut</a></li>
-              </ul>
-            </li>
-
-            <!--Logout-->
-            <li class="menu1">LogOut</li>
+                <a class="nav-link dropdown-toggle" href="#"
+                role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  <span> Rooms</span>
+                </a>
+                <ul class="dropdown-menu">
+                  <li><router-link class="dropdown-item"
+                  to="/competition">Competition</router-link></li>
+                  <li><router-link class="dropdown-item"
+                  to="/friendchat">FriendChat</router-link></li>
+                  <li><router-link class="dropdown-item"
+                  to="/friendnochat">FriendNoChat</router-link></li>
+                  <li><router-link class="dropdown-item"
+                  to="/youtubechat">YoutubeChat</router-link></li>
+                  <li><router-link class="dropdown-item"
+                  to="/youtubenochat">YoutubeNoChat</router-link></li>
+                </ul>
+              </li>
+              <router-link to="/login"><li class="menu1">login</li></router-link>
+            </div>
+            <div v-if="isLoggedIn()" class="d-flex">
+              <div>
+                <li class="menu1 mypages nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#"
+                role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  <span> Rooms</span>
+                </a>
+                <ul class="dropdown-menu">
+                  <li><router-link class="dropdown-item"
+                  to="/competition">Competition</router-link></li>
+                  <li><router-link class="dropdown-item"
+                  to="/friendchat">FriendChat</router-link></li>
+                  <li><router-link class="dropdown-item"
+                  to="/friendnochat">FriendNoChat</router-link></li>
+                  <li><router-link class="dropdown-item"
+                  to="/youtubechat">YoutubeChat</router-link></li>
+                  <li><router-link class="dropdown-item"
+                  to="/youtubenochat">YoutubeNoChat</router-link></li>
+                </ul>
+              </li>
+              </div>
+              <!--dropdows2-mypages-->
+              <div>
+                <li class="menu1 mypages nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#"
+                role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  <span> MyPage</span>
+                </a>
+                <ul class="dropdown-menu">
+                  <li><router-link class="dropdown-item" to="/mypage/main">
+                  My Page</router-link></li>
+                  <li><router-link class="dropdown-item" to="/mypage/update">
+                  Edit My Info</router-link></li>
+                  <li><router-link class="dropdown-item" to="/mypage/schedule">
+                  Exercise Calendar</router-link></li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li><a class="dropdown-item" href="#">LogOut</a></li>
+                </ul>
+                </li>
+              </div>
+              <!--Logout-->
+              <li class="menu1">Logout</li>
+            </div>
         </div>
       </nav>
     </div>
@@ -67,7 +96,11 @@ export default {
   created() {},
   mounted() {},
   unmounted() {},
-  methods: {},
+  methods: {
+    isLoggedIn() {
+      return true;
+    },
+  },
 };
 </script>
 
@@ -90,6 +123,7 @@ li{
   padding-right: 0px;
   padding-left: 0px;
   font-family: 'Noto Sans KR', sans-serif;
+  background-color: rgb(255, 255, 255);/* navbar color */
 }
 
 .owonav {
@@ -176,5 +210,10 @@ li{
   font-size: 14px;
   line-height: 1.4rem;
   padding: 10px;
+}
+.welcome {
+  font-size: 15px;
+  font-weight: lighter;
+  color: black;
 }
 </style>

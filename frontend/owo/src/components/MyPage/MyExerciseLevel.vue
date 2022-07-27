@@ -7,18 +7,18 @@
         <div class="my-level-icon align-self-center">
           <img
             class="my-level-icon-img"
-            src="@/assets/icon/exercise.png" alt="tear1">
+            :src="require(`@/assets/icon/tier${tierNum}.png`)" alt="tear1">
         </div>
         <div class="bar-info">
           <div class="progress bar">
             <div
-              class="progress-bar bg-warning progress-bar-striped progress-bar-animated"
+              class="progress-bar progress-bar-striped progress-bar-animated"
               role="progressbar"
               aria-label="Example with label"
-              style="width: 25%;"
-              aria-valuenow="25"
+              v-bind:style="{ width: tearPercent, backgroundColor: tierColor }"
+              :aria-valuenow="{tearPercentage}"
               aria-valuemin="0"
-              aria-valuemax="100">25%
+              aria-valuemax="100">{{tearPercent}}
             </div>
           </div>
           <div class="tear-info d-flex text-center align-items-end">
@@ -37,6 +37,10 @@ export default {
   data() {
     return {
       a: '',
+      tearPercent: '25%',
+      tearPercentage: 25,
+      tierColor: '#89621d',
+      tierNum: 2,
     };
   },
   setup() {},
@@ -56,10 +60,10 @@ export default {
 
 .my-level-title {
   text-align: left;
-  padding-top: 30px;
+  padding-top: 40px;
   font-size: 22px;
   padding-left: 50px;
-  padding-bottom: 0px;
+  padding-bottom: 10px;
 }
 
 .my-level-info {
@@ -68,6 +72,11 @@ export default {
   padding-left: 50px;
   height: 80px;
 
+}
+
+.user-percent {
+  font-family: 'LeferiPoint-WhiteA';
+  font-size: 12px;
 }
 
 .my-level-icon {
@@ -84,6 +93,10 @@ export default {
 .tear-name {
   padding-top: 10px;
   margin-bottom: 0px;
+}
+
+.tear-bar {
+  background-color: #89621d;
 }
 
 .bar {

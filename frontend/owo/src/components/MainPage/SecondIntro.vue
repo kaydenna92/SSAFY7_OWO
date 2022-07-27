@@ -1,11 +1,11 @@
 <template>
-  <div class="wrapper">
-    icons : <a target="_blank" href="https://icons8.com/icon/85962/pencil">Pencil icon by Icons8</a>
+  <div class="second-intro">
+
   </div>
 </template>
 <script>
 export default {
-  name: 'FooFooter',
+  name: 'SecondIntro',
   components: {},
   data() {
     return {
@@ -21,8 +21,8 @@ export default {
 </script>
 
 <style scoped>
-.wrapper {
-  background-color: blue;
-  height: 200px;
+.second-intro {
+  height: 100vh;
+  background-color: rgb(75, 74, 89);
 }
 </style>

@@ -1,21 +1,45 @@
 <template>
   <div>
-    <h3>{{ user }}님의 캘린더</h3>
+    <div class="title">
+      <h3>{{ user.nick }}님의 캘린더</h3>
+    </div>
+    <div class="calendar">
+      <MyCalendar/>
+    </div>
+  </div>
+  <div>
+    <p>안녕</p>
   </div>
 </template>
+
 <script>
+import MyCalendar from '@/components/MyPage/MyCalendar.vue';
+
 export default {
-  name: 'MyPageScheduleView',
-  components: {},
+  components: { MyCalendar },
   data() {
     return {
-      user: '',
+      user: {
+        nick: '한나',
+      },
+      value: '',
     };
   },
   setup() {},
   created() {},
   mounted() {},
   unmounted() {},
-  methods: {},
+  methods: {
+    dateClass(ymd, date) {
+      const day = date.getDate();
+      return day >= 10 && day <= 19 ? 'table-info' : '';
+    },
+  },
 };
 </script>
+
+<style scoped>
+  .title {
+    padding: 50px;
+  }
+</style>
