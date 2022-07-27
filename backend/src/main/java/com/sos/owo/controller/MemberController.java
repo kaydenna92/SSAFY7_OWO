@@ -83,7 +83,7 @@ public class MemberController {
 
     }
 
-    @ApiOperation(value = "경쟁모드 경험치 저장",notes = "memberId와 경쟁모드 경험치를 받아서 누적시킨다.")
+    @ApiOperation(value = "경쟁모드에서 얻은 경험치 저장",notes = "memberId와 경쟁모드 경험치를 받아서 누적시킨다.")
     @PutMapping("/api/user/point/{point}/{memberId}")
     public ResponseEntity<?> savePoint(@PathVariable("point") int point, @PathVariable("memberId") int memberId){
         try {
