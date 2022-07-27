@@ -298,10 +298,11 @@ public class MemberController {
             return new ResponseEntity<String>("FAIL", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    @GetMapping("/api/oauth/google")
-    public ResponseEntity<?> GoogleLogin(Model model) throws IOException {
+    @GetMapping("/oauth/google")
+    public ResponseEntity<?> GoogleLogin() throws IOException {
         try {
             SessionUser user = (SessionUser)httpSession.getAttribute("user");
+            System.out.println(user);
             return new ResponseEntity<SessionUser>(user, HttpStatus.OK);
         } catch (IllegalArgumentException | IllegalStateException e){
             e.printStackTrace();
@@ -312,19 +313,19 @@ public class MemberController {
         }
     }
 
-    @GetMapping("/api/oauth/naver")
-    public ResponseEntity<?> NaverLogin(Model model) throws IOException {
-        try {
-            SessionUser user = (SessionUser)httpSession.getAttribute("user");
-            return new ResponseEntity<SessionUser>(user, HttpStatus.OK);
-        } catch (IllegalArgumentException | IllegalStateException e){
-            e.printStackTrace();
-            return new ResponseEntity<String>("네이버 로그인 오류", HttpStatus.BAD_REQUEST);
-        } catch (Exception e){
-            e.printStackTrace();
-            return new ResponseEntity<String>("SERVER_ERROR", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+//    @GetMapping("/oauth/naver")
+//    public ResponseEntity<?> NaverLogin(Model model) throws IOException {
+//        try {
+//            SessionUser user = (SessionUser)httpSession.getAttribute("user");
+//            return new ResponseEntity<SessionUser>(user, HttpStatus.OK);
+//        } catch (IllegalArgumentException | IllegalStateException e){
+//            e.printStackTrace();
+//            return new ResponseEntity<String>("네이버 로그인 오류", HttpStatus.BAD_REQUEST);
+//        } catch (Exception e){
+//            e.printStackTrace();
+//            return new ResponseEntity<String>("SERVER_ERROR", HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
 
 
 
