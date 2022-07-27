@@ -21,7 +21,7 @@ public class GoalController {
     private final GoalService goalService;
 
     //운동 목표 추가
-//    @ApiOperation(value = "운동 목표 추가",notes = "memberId와 목표운동, 목표시간을 받아서 추가한다.")
+    @ApiOperation(value = "운동 목표 추가",notes = "memberId와 목표운동, 목표시간을 받아서 추가한다.")
     @PostMapping("/api/user/goal/{memberId}")
     public ResponseEntity<?> saveGoal(@PathVariable("memberId") int memberId, @RequestBody GoalSaveRequestDto goalSaveRequestDto){
         try {
@@ -38,7 +38,7 @@ public class GoalController {
     }
 
     //운동 목표 수정
-//    @ApiOperation(value = "운동 목표 수정",notes = "memberId와 목표운동, 목표시간을 받아서 수정한다.")
+    @ApiOperation(value = "운동 목표 수정",notes = "memberId와 목표운동, 목표시간을 받아서 수정한다.")
     @PutMapping("/api/user/goal/{memberId}")
     public ResponseEntity<?> updateGoal(@PathVariable("memberId") int memberId, @RequestBody GoalSaveRequestDto goalSaveRequestDto){
         try { //@PathVariable("goalId") int goalId,
@@ -55,7 +55,7 @@ public class GoalController {
     }
 
     //운동 목표 삭제
-//    @ApiOperation(value = "운동 목표 삭제",notes = "memberId와 목표운동 id를 받아서 삭제한다.")
+    @ApiOperation(value = "운동 목표 삭제",notes = "memberId와 목표운동 id를 받아서 삭제한다.")
     @DeleteMapping("/api/user/goal/{memberId}/{goal_id}")
     public ResponseEntity<?> deleteGoal(@PathVariable("memberId") int memberId, @PathVariable("goal_id")int goal_id){
         try {
@@ -72,7 +72,7 @@ public class GoalController {
     }
 
     //운동 목표 리스트 조회
-//    @ApiOperation(value = "운동 목표 리스트 조회",notes = "memberId를 받아서 그 사람의 운동 목표 리스트를 조회한다.")
+    @ApiOperation(value = "운동 목표 리스트 조회",notes = "memberId를 받아서 그 사람의 운동 목표 리스트를 조회한다.")
     @GetMapping("/api/user/goal/{memberId}")
     public ResponseEntity<?> findGoal(@PathVariable("memberId") int memberId, Model model){
         try {
@@ -89,7 +89,7 @@ public class GoalController {
     }
 
     //운동 주간 목표 시간 조회
-//    @ApiOperation(value = "운동 주간 목표 시간 조회",notes = "memberId를 받아서 그 사람의 운동 목표 리스트를 조회하여 시간을 더한 주의 목표 시간을 조회한다.")
+    @ApiOperation(value = "운동 주간 목표 시간 조회",notes = "memberId를 받아서 그 사람의 운동 목표 리스트를 조회하여 시간을 더한 주의 목표 시간을 조회한다.")
     @GetMapping("/api/user/weekGoal/{memberId}")
     public ResponseEntity<?> findWeekGoal(@PathVariable("memberId") int memberId, Model model){
         try {

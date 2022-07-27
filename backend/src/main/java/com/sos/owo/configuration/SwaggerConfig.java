@@ -24,7 +24,7 @@ public class SwaggerConfig {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("Swagger Test")
+                .title("OWO Swagger")
                 .description("SwaggerConfig")
                 .version("3.0")
                 .build();
