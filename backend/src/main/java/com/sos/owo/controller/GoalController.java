@@ -57,7 +57,7 @@ public class GoalController {
 
         } catch (Exception e){
             e.printStackTrace();
-            message.setStatus(StatusEnum.INTERNAL_SERER_ERROR);
+            message.setStatus(StatusEnum.INTERNAL_SERVER_ERROR);
             message.setMessage("내부 서버 에러");
             return new ResponseEntity<>(message,httpHeaders,HttpStatus.INTERNAL_SERVER_ERROR);
 //            return new ResponseEntity<String>("SERVER_ERROR", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -88,7 +88,7 @@ public class GoalController {
 //            return new ResponseEntity<String>("OVERLAP", HttpStatus.CONFLICT);
         } catch (Exception e){
             e.printStackTrace();
-            message.setStatus(StatusEnum.INTERNAL_SERER_ERROR);
+            message.setStatus(StatusEnum.INTERNAL_SERVER_ERROR);
             message.setMessage("내부 서버 에러");
             return new ResponseEntity<>(message,httpHeaders,HttpStatus.INTERNAL_SERVER_ERROR);
 //            return new ResponseEntity<String>("SERVER_ERROR", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -120,7 +120,7 @@ public class GoalController {
 //            return new ResponseEntity<String>("OVERLAP", HttpStatus.CONFLICT);
         } catch (Exception e){
             e.printStackTrace();
-            message.setStatus(StatusEnum.INTERNAL_SERER_ERROR);
+            message.setStatus(StatusEnum.INTERNAL_SERVER_ERROR);
             message.setMessage("내부 서버 에러");
             return new ResponseEntity<>(message,httpHeaders,HttpStatus.INTERNAL_SERVER_ERROR);
 //            return new ResponseEntity<String>("SERVER_ERROR", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -150,7 +150,7 @@ public class GoalController {
 //            return new ResponseEntity<String>("OVERLAP", HttpStatus.CONFLICT);
         } catch (Exception e){
             e.printStackTrace();
-            message.setStatus(StatusEnum.INTERNAL_SERER_ERROR);
+            message.setStatus(StatusEnum.INTERNAL_SERVER_ERROR);
             message.setMessage("내부 서버 에러");
             return new ResponseEntity<>(message,httpHeaders,HttpStatus.INTERNAL_SERVER_ERROR);
 //            return new ResponseEntity<String>("SERVER_ERROR", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -184,7 +184,7 @@ public class GoalController {
 //            return new ResponseEntity<String>("OVERLAP", HttpStatus.CONFLICT);
         } catch (Exception e){
             e.printStackTrace();
-            message.setStatus(StatusEnum.INTERNAL_SERER_ERROR);
+            message.setStatus(StatusEnum.INTERNAL_SERVER_ERROR);
             message.setMessage("내부 서버 에러");
             return new ResponseEntity<>(message,httpHeaders,HttpStatus.INTERNAL_SERVER_ERROR);
 //            return new ResponseEntity<String>("SERVER_ERROR", HttpStatus.INTERNAL_SERVER_ERROR);
