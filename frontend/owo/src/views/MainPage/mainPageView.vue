@@ -15,7 +15,6 @@
     <transition name="bounce" mode="out-in">
       <MyModal></MyModal>
     </transition>
-    <FooFooter/>
   </div>
 </template>>
 
