@@ -4,21 +4,18 @@
     <!--오운완 내브바-->
     <div class="owo_nav">
       <nav class="navbar sticky-top">
-        <div class="container-fluid d-flex justify-content-between">
+        <div class="container-fluid">
           <!--logo-->
-          <div class="navbar-brand mb-0 h1">
+          <span class="navbar-brand mb-0 h1">
             <router-link to="/" >
               <img id="logo2" src="../assets/logo/logo2.png" alt="">
             </router-link>
-          </div>
-          <div class="d-flex align-items-center">
-            <div class="navbar-brand mb-0 h1">
-              <router-link to="/mypage/main"><span
-              class="welcome">안녕하세요 오운완회원님, 반갑습니다!</span></router-link>
-            </div>
-            <div v-if="!isLoggedIn()" class="d-flex">
-            <!--dropdows1-rooms-->
-              <li class="menu1 mypages nav-item dropdown">
+            <router-link to="/mypage"><span
+            class="welcome">안녕하세요 오운완회원님, 반갑습니다!</span></router-link>
+          </span>
+          <div v-if="!isLoggedIn()" class="d-flex">
+          <!--dropdows1-rooms-->
+            <li class="menu1 mypages nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#"
                 role="button" data-bs-toggle="dropdown" aria-expanded="false">
                   <span> Rooms</span>
@@ -39,16 +36,12 @@
               <router-link to="/login"><li class="menu1">login</li></router-link>
             </div>
             <div v-if="isLoggedIn()" class="d-flex">
-              <div class="dropdown">
-                <img class="profile-img " src="https://picsum.photos/150" alt="">
-                <div class="dropdown-content">
-                  <router-link to="/mypage/main"><li>마이페이지</li></router-link>
-                  <router-link to=""><li>환경설정</li></router-link>
-                  <router-link to=""><li>로그아웃</li></router-link>
-                </div>
+              <div>
+               qwdqdqd
               </div>
+              <!--Logout-->
+              <li class="menu1">Logout</li>
             </div>
-          </div>
         </div>
       </nav>
     </div>
@@ -125,6 +118,7 @@ li{
   padding-right: max(22px,env(safe-area-inset-right));
  }
  .navbar-brand {
+  margin-right: auto;
   font-size: 1.2rem;
   font-weight: 900;
  }
@@ -185,27 +179,5 @@ li{
   font-size: 15px;
   font-weight: lighter;
   color: black;
-}
-.dropdown {
-position: relative;
-display: inline-block;
-}
-.dropdown-content {
-display: none;
-position: absolute;
-background-color: #F9F9F9;
-min-width: 100px;
-padding: 8px;
-box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-border-radius: 10%;
-right: -25px;
-}
-.dropdown:hover .dropdown-content { display: block; }
-.profile-img {
-   border-radius: 50%;
-   height: 50px;
-}
-.dropdown-content li {
-  padding: 5px;
 }
 </style>
