@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container-fluid">
     <div class="d-flex">
       <div style="width:100%;">
         <div class="d-flex justify-content-between align-items-center" >
@@ -16,6 +16,12 @@
               <WebRTC class="col-4 mb-5"></WebRTC>
               <WebRTC class="col-4 mb-5"></WebRTC>
               <RoomButton></RoomButton>
+              <div class="d-flex justify-content-between">
+                <div>오운완 로고1
+                </div>
+                <div>인삿말
+                </div>
+              </div>
             </div>
           </div>
         </div>

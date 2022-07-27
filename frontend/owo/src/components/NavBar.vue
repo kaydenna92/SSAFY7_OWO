@@ -4,19 +4,21 @@
     <!--오운완 내브바-->
     <div class="owo_nav">
       <nav class="navbar sticky-top">
-        <div class="container-fluid">
+        <div class="container-fluid d-flex justify-content-between">
           <!--logo-->
-          <div class="navbar-brand mb-0 h1 d-flex justify-content-between">
+          <div class="navbar-brand mb-0 h1">
             <router-link to="/" >
               <img id="logo2" src="../assets/logo/logo2.png" alt="">
             </router-link>
-            <router-link to="/mypage"><span
-            class="welcome">안녕하세요 오운완회원님, 반갑습니다!</span></router-link>
-            <img class="profile-img " src="https://picsum.photos/150" alt="">
+          </div>
+          <div class="d-flex align-items-center">
+            <div class="navbar-brand mb-0 h1">
+              <router-link to="/mypage"><span
+              class="welcome">안녕하세요 오운완회원님, 반갑습니다!</span></router-link>
             </div>
-          <div v-if="!isLoggedIn()" class="d-flex">
-          <!--dropdows1-rooms-->
-            <li class="menu1 mypages nav-item dropdown">
+            <div v-if="!isLoggedIn()" class="d-flex">
+            <!--dropdows1-rooms-->
+              <li class="menu1 mypages nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#"
                 role="button" data-bs-toggle="dropdown" aria-expanded="false">
                   <span> Rooms</span>
@@ -46,6 +48,7 @@
                 </div>
               </div>
             </div>
+          </div>
         </div>
       </nav>
     </div>
@@ -122,7 +125,6 @@ li{
   padding-right: max(22px,env(safe-area-inset-right));
  }
  .navbar-brand {
-  margin-right: auto;
   font-size: 1.2rem;
   font-weight: 900;
  }
