@@ -7,6 +7,7 @@ import com.sos.owo.dto.*;
 import com.sos.owo.service.EmailTokenService;
 import com.sos.owo.service.MemberService;
 import com.sos.owo.service.ProfileImgService;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.apache.ibatis.annotations.Delete;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,7 +22,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.mail.Session;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -40,6 +43,13 @@ public class MemberController {
     private final EmailTokenService emailTokenService;
     private final ProfileImgService profileImgService;
 
+    private final HttpSession httpSession;
+
+    @Value("${app.fileupload.uploadDir}")
+    private String uploadFolder;
+
+    @Value("${app.fileupload.uploadPath}")
+    private String uploadPath;
 
 
     @PostMapping("/auth/join")
@@ -67,7 +77,7 @@ public class MemberController {
 
     }
 
-
+    @ApiOperation(value = "경쟁모드 최고기록 조회",notes = "memberId를 받아서 해당 사용자의 종목별 최고기록을 조회한다.")
     @GetMapping("/api/user/compete/{memberId}")
     public ResponseEntity<?> findBestScore(@PathVariable("memberId") int memberId, Model model){
         try {
@@ -83,6 +93,7 @@ public class MemberController {
 
     }
 
+    @ApiOperation(value = "경쟁모드에서 얻은 경험치 저장",notes = "memberId와 경쟁모드 경험치를 받아서 누적시킨다.")
     @PutMapping("/api/user/point/{point}/{memberId}")
     public ResponseEntity<?> savePoint(@PathVariable("point") int point, @PathVariable("memberId") int memberId){
         try {
@@ -96,6 +107,7 @@ public class MemberController {
         }
     }
 
+    @ApiOperation(value = "자유/영상모드 경험치 저장",notes = "memberId와 자유/영상모드 경험치를 받아서 누적시킨다.")
     @PutMapping("/api/user/point/{exp}/{memberId}")
     public ResponseEntity<?> saveExp(@PathVariable("exp") int exp, @PathVariable("memberId") int memberId){
         try {
@@ -405,5 +417,38 @@ public class MemberController {
             return new ResponseEntity<>(message, headers,  HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    @GetMapping("/oauth/google")
+    public ResponseEntity<?> GoogleLogin() throws IOException {
+        try {
+            SessionUser user = (SessionUser)httpSession.getAttribute("user");
+            System.out.println(user);
+            return new ResponseEntity<SessionUser>(user, HttpStatus.OK);
+        } catch (IllegalArgumentException | IllegalStateException e){
+            e.printStackTrace();
+            return new ResponseEntity<String>("구글 로그인 오류", HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            e.printStackTrace();
+            return new ResponseEntity<String>("SERVER_ERROR", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+//    @GetMapping("/oauth/naver")
+//    public ResponseEntity<?> NaverLogin(Model model) throws IOException {
+//        try {
+//            SessionUser user = (SessionUser)httpSession.getAttribute("user");
+//            return new ResponseEntity<SessionUser>(user, HttpStatus.OK);
+//        } catch (IllegalArgumentException | IllegalStateException e){
+//            e.printStackTrace();
+//            return new ResponseEntity<String>("네이버 로그인 오류", HttpStatus.BAD_REQUEST);
+//        } catch (Exception e){
+//            e.printStackTrace();
+//            return new ResponseEntity<String>("SERVER_ERROR", HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
+
+
+
+
+
 
 }
