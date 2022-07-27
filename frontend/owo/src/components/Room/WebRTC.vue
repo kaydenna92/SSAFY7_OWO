@@ -2,7 +2,7 @@
     <div>
         <div class="card me-3 d-flex justify-content-center align-items-center"
         style="width: 25rem; height:18rem;">
-          <img onclick="get_out()" id="img" src="@/assets/icon/more.png" alt="">
+          <img onclick="get_out" id="img" src="@/assets/icon/more.png" alt="">
         <div>
             <p>개인 WebRTC 영상</p>
         </div>
@@ -27,9 +27,6 @@ export default {
   moundted() {},
   unmounted() {},
   methods: {
-    get_out() {
-      alert('hello');
-    },
   },
 };
 </script>
