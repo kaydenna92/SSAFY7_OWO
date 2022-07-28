@@ -188,6 +188,7 @@ public class GoalController {
             message.setMessage("내부 서버 에러");
             return new ResponseEntity<>(message,httpHeaders,HttpStatus.INTERNAL_SERVER_ERROR);
 //            return new ResponseEntity<String>("SERVER_ERROR", HttpStatus.INTERNAL_SERVER_ERROR);
+            
         }
     }
 }
