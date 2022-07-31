@@ -16,7 +16,7 @@
     </div>
 
     <!-- 신체 정보 분석 & 운동일지 -->
-    <div class="physical-info-analys">
+    <!-- <div class="physical-info-analys">
       <div class="row row1 p-0 m-0">
         <div class="col col-4 my-physical-info">
           <PhysicalInfo/>
@@ -27,7 +27,7 @@
         </div>
       </div>
       <physical-info-and-schedule/>
-    </div>
+    </div> -->
 
   </div>
 </template>
@@ -35,8 +35,8 @@
 import MyExerciseLevel from '@/components/MyPage/MyExerciseLevel.vue';
 import MyExerciseRate from '@/components/MyPage/MyExerciseRate.vue';
 import MyWeeklyGoal from '@/components/MyPage/MyWeeklyGoal.vue';
-import PhysicalInfo from '@/components/MyPage/PhysicalInfo.vue';
-import MyCalendar from '@/components/MyPage/MyCalendar.vue';
+// import PhysicalInfo from '@/components/MyPage/PhysicalInfo.vue';
+// import MyCalendar from '@/components/MyPage/MyCalendar.vue';
 
 export default {
   name: 'MyPageMainView',
@@ -44,8 +44,8 @@ export default {
     MyExerciseLevel,
     MyWeeklyGoal,
     MyExerciseRate,
-    PhysicalInfo,
-    MyCalendar,
+    // PhysicalInfo,
+    // MyCalendar,
   },
   data() {
     return {
@@ -67,16 +67,15 @@ export default {
 /* 운동 비율 */
 
 .my-level {
-  height: 220px;
+  height: 170px;
   border-bottom: solid #DFDFDF 1px;
 }
-
 .my-exercise-rate {
-  height: 220px;
+  height: 170px;
   border-bottom: solid #DFDFDF 1px;
 }
 .weekly-goal-achivement-rate {
-  height: 350px;
+  height: 280px;
   border-bottom: solid #DFDFDF 1px;
 }
 

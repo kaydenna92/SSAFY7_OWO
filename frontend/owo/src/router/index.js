@@ -2,8 +2,10 @@ import { createRouter, createWebHistory } from 'vue-router';
 import mainPageView from '../views/MainPage/mainPageView.vue';
 import MyPageView from '../views/MyPage/MyPageView.vue';
 import MyPageMainView from '../views/MyPage/MyPageMainView.vue';
+import MyPageAnalysView from '../views/MyPage/MyPageAnalysView.vue';
 import MyPageUpdateView from '../views/MyPage/MyPageUpdateView.vue';
 import MyPageScheduleView from '../views/MyPage/MyPageScheduleView.vue';
+import MyPageSlideView from '../views/MyPage/MyPageSlideView.vue';
 import CompetitionView from '../views/Room/competition.vue';
 import FriendChatView from '../views/Room/FriendChatView.vue';
 import FriendNoChatView from '../views/Room/FriendNoChatView.vue';
@@ -41,6 +43,11 @@ const routes = [
         component: MyPageMainView,
       },
       {
+        path: 'analys',
+        // name: 'MyPageAnalysView',
+        component: MyPageAnalysView,
+      },
+      {
         path: 'update',
         // name: 'MyPageUpdateView',
         component: MyPageUpdateView,
@@ -51,6 +58,11 @@ const routes = [
         component: MyPageScheduleView,
       },
     ],
+  },
+  {
+    path: '/slide',
+    name: 'MyPageSlideView',
+    component: MyPageSlideView,
   },
   {
     path: '/competition',

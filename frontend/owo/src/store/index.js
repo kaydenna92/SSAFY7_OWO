@@ -4,6 +4,7 @@ import router from '@/router';
 
 export default createStore({
   state: {
+    accessToken: '',
     isLogin: false,
     isLoginError: false,
     loginErrMsg: '',
@@ -24,7 +25,13 @@ export default createStore({
       activityLevel: '',
     },
   },
+  getters: {
+
+  },
   mutations: {
+    SET_TOKEN(state, token) {
+      state.loginInfo.accessToken = token;
+    },
     SET_USER_INFO(state, payload) {
       state.userInfo.activityHour = payload.activityHour;
       state.userInfo.activityLevel = payload.activityLevel;

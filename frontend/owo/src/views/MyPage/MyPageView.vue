@@ -8,7 +8,7 @@
           </div>
           <div class="col-9 m-0 p-0">
             <div class="title text-center">
-              <h3>👧 5년째 헬린이 님의 운동 기록</h3>
+              <h4>{{slogan}}</h4>
             </div>
             <div>
               <router-view></router-view>
@@ -28,7 +28,7 @@ export default {
   components: { MySidebar },
   data() {
     return {
-      slogan: '',
+      slogan: '👧 8월 바프까지 화이팅!',
     };
   },
   setup() {},
@@ -61,7 +61,7 @@ export default {
   .mypageContainer {
     font-weight: 600;
     /* text-shadow: #7b7b7b 1px 1px; */
-    max-width: 1100px;
+    max-width: 900px;
     margin: 0 auto;
     background-color: white;
     text-align: center;
@@ -70,7 +70,9 @@ export default {
     border-radius: 20px;
     height: 100%;
     box-shadow: rgb(105, 105, 105) 3px 3px 10px;
+    opacity: 93%;
     /* padding: 35px; */
+    margin-bottom: 100px;
   }
   .title {
     border-bottom: solid #DFDFDF 1px;
@@ -81,13 +83,16 @@ export default {
   }
   .background-box {
     width: 100vw;
-    height: 300px;
-    background: linear-gradient(lightCyan, skyBlue, deepSkyBlue);
+    height: 500px;
+    /* background: linear-gradient(lightCyan, skyBlue, deepSkyBlue); */
+    background-image: url("https://i.pinimg.com/originals/07/7e/a6/077ea6de7db29b564b4335dfd2ba7c15.jpg");
+    background-size: 100vh;
     position: relative;
   }
   .front-box {
     position: relative;
-    top: 100px;
+    padding-top: 100px;
+    backdrop-filter: blur(6px);
   }
   .sidebar {
     border-right: solid 1px #DFDFDF;
