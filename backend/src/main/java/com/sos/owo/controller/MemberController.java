@@ -489,9 +489,9 @@ public class MemberController {
     @GetMapping("/oauth/google")
     public ResponseEntity<?> GoogleLogin() throws IOException {
         try {
-            SessionUser user = (SessionUser)httpSession.getAttribute("user");
-            System.out.println(user);
-            return new ResponseEntity<SessionUser>(user, HttpStatus.OK);
+            SessionUser member = (SessionUser)httpSession.getAttribute("member");
+            System.out.println(member);
+            return new ResponseEntity<SessionUser>(member, HttpStatus.OK);
         } catch (IllegalArgumentException | IllegalStateException e){
             e.printStackTrace();
             return new ResponseEntity<String>("구글 로그인 오류", HttpStatus.BAD_REQUEST);
