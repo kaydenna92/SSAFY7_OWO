@@ -42,7 +42,7 @@ public class MeetingRoom {
     private LocalDateTime endDate;
 
     @Column(name = "meeting_room_password")
-    private int password;
+    private String password;
 
     @Column(name = "meeting_room_reg_dt")
     private LocalDateTime regDt;
