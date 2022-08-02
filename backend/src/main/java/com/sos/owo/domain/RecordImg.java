@@ -32,4 +32,10 @@ public class RecordImg {
         this.fileName = fileName;
         this.fileUrl = fileUrl;
     }
+
+    public void updateRecordImg(RecordImg recordImg){
+        this.fileOriName = recordImg.getFileOriName();
+        this.fileName = recordImg.getFileName();
+        this.fileUrl = recordImg.getFileUrl();
+    }
 }
