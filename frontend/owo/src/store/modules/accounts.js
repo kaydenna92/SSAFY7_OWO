@@ -4,8 +4,6 @@ import axios from 'axios';
 export const accounts = {
   namespaced: true,
   state: () => ({
-    isLogin: false,
-    isLoginErr: false,
     accessToken: null,
     refreshToken: null,
     userInfo: {
@@ -26,11 +24,11 @@ export const accounts = {
     },
   }),
   mutations: {
-    SET_TOKEN: (state, token) => {
-      console.log('set_token_mutation');
-      state.accessToken = token.accesstoken;
-      state.refreshToken = token.refreshtoken;
-      console.log(state.accessToken);
+    SET_ACCESS_TOKEN: (state, token) => {
+      state.accessToken = token;
+    },
+    SET_REFRESH_TOKEN: (state, token) => {
+      state.refreshToken = token;
     },
     SET_USER_INFO: (state, payload) => {
       state.userInfo.id = payload.id;
@@ -42,6 +40,7 @@ export const accounts = {
       state.userInfo.activityNum = payload.activityNum;
       state.userInfo.activityHour = payload.activityHour;
       state.userInfo.activityLevel = payload.activityLevel;
+      console.log(state.userInfo);
     },
     SET_PHYSICAL_INFO: (state, payload) => {
       state.physicalInfo.bmi = payload.bmi;
@@ -50,15 +49,17 @@ export const accounts = {
     },
   },
   actions: {
-    saveToken({ commit }, token) {
-      console.log('saveToken');
-      commit('SET_TOKEN', token);
-      localStorage.setItem('accessToken', token.accesstoken);
-      localStorage.setItem('refreshToken', token.refreshtoken);
+    saveAccessToken({ commit }, token) {
+      localStorage.setItem('accessToken', token);
+      commit('SET_ACCESS_TOKEN', token);
+    },
+    saveRefreshToken({ commit }, token) {
+      localStorage.setItem('refreshToken', token);
+      commit('SET_REFRESH_TOKEN', token);
     },
     removeToken({ commit }) {
-      console.log('removeTOken');
-      commit('SET_TOKEN', null);
+      commit('SET_ACCESS_TOKEN', null);
+      commit('SET_REFRESH_TOKEN', null);
       localStorage.setItem('accessToken', null);
       localStorage.setItem('refreshToken', null);
     },
@@ -68,32 +69,38 @@ export const accounts = {
     login({ dispatch }, credentials) {
       axios.post('https://i7c202.p.ssafy.io:8282/auth/login', credentials)
         .then((res) => {
-          const token = {
-            accesstoken: res.data.data.accessToken,
-            refreshtoken: res.data.data.refreshToken,
-          };
-          console.log(token);
-          dispatch('saveToken', token);
-          dispatch('setUserInfo', res.data.data);
+          const response = res.data.data;
+          const access = response.accessToken;
+          const refresh = response.refreshToken;
+          dispatch('saveAccessToken', access);
+          dispatch('saveRefreshToken', refresh);
+          dispatch('setUserInfo', response);
           router.push('/');
-          console.log(res);
         })
         .catch((err) => {
-          console.log('에러', err);
+          console.log(err);
         });
     },
     setPhysicalInfo({ commit }, payload) {
       commit('SET_PHYSICAL_INFO', payload);
     },
-    logout({ dispatch, state }) {
-      axios.get('https://i7c202.p.ssafy.io:8282/api/logout', state.refreshToken)
+    logout({ state, dispatch }) {
+      // eslint-disable-next-line
+      axios({
+        url: 'https://i7c202.p.ssafy.io:8282/api/logout',
+        method: 'get',
+        headers: {
+          'X-AUTH-TOKEN': state.accessToken,
+          'REFRESH-TOKEN': state.refreshToken,
+        },
+      })
         .then(() => {
-          dispatch('removeToken');
           alert('로그아웃');
+          dispatch('removeToken');
+          dispatch('setUserInfo', null);
           router.push('/');
         })
         .catch((err) => {
-          console.log('에러');
           console.log(err);
         });
     },
@@ -109,7 +116,7 @@ export const accounts = {
     },
   },
   getters: {
-    isLogin: (state) => state.accessToken,
+    isLogin: (state) => !!state.accessToken,
     userInfo: (state) => state.userInfo,
     physicalInfo: (state) => state.physicalInfo,
   },
