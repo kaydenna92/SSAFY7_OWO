@@ -9,12 +9,12 @@
       </div>
       <div class="d-flex">
         <div>
-          <div class="d-flex align-items-start justify-content-start"
-          style="background-color:aqua; width:1100px; height:600px">
+          <div class="d-flex align-items-start justify-content-start mb-5 m-2"
+          style="background-color:aqua; width:930px; height:585px">
           <iframe width="100%" height="100%" src="https://www.youtube.com/embed/gTowV_F07uI" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>              </div>
           <RoomButton></RoomButton>
         </div>
-        <div class="" style="width:30%; max-height:600px; overflow-y:auto;">
+        <div style="width:30%; max-height:600px; overflow-y:auto;">
           <WebRTCYoutubeNochat></WebRTCYoutubeNochat>
           <WebRTCYoutubeNochat></WebRTCYoutubeNochat>
           <WebRTCYoutubeNochat></WebRTCYoutubeNochat>

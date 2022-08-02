@@ -21,8 +21,8 @@ export default {
 </script>
 <style scoped>
 .achat {
-    width:200px;
-    height:800px;
+    width:300px;
+    height:600px;
     background-color: aqua;
 }
 </style>
