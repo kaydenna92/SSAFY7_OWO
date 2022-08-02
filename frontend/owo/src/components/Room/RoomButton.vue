@@ -2,23 +2,23 @@
     <div class="d-flex justify-content-center">
         <div class="d-flex justify-content-start align-items-center">
             <button class="btn btn-outline-secondary m-2 " style="width:145px;"
-            @click="mic_on_off" v-if="mic">
-                <img class="menu_icon" src="@/assets/icon/mic_on.png" alt="mic_on">
+            @click="mic_off" v-if="mic">
+                <img class="menu_icon" src="@/assets/icon/mic_off.png" alt="mic_on">
                 음소거 해제
             </button>
             <button class="btn btn-outline-secondary m-2 " style="width:145px;"
-            @click="mic_on_off" v-if="!mic">
-                <img class="menu_icon" src="@/assets/icon/mic_off.png" alt="mic_off">
+            @click="mic_on" v-if="!mic">
+                <img class="menu_icon" src="@/assets/icon/mic_on.png" alt="mic_off">
                 음소거
             </button>
             <button class="btn btn-outline-secondary m-2" style="width:145px;"
-            @click="video_on_off" v-if="video">
-                <img class="menu_icon" src="@/assets/icon/video_on.png" alt="video_on">
+            @click="video_off" v-if="video">
+                <img class="menu_icon" src="@/assets/icon/video_off.png" alt="video_on">
                 비디오 시작
             </button>
             <button class="btn btn-outline-secondary m-2" style="width:145px;"
-            @click="video_on_off" v-if="!video">
-                <img class="menu_icon" src="@/assets/icon/video_off.png" alt="video_off">
+            @click="video_on" v-if="!video">
+                <img class="menu_icon" src="@/assets/icon/video_on.png" alt="video_off">
                 비디오 중지
             </button>
             <div class="m-2">
@@ -52,6 +52,7 @@
         v-if="is_take_photo" id="take_photo_timer">
         {{ timer }}
         </div>
+        <!-- <div v-for="(picture, index) in pictures" :key=index> {{ picture }} </div> -->
     </div>
     <!-- <div>
       ex: {{ ex }}
@@ -64,6 +65,7 @@
     </div> -->
 </template>
 <script>
+import html2canvas from 'html2canvas';
 import AfterExerciseModal from './AfterExerciseModal.vue';
 import Emoji from '../MyEmoji.vue';
 import RoomSetting from './RoomSetting.vue';
@@ -106,6 +108,7 @@ export default {
       ey: null,
       ex: null,
       is_take_photo: false,
+      pictures: [],
       // emoji_h: document.getElementById('emoji_btn').top,
     };
   },
@@ -115,11 +118,17 @@ export default {
   },
   unmounted() {},
   methods: {
-    mic_on_off() {
-      this.mic = !this.mic;
+    mic_on() {
+      this.mic = true;
     },
-    video_on_off() {
-      this.video = !this.video;
+    mic_off() {
+      this.mic = false;
+    },
+    video_on() {
+      this.video = true;
+    },
+    video_off() {
+      this.video = false;
     },
     take_photo() {
       this.temp_timer = this.timer;
@@ -129,6 +138,10 @@ export default {
         console.log(this.timer);
         if (this.timer === 0) {
           console.log('사진찍는 모션');
+          html2canvas(document.querySelector('#take_photo_WebRTC')).then((canvas) => {
+            document.body.appendChild(canvas);
+            // afterexercisemodal에 이 값들을 보내야함, 또는 store에 얘들 사진을 하나씩 보내기
+          });
           clearInterval(this.take_photo_timer);
           this.is_take_photo = false;
           this.timer = this.temp_timer;
