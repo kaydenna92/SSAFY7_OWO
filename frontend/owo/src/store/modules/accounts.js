@@ -17,6 +17,12 @@ export const accounts = {
       activityNum: '',
       activityHour: '',
       activityLevel: '',
+      id: '',
+    },
+    physicalInfo: {
+      bmi: null,
+      bmr: null,
+      caloriePerDay: null,
     },
   }),
   mutations: {
@@ -27,6 +33,7 @@ export const accounts = {
       console.log(state.accessToken);
     },
     SET_USER_INFO: (state, payload) => {
+      state.userInfo.id = payload.id;
       state.userInfo.nick = payload.nick;
       state.userInfo.gender = payload.gender;
       state.userInfo.age = payload.age;
@@ -35,6 +42,11 @@ export const accounts = {
       state.userInfo.activityNum = payload.activityNum;
       state.userInfo.activityHour = payload.activityHour;
       state.userInfo.activityLevel = payload.activityLevel;
+    },
+    SET_PHYSICAL_INFO: (state, payload) => {
+      state.physicalInfo.bmi = payload.bmi;
+      state.physicalInfo.bmr = payload.bmr;
+      state.physicalInfo.caloriePerDay = payload.caloriePerDay;
     },
   },
   actions: {
@@ -70,6 +82,9 @@ export const accounts = {
           console.log('에러', err);
         });
     },
+    setPhysicalInfo({ commit }, payload) {
+      commit('SET_PHYSICAL_INFO', payload);
+    },
     logout({ dispatch, state }) {
       axios.get('https://i7c202.p.ssafy.io:8282/api/logout', state.refreshToken)
         .then(() => {
@@ -82,9 +97,20 @@ export const accounts = {
           console.log(err);
         });
     },
+    physicalInfo({ dispatch, state }, physicalInfo) {
+      axios.get(`https://i7c202.p.ssafy.io:8282/api/user/bmi/${state.userInfo.id}`, physicalInfo)
+        .then((res) => {
+          console.log(res);
+          dispatch('setPhysicalInfo', res.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
   },
   getters: {
     isLogin: (state) => state.accessToken,
     userInfo: (state) => state.userInfo,
+    physicalInfo: (state) => state.physicalInfo,
   },
 };
