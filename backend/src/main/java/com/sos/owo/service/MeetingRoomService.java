@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 public class MeetingRoomService {
     private MeetingRoomRepository meetingRoomRepository;
 
-    public void int createRoom(MeetingRoomMakeRequestDto requestDto) {
+    public void createRoom(MeetingRoomMakeRequestDto requestDto) {
 
     }
 }

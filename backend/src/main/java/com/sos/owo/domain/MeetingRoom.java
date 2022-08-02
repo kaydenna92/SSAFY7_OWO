@@ -24,10 +24,12 @@ public class MeetingRoom {
     private int secret;
 
     @Column(name="meeting_room_mode")
-    private int mode;
+    @Enumerated(EnumType.STRING)
+    private Mode mode;
 
     @Column(name="meeting_room_type")
-    private int type;
+    @Enumerated(EnumType.STRING)
+    private Exercise type;
 
     @Column(name="meeting_room_link")
     private String link;
@@ -42,7 +44,7 @@ public class MeetingRoom {
     private LocalDateTime endDate;
 
     @Column(name = "meeting_room_password")
-    private int password;
+    private String password;
 
     @Column(name = "meeting_room_reg_dt")
     private LocalDateTime regDt;

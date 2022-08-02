@@ -10,10 +10,19 @@ import org.springframework.transaction.annotation.Transactional;
 public class GameService {
 
     private final GameRepository gameRepository;
-
+//
+//    public void createRoom(int roomId){
+//        gameRepository.createRoom(roomId);
+//    }
     @Transactional
-    public void startrRoom(int roomID){
+    public void startRoom(int roomID){
         gameRepository.startRoom(roomID);
     }
+
+    @Transactional
+    public void endRoom(int roomID){
+        gameRepository.startRoom(roomID);
+    }
+
 
 }
