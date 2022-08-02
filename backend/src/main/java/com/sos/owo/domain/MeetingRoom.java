@@ -21,7 +21,7 @@ public class MeetingRoom {
     private String name;
 
     @Column(name="meeting_room_secret")
-    private int secret;
+    private boolean secret;
 
     @Column(name="meeting_room_mode")
     @Enumerated(EnumType.STRING)
@@ -61,5 +61,9 @@ public class MeetingRoom {
     @Column(name="meeting_room_status")
     @Enumerated(EnumType.STRING)
     private RoomStatus status;
+
+    public void updateMeetingRoomStatus(RoomStatus roomStatus){
+        this.status = roomStatus;
+    }
 
 }
