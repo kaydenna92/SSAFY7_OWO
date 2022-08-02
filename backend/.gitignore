@@ -33,5 +33,12 @@ out/
 /nbdist/
 /.nb-gradle/
 
+
 ### VS Code ###
 .vscode/
+
+application-oauth.properties
+application.properties
+keystore.p12
+
+
