@@ -55,7 +55,7 @@ public class Member implements UserDetails {
     @Column(name = "member_point")
     private int point;
 
-    @Column(name = "member_secret")
+    @Column(name="meeting_room_secret")
     private boolean secret;
 
     @Column(name = "member_exp")
