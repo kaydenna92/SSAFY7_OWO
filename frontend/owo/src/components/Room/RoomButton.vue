@@ -1,68 +1,53 @@
 <template>
+  <div>
     <div class="d-flex justify-content-center">
-        <div class="d-flex justify-content-start align-items-center">
-            <button class="btn btn-outline-secondary m-2 " style="width:145px;"
-            @click="mic_off" v-if="mic">
-                <img class="menu_icon" src="@/assets/icon/mic_off.png" alt="mic_on">
-                음소거 해제
-            </button>
-            <button class="btn btn-outline-secondary m-2 " style="width:145px;"
-            @click="mic_on" v-if="!mic">
-                <img class="menu_icon" src="@/assets/icon/mic_on.png" alt="mic_off">
-                음소거
-            </button>
-            <button class="btn btn-outline-secondary m-2" style="width:145px;"
-            @click="video_off" v-if="video">
-                <img class="menu_icon" src="@/assets/icon/video_off.png" alt="video_on">
-                비디오 시작
-            </button>
-            <button class="btn btn-outline-secondary m-2" style="width:145px;"
-            @click="video_on" v-if="!video">
-                <img class="menu_icon" src="@/assets/icon/video_on.png" alt="video_off">
-                비디오 중지
-            </button>
-            <div class="m-2">
-            <b-dropdown split @click="take_photo" variant="outline-secondary">
-                <template #button-content >
-                    <img class="menu_icon" src="@/assets/icon/photo.png" alt="photo">
-                    사진촬영
-                </template>
-                <b-dropdown-item :value="timer" @click="set_timer_3">3초</b-dropdown-item>
-                <b-dropdown-item :value="timer" @click="set_timer_5">5초</b-dropdown-item>
-                <b-dropdown-item :value="timer" @click="set_timer_10">10초</b-dropdown-item>
-            </b-dropdown>
-            </div>
-            <div>
-            <Emoji v-bind:style="{position: 'fixed', top: ey-480 +'px', left: ex + 'px'}"
-            v-if="Emoji_ONOFF"/>
+      <div class="d-flex justify-content-start align-items-center">
+        <button class="btn btn-outline-secondary m-2 " style="width:145px;"
+        @click="mic_off" v-if="mic">
+          <img class="menu_icon" src="@/assets/icon/mic_off.png" alt="mic_on">음소거 해제
+        </button>
+        <button class="btn btn-outline-secondary m-2 " style="width:145px;"
+        @click="mic_on" v-if="!mic">
+          <img class="menu_icon" src="@/assets/icon/mic_on.png" alt="mic_off">음소거
+        </button>
+        <button class="btn btn-outline-secondary m-2" style="width:145px;"
+        @click="video_off" v-if="video">
+          <img class="menu_icon" src="@/assets/icon/video_off.png" alt="video_on">비디오 시작
+        </button>
+        <button class="btn btn-outline-secondary m-2" style="width:145px;"
+          @click="video_on" v-if="!video">
+          <img class="menu_icon" src="@/assets/icon/video_on.png" alt="video_off">비디오 중지
+        </button>
+        <div class="m-2">
+          <b-dropdown split @click="take_photo" variant="outline-secondary">
+            <template #button-content >
+              <img class="menu_icon" src="@/assets/icon/photo.png" alt="photo">&ensp;사진촬영
+            </template>
+            <b-dropdown-item :value="timer" @click="set_timer_3">3초</b-dropdown-item>
+            <b-dropdown-item :value="timer" @click="set_timer_5">5초</b-dropdown-item>
+            <b-dropdown-item :value="timer" @click="set_timer_10">10초</b-dropdown-item>
+          </b-dropdown>
+        </div>
+        <div>
+          <Emoji v-bind:style="{position: 'fixed', top: ey-480 +'px', left: ex + 'px'}"
+          v-if="Emoji_ONOFF"/>
             <button id="emoji_btn" @click="open_emoji" class="btn btn-outline-secondary m-2">이모티콘
-                <img class="menu_icon" src="@/assets/icon/emoji.png" alt="emoji">
+              <img class="menu_icon" src="@/assets/icon/emoji.png" alt="emoji">
             </button>
-            </div>
-            <RoomSetting></RoomSetting>
-            <AfterExerciseModal/>
         </div>
-        <div class="d-flex justify-content-center align-items-center text-white"
-        v-if="is_take_photo" id="take_photo_background">
-        </div>
-        <div class="d-flex justify-content-center align-items-center text-white"
-        v-if="is_take_photo" id="take_photo_WebRTC">
-        </div>
-        <div class="d-flex justify-content-center align-items-center text-white mt-4"
-        v-if="is_take_photo" id="take_photo_timer">
-        {{ timer }}
-        </div>
-        <!-- <div v-for="(picture, index) in pictures" :key=index> {{ picture }} </div> -->
+        <RoomSetting></RoomSetting>
+        <AfterExerciseModal/>
+      </div>
+      <div class="d-flex justify-content-center align-items-center text-white"
+      v-if="is_take_photo" id="take_photo_background"></div>
+      <div class="d-flex justify-content-center align-items-center text-white"
+      v-if="is_take_photo" id="take_photo_WebRTC">안녕하세요?</div>
+      <div class="d-flex justify-content-center align-items-center text-white mt-4"
+      v-if="is_take_photo" id="take_photo_timer">{{ timer }}</div>
     </div>
-    <!-- <div>
-      ex: {{ ex }}
-    </div>
-    <div>
-      ey: {{ ey }}
-    </div>
-    <div>
-      이모지 포지션 잡는 중
-    </div> -->
+    <!-- eslint-disable-next-line -->
+    <div v-for="(picture, index) in pictures" :key=index><img src="data:image/jpeg;base64,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" alt=""></div>
+  </div>
 </template>
 <script>
 import html2canvas from 'html2canvas';
@@ -76,16 +61,16 @@ let emojiY;
 window.onload = function () {
   emojiX = document.getElementById('emoji_btn').getClientRects()[0].x;
   emojiY = document.getElementById('emoji_btn').getClientRects()[0].bottom;
-  console.log(emojiX);
-  console.log(emojiY);
-  console.log('top :', document.getElementById('emoji_btn').getClientRects()[0].top);
-  console.log('bottom :', document.getElementById('emoji_btn').getClientRects()[0].bottom);
-  console.log('left :', document.getElementById('emoji_btn').getClientRects()[0].left);
-  console.log('right :', document.getElementById('emoji_btn').getClientRects()[0].right);
-  console.log('height :', document.getElementById('emoji_btn').getClientRects()[0].height);
-  console.log('width :', document.getElementById('emoji_btn').getClientRects()[0].width);
-  console.log('x :', document.getElementById('emoji_btn').getClientRects()[0].x);
-  console.log('y :', document.getElementById('emoji_btn').getClientRects()[0].y);
+  // console.log(emojiX);
+  // console.log(emojiY);
+  // console.log('top :', document.getElementById('emoji_btn').getClientRects()[0].top);
+  // console.log('bottom :', document.getElementById('emoji_btn').getClientRects()[0].bottom);
+  // console.log('left :', document.getElementById('emoji_btn').getClientRects()[0].left);
+  // console.log('right :', document.getElementById('emoji_btn').getClientRects()[0].right);
+  // console.log('height :', document.getElementById('emoji_btn').getClientRects()[0].height);
+  // console.log('width :', document.getElementById('emoji_btn').getClientRects()[0].width);
+  // console.log('x :', document.getElementById('emoji_btn').getClientRects()[0].x);
+  // console.log('y :', document.getElementById('emoji_btn').getClientRects()[0].y);
 };
 
 export default {
@@ -139,8 +124,9 @@ export default {
         if (this.timer === 0) {
           console.log('사진찍는 모션');
           html2canvas(document.querySelector('#take_photo_WebRTC')).then((canvas) => {
-            document.body.appendChild(canvas);
-            // afterexercisemodal에 이 값들을 보내야함, 또는 store에 얘들 사진을 하나씩 보내기
+            // document.body.appendChild(canvas);
+            console.log(canvas.toDataURL('image/jpeg'));
+            this.pictures.push(canvas.toDataURL('image/jpeg'));
           });
           clearInterval(this.take_photo_timer);
           this.is_take_photo = false;
