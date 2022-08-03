@@ -3,6 +3,9 @@ package com.sos.owo.service;
 import com.sos.owo.domain.Compete;
 import com.sos.owo.domain.Member;
 import com.sos.owo.domain.repository.CompeteRepository;
+import com.sos.owo.dto.MemberLoginResponseDto;
+import com.sos.owo.dto.MemberRequestLoginDto;
+import com.sos.owo.dto.MemberSaveRequestDto;
 import org.assertj.core.api.Assertions;
 import com.sos.owo.domain.repository.MemberRepository;
 import org.junit.jupiter.api.Test;
@@ -86,6 +89,55 @@ public class MemberServiceTest {
         //when
         List<Integer> check = memberService.findBestScore(member.getId());
         System.out.println(check);
+    }
+
+    @Test
+    public void 로그인() throws Exception {
+        // given
+        Member member = new Member();
+        member.setEmail("1234@naver.com");
+        member.setPw("1234");
+
+        memberService.join(member);
+
+        MemberRequestLoginDto requestLoginDto = new MemberRequestLoginDto();
+        requestLoginDto.setEmail("1234@naver.com");
+        requestLoginDto.setPassword("1234");
+
+
+        // when
+        MemberLoginResponseDto responseDto =
+                memberService.login(requestLoginDto.getEmail(), requestLoginDto.getPassword());
+
+        // then
+        Member findMember = memberRepository.findByEmail(responseDto.getEmail());
+        Assertions.assertThat(responseDto.getRefreshToken()).isEqualTo(findMember.getRefreshToken());
+
+    }
+
+    @Test
+    public void 로그아웃() throws Exception {
+        // given
+        Member member = new Member();
+        member.setEmail("1234@naver.com");
+        member.setPw("1234");
+
+        memberService.join(member);
+
+        MemberRequestLoginDto requestLoginDto = new MemberRequestLoginDto();
+        requestLoginDto.setEmail("1234@naver.com");
+        requestLoginDto.setPassword("1234");
+
+        MemberLoginResponseDto responseDto =
+                memberService.login(requestLoginDto.getEmail(), requestLoginDto.getPassword());
+
+        // when
+        memberService.logoutMember(responseDto.getRefreshToken());
+
+        // then
+        Member findMember = memberRepository.findByEmail(responseDto.getEmail());
+        Assertions.assertThat("invalidate").isEqualTo(findMember.getRefreshToken());
+
     }
 
 
