@@ -2,10 +2,7 @@ package com.sos.owo.controller;
 
 import com.sos.owo.domain.MeetingRoom;
 import com.sos.owo.domain.Mode;
-import com.sos.owo.dto.MeetingListRoomResponse;
-import com.sos.owo.dto.MeetingRoomMakeRequestDto;
-import com.sos.owo.dto.MeetingRoomResponseDto;
-import com.sos.owo.dto.Message;
+import com.sos.owo.dto.*;
 import com.sos.owo.service.MeetingRoomService;
 import io.openvidu.java.client.OpenVidu;
 import io.openvidu.java.client.OpenViduHttpException;
@@ -65,7 +62,10 @@ public class MeetingRoomController {
         int roomId = roomService.createRoom(requestDto);
         // 방 (세션) 관리를 map에 저장
         this.roomSession.put(roomId, 1);
+        message.setStatus(StatusEnum.OK);
         message.setMessage("운동방 생성 성공");
+//        MeetingRoomResponseDto responseDto = new MeetingRoomResponseDto();
+//        responseDto.setRoomId(roomId);
         message.setData(new MeetingRoomResponseDto(roomId));
         return new ResponseEntity<>(message, headers, HttpStatus.OK);
     }
@@ -73,7 +73,7 @@ public class MeetingRoomController {
     @GetMapping("/room/{mode}")
     @ApiImplicitParam(name = "mode",value = "방 모드(FREE, STREAMING, GAME)",paramType = "path")
     @ApiOperation(value="활성화된 모든 운동방 불러오는 API", notes = "특정 방모드(FREE/STREAMING/GAME)에 맞춰 활성화된 운동방의 정보를 모두 반환")
-    public ResponseEntity<?> makeMeetingRoom(@PathVariable Mode mode) throws OpenViduJavaClientException, OpenViduHttpException {
+    public ResponseEntity<?> getMeetingRoom(@PathVariable Mode mode) throws OpenViduJavaClientException, OpenViduHttpException {
         Message message = new Message();
         HttpHeaders headers= new HttpHeaders();
         headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));

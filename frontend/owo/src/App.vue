@@ -1,14 +1,14 @@
 <template>
   <div>
-    <NavBar/>
+    <NavBar />
     <div class="main-container">
-      <router-view/>
+      <router-view />
     </div>
   </div>
 </template>
 
 <script>
-import NavBar from './components/NavBar.vue';
+import NavBar from "./components/NavBar";
 
 export default {
   components: {
@@ -20,13 +20,13 @@ export default {
 <style>
 #app {
   text-align: center;
-   /* display: flex; */
-  font-family: 'NanumSquareRound', 'Noto Sans KR', sans-serif;
-  color:#2E2E2E;
+  /* display: flex; */
+  font-family: "NanumSquareRound", "Noto Sans KR", sans-serif;
+  color: #2e2e2e;
   background-color: #ffffff;
-  font-size : 14px;
+  font-size: 14px;
   height: 100%;
-  letter-spacing : -0.05em;
+  letter-spacing: -0.05em;
   padding-bottom: 100px;
 }
 * {
@@ -43,31 +43,35 @@ font-family: 'NanumSquareRoundExtraBold';
 */
 
 @font-face {
-    font-family: 'NanumSquareRound';
-    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_two@1.0/NanumSquareRound.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
+  font-family: "NanumSquareRound";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_two@1.0/NanumSquareRound.woff")
+    format("woff");
+  font-weight: normal;
+  font-style: normal;
 }
 
 /* 레페리포인트 WHITE OBLIQUE */
 @font-face {
-    font-family: 'LeferiPoint-WhiteObliqueA';
-    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2201-2@1.0/LeferiPoint-WhiteObliqueA.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
+  font-family: "LeferiPoint-WhiteObliqueA";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2201-2@1.0/LeferiPoint-WhiteObliqueA.woff")
+    format("woff");
+  font-weight: normal;
+  font-style: normal;
 }
 /* 레페리포인트 BLACK OBLIQUE */
 @font-face {
-    font-family: 'LeferiPoint-BlackObliqueA';
-    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2201-2@1.0/LeferiPoint-BlackObliqueA.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
+  font-family: "LeferiPoint-BlackObliqueA";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2201-2@1.0/LeferiPoint-BlackObliqueA.woff")
+    format("woff");
+  font-weight: normal;
+  font-style: normal;
 }
 
 /* 동화또박 */
 @font-face {
-  font-family: 'Fairytale_ddobak';
-  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/naverfont_03@1.0/Fairytale_ddobak.woff') format('woff');
+  font-family: "Fairytale_ddobak";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/naverfont_03@1.0/Fairytale_ddobak.woff")
+    format("woff");
   font-weight: normal;
   font-style: normal;
 }
