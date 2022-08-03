@@ -51,6 +51,6 @@ public class MeetingRoomService {
 
     @Transactional
     public void endRoom(int roomID){
-        meetingRoomRepository.startRoom(roomID);
+        meetingRoomRepository.endRoom(roomID);
     }
 }
