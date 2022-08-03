@@ -22,7 +22,7 @@ public class RecordRepository {
     }
 
     public void registRecord(RecordDto recordDto){
-        recordDto.setRecordCreateTime(LocalDateTime.now());
+        //recordDto.setRecordCreateTime(LocalDateTime.now());
         em.persist(recordDto);
     }
 

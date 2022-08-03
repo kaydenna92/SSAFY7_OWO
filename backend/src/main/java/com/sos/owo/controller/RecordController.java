@@ -20,10 +20,10 @@ import java.nio.charset.Charset;
 
 @RestController
 @RequiredArgsConstructor
+@CrossOrigin("*")
 public class RecordController {
 
     private final RecordImgService recordImgService;
-
     private final RecordService recordService;
 
     @ApiOperation(value = "운동 종료 후 기록 저장",notes = "운동 종료 후 기록한 정보를 저장한다.")
@@ -50,6 +50,5 @@ public class RecordController {
         }
 
     }
-
 
 }
