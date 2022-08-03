@@ -5,6 +5,20 @@
         <h3 class="m-0">팔굽혀펴기</h3>
         <Timer />
       </div>
+      <p class="text-center">
+        <button class="btn btn-lg btn-success" @click="makeRoom()">세션열기</button>
+      </p>
+      <p class="text-center">
+        <button class="btn btn-lg btn-success" @click="getRoomList(mode[0])">자유방 목록</button>
+      </p>
+      <p class="text-center">
+        <button class="btn btn-lg btn-success" @click="getRoomList(mode[1])">
+          스트리밍방 목록
+        </button>
+      </p>
+      <p class="text-center">
+        <button class="btn btn-lg btn-success" @click="getRoomList(mode[2])">게임방 목록</button>
+      </p>
       <div class="container d-flex align-items-start justify-content-between">
         <div class="row">
           <!-- <WebRTC v-if="true" class="col-lg-4 mb-5"></WebRTC>
@@ -26,10 +40,12 @@
                 </p>
                 <p>
                   <label>Session</label>
-                  <input v-model="mySessionId" class="form-control" type="text" required />
+                  <input v-model="sessionId" class="form-control" type="text" required />
                 </p>
                 <p class="text-center">
-                  <button class="btn btn-lg btn-success" @click="joinSession()">Join!</button>
+                  <button class="btn btn-lg btn-success" @click="joinSession(sessionId)">
+                    Join!
+                  </button>
                 </p>
               </div>
             </div>
@@ -73,12 +89,14 @@ import Timer from "@/components/SetTimer.vue";
 import WebRTC from "@/components/Room/WebRTC.vue";
 import RoomButton from "@/components/Room/RoomButton.vue";
 import AfterExerciseModal from "@/components/Room/AfterExerciseModal.vue";
-import { createNamespacedHelpers } from "vuex";
 import axios from "axios";
 import { OpenVidu } from "openvidu-browser";
 
 axios.defaults.headers.post["Content-Type"] = "application/json";
-const { mapState } = createNamespacedHelpers("openvidu");
+import { mapState, mapActions, mapMutations } from "vuex";
+const openvidu = "openvidu";
+const accounts = "accounts";
+const meetingroom = "meetingroom";
 export default {
   name: "CompetitionView",
   components: {
@@ -94,20 +112,68 @@ export default {
       mainStreamManager: undefined,
       publisher: undefined,
       subscribers: [],
-
-      mySessionId: "SessionA",
-      myUserName: `Participant${Math.floor(Math.random() * 100)}`,
+      mode: ["FREE", "STREAMING", "GAME"],
+      // mySessionId: "SessionA",
+      // myUserName: `Participant${Math.floor(Math.random() * 100)}`,
+      myUserName: "",
+      sessionId: 0,
     };
+  },
+  watch: {
+    mySessionId: function () {},
   },
   setup() {},
   created() {},
   moundted() {},
   unmounted() {},
   computed: {
-    ...mapState(["OPENVIDU_SERVER_URL", "OPENVIDU_SERVER_SECRET"]),
+    ...mapState(accounts, ["accessToken", "userInfo"]),
+    ...mapState(openvidu, ["OPENVIDU_SERVER_URL", "OPENVIDU_SERVER_SECRET"]),
+    ...mapState(meetingroom, ["mySessionId", "meetingRoomList"]),
+    // ...openviduHelper.mapState(["OPENVIDU_SERVER_URL", "OPENVIDU_SERVER_SECRET"]),
+    // ...meetingRoomHelper.mapState(["sessionID", "meetingRoomList"]),
   },
   methods: {
-    joinSession() {
+    ...mapMutations(meetingroom, ["SET_SESSION_ID"]),
+    ...mapActions(meetingroom, [
+      "makeSession",
+      "getMeetingRoomList",
+      "enterMeetingRoom",
+      "leaveMeetingRoom",
+    ]),
+    async makeRoom() {
+      const requestDto = {
+        accesstoken: this.accessToken,
+        memberId: "2",
+        secret: false,
+        password: "",
+        mode: "GAME",
+        roomName: "방1",
+        type: "GAME",
+        link: "",
+      };
+      await this.makeSession(requestDto);
+      this.joinSession(this.mySessionId);
+    },
+    getRoomList(m) {
+      const requestDto = {
+        accesstoken: this.accessToken,
+        mode: m,
+      };
+      this.getMeetingRoomList(requestDto);
+    },
+    getToken(mySessionId) {
+      return this.createSession(mySessionId).then((sessionId) => this.createToken(sessionId));
+    },
+    async joinSession(sessionNum) {
+      this.SET_SESSION_ID(sessionNum);
+      console.log("sessionID = " + sessionNum);
+      const requestDto = {
+        accesstoken: this.accessToken,
+        roomId: sessionNum,
+      };
+      console.log(sessionNum);
+      await this.enterMeetingRoom(requestDto);
       // --- Get an OpenVidu object ---
       this.OV = new OpenVidu();
 
@@ -141,7 +207,7 @@ export default {
       // 'token' parameter should be retrieved and returned by your own backend
       this.getToken(this.mySessionId).then((token) => {
         this.session
-          .connect(token, { clientData: this.myUserName })
+          .connect(token, { clientData: this.userInfo.nick })
           .then(() => {
             // --- Get your own camera stream with the desired properties ---
 
@@ -174,10 +240,14 @@ export default {
       window.addEventListener("beforeunload", this.leaveSession);
     },
 
-    leaveSession() {
+    async leaveSession() {
       // --- Leave the session by calling 'disconnect' method over the Session object ---
       if (this.session) this.session.disconnect();
-
+      const requestDto = {
+        accesstoken: this.accessToken,
+        roomId: this.mySessionId,
+      };
+      await this.leaveMeetingRoom(requestDto);
       this.session = undefined;
       this.mainStreamManager = undefined;
       this.publisher = undefined;
