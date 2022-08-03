@@ -1,5 +1,6 @@
 <template>
   <div class="container-box p-5">
+    <button @click="getPhysicalInfo">bmi불러오기</button>
     <h3>{{ user.nick }}님의 정보 수정</h3><br>
     <div class="title-box row">
       <div class="profile d-flex justify-content-center">
@@ -24,7 +25,7 @@
               <th class="th-2">
               <label for="slogan">
                 <input class="form-input text-center slogan-input"
-                  type="text" name="slogan" v-model=user.slogan>
+                  type="text" name="slogan" v-model.trim=user.slogan>
               </label>
             </th>
           </tr>
@@ -33,7 +34,8 @@
             <th class="th-1">닉네임</th>
               <th class="th-2">
               <label for="nick">
-                <input class="form-input text-center" type="text" name="nick" v-model=user.nick>
+                <input class="form-input text-center"
+                  type="text" name="nick" v-model.trim=user.nick>
               </label>
             </th>
           </tr>
@@ -42,7 +44,8 @@
             <th class="th-1">나이</th>
             <th class="th-2">
               <label for="age">
-                <input class="form-input text-center" type="number" name="age" v-model=user.age>
+                <input class="form-input text-center"
+                  type="number" name="age" v-model.number=user.age>
                 <span class="th-2-text"> 세</span>
               </label>
             </th>
@@ -54,8 +57,8 @@
               <label for="gender">
                 <select class="form-select form-select-sm form-input text-center"
                   name="radio" id="gender" v-model=user.gender>
-                  <option value="female">여자</option>
-                  <option value="male">남자</option>
+                  <option value="FEMALE">여자</option>
+                  <option value="MALE">남자</option>
                 </select>
               </label>
             </th>
@@ -66,7 +69,7 @@
             <th class="th-2">
               <label for="height">
                 <input class="form-input text-center text-center"
-                  type="number" name="height" v-model=user.height> cm
+                  type="number" name="height" v-model.number=user.height> cm
               </label>
             </th>
           </tr>
@@ -76,7 +79,7 @@
             <th class="th-2">
               <label for="secret">
                 <input class="form-input text-center"
-                  type="number" name="weight" v-model=user.weight> kg
+                  type="number" name="weight" v-model.number=user.weight> kg
               </label>
             </th>
           </tr>
@@ -165,11 +168,10 @@
               </select></label>
             </th>
           </tr>
-
         </tbody>
       </table>
       <div class="row buttons">
-        <button class="col btn btn-primary m-3" >변경</button>
+        <button class="col btn btn-primary m-3" @click='updateUserInfo' >변경</button>
         <button class="col btn btn-secondary m-3" >취소</button>
       </div>
     </form>
@@ -177,6 +179,10 @@
   </div>
 </template>
 <script>
+import { createNamespacedHelpers } from 'vuex';
+
+const { mapActions, mapGetters } = createNamespacedHelpers('accounts');
+
 export default {
   name: 'MyPageUpdateView',
   components: {},
@@ -186,15 +192,16 @@ export default {
       inputGoalHour: 0,
       user: {
         slogan: '8월 바프까지 화이팅!',
-        nick: '한나',
-        age: 27,
-        gender: 'female',
-        height: 156,
-        weight: 44,
-        activity: 4,
-        secret: 2,
+        nick: '',
+        age: '',
+        gender: '',
+        height: '',
+        weight: '',
+        activity: '',
+        secret: '',
         goals: [],
         profileImg: 'https://picsum.photos/150',
+        id: '',
       },
       selected: '',
       options: [
@@ -207,10 +214,28 @@ export default {
     };
   },
   setup() {},
-  created() {},
-  mounted() {},
+  computed: {
+    ...mapGetters(['isLogin', 'userInfo', 'physicalInfo']),
+  },
+  created() {
+    console.log(this.userInfo);
+    console.log(this.physicalInfo);
+    this.user.age = this.userInfo.age;
+    this.user.gender = this.userInfo.gender;
+    this.user.height = this.userInfo.height;
+    this.user.weight = this.userInfo.weight;
+    this.user.activity = this.userInfo.activityLevel;
+    this.user.id = this.userInfo.id;
+    this.user.nick = this.userInfo.nick;
+  },
+  mounted() {
+  },
   unmounted() {},
   methods: {
+    ...mapActions({
+      setPhysicalInfo: 'getPhysicalInfo',
+      updateUserInfo: 'updateUserInfo',
+    }),
     addGoal(event) {
       if (this.user.goals.length >= 3) {
         /* eslint-disable */
@@ -249,6 +274,9 @@ export default {
       this.createImage(files[0]);
     }
   },
+  updateUserInfo() {
+    console.log(this.user)
+  }
 };
 </script>
 

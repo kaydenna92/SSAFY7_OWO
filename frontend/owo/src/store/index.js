@@ -5,6 +5,7 @@ import createPersistedState from 'vuex-persistedstate';
 export default createStore({
   modules: {
     accounts,
+    // member
   },
   plugins: [createPersistedState({
     paths: ['accounts'],

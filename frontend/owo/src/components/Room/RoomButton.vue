@@ -2,23 +2,23 @@
     <div class="d-flex justify-content-center">
         <div class="d-flex justify-content-start align-items-center">
             <button class="btn btn-outline-secondary m-2 " style="width:145px;"
-            @click="mic_on_off" v-if="mic">
-                <img class="menu_icon" src="@/assets/icon/mic_on.png" alt="mic_on">
+            @click="mic_off" v-if="mic">
+                <img class="menu_icon" src="@/assets/icon/mic_off.png" alt="mic_on">
                 음소거 해제
             </button>
             <button class="btn btn-outline-secondary m-2 " style="width:145px;"
-            @click="mic_on_off" v-if="!mic">
-                <img class="menu_icon" src="@/assets/icon/mic_off.png" alt="mic_off">
+            @click="mic_on" v-if="!mic">
+                <img class="menu_icon" src="@/assets/icon/mic_on.png" alt="mic_off">
                 음소거
             </button>
             <button class="btn btn-outline-secondary m-2" style="width:145px;"
-            @click="video_on_off" v-if="video">
-                <img class="menu_icon" src="@/assets/icon/video_on.png" alt="video_on">
+            @click="video_off" v-if="video">
+                <img class="menu_icon" src="@/assets/icon/video_off.png" alt="video_on">
                 비디오 시작
             </button>
             <button class="btn btn-outline-secondary m-2" style="width:145px;"
-            @click="video_on_off" v-if="!video">
-                <img class="menu_icon" src="@/assets/icon/video_off.png" alt="video_off">
+            @click="video_on" v-if="!video">
+                <img class="menu_icon" src="@/assets/icon/video_on.png" alt="video_off">
                 비디오 중지
             </button>
             <div class="m-2">
@@ -39,10 +39,7 @@
                 <img class="menu_icon" src="@/assets/icon/emoji.png" alt="emoji">
             </button>
             </div>
-            <button v-if="isMaster" class="btn btn-outline-secondary m-2">
-                <img class="menu_icon" src="@/assets/icon/room_setting.png" alt="mic_off">
-                설정
-            </button>
+            <RoomSetting></RoomSetting>
             <AfterExerciseModal/>
         </div>
         <div class="d-flex justify-content-center align-items-center text-white"
@@ -55,6 +52,7 @@
         v-if="is_take_photo" id="take_photo_timer">
         {{ timer }}
         </div>
+        <!-- <div v-for="(picture, index) in pictures" :key=index> {{ picture }} </div> -->
     </div>
     <!-- <div>
       ex: {{ ex }}
@@ -67,8 +65,10 @@
     </div> -->
 </template>
 <script>
+import html2canvas from 'html2canvas';
 import AfterExerciseModal from './AfterExerciseModal.vue';
 import Emoji from '../MyEmoji.vue';
+import RoomSetting from './RoomSetting.vue';
 
 let emojiX;
 let emojiY;
@@ -76,29 +76,30 @@ let emojiY;
 window.onload = function () {
   emojiX = document.getElementById('emoji_btn').getClientRects()[0].x;
   emojiY = document.getElementById('emoji_btn').getClientRects()[0].bottom;
-  console.log(emojiX);
-  console.log(emojiY);
-  console.log('top :', document.getElementById('emoji_btn').getClientRects()[0].top);
-  console.log('bottom :', document.getElementById('emoji_btn').getClientRects()[0].bottom);
-  console.log('left :', document.getElementById('emoji_btn').getClientRects()[0].left);
-  console.log('right :', document.getElementById('emoji_btn').getClientRects()[0].right);
-  console.log('height :', document.getElementById('emoji_btn').getClientRects()[0].height);
-  console.log('width :', document.getElementById('emoji_btn').getClientRects()[0].width);
-  console.log('x :', document.getElementById('emoji_btn').getClientRects()[0].x);
-  console.log('y :', document.getElementById('emoji_btn').getClientRects()[0].y);
+  // console.log(emojiX);
+  // console.log(emojiY);
+  // console.log('top :', document.getElementById('emoji_btn').getClientRects()[0].top);
+  // console.log('bottom :', document.getElementById('emoji_btn').getClientRects()[0].bottom);
+  // console.log('left :', document.getElementById('emoji_btn').getClientRects()[0].left);
+  // console.log('right :', document.getElementById('emoji_btn').getClientRects()[0].right);
+  // console.log('height :', document.getElementById('emoji_btn').getClientRects()[0].height);
+  // console.log('width :', document.getElementById('emoji_btn').getClientRects()[0].width);
+  // console.log('x :', document.getElementById('emoji_btn').getClientRects()[0].x);
+  // console.log('y :', document.getElementById('emoji_btn').getClientRects()[0].y);
 };
 
 export default {
   components: {
     Emoji,
     AfterExerciseModal,
+    RoomSetting,
   },
   data() {
     return {
       // input: '',
       // search: '',
       Emoji_ONOFF: null,
-      isMaster: false,
+      isMaster: true,
       video: true,
       mic: true,
       timer: 3,
@@ -107,6 +108,7 @@ export default {
       ey: null,
       ex: null,
       is_take_photo: false,
+      pictures: [],
       // emoji_h: document.getElementById('emoji_btn').top,
     };
   },
@@ -116,14 +118,17 @@ export default {
   },
   unmounted() {},
   methods: {
-    insert(emoji) {
-      this.input += emoji;
+    mic_on() {
+      this.mic = true;
     },
-    mic_on_off() {
-      this.mic = !this.mic;
+    mic_off() {
+      this.mic = false;
     },
-    video_on_off() {
-      this.video = !this.video;
+    video_on() {
+      this.video = true;
+    },
+    video_off() {
+      this.video = false;
     },
     take_photo() {
       this.temp_timer = this.timer;
@@ -133,6 +138,10 @@ export default {
         console.log(this.timer);
         if (this.timer === 0) {
           console.log('사진찍는 모션');
+          html2canvas(document.querySelector('#take_photo_WebRTC')).then((canvas) => {
+            document.body.appendChild(canvas);
+            // afterexercisemodal에 이 값들을 보내야함, 또는 store에 얘들 사진을 하나씩 보내기
+          });
           clearInterval(this.take_photo_timer);
           this.is_take_photo = false;
           this.timer = this.temp_timer;
@@ -155,9 +164,6 @@ export default {
       this.Emoji_ONOFF = !this.Emoji_ONOFF;
       this.ex = emojiX;
       this.ey = emojiY;
-    },
-    onSelectEmoji(emoji) {
-      console.log(emoji);
     },
   },
 };

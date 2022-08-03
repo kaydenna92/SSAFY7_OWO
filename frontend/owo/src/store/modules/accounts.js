@@ -15,6 +15,13 @@ export const accounts = {
       activityNum: '',
       activityHour: '',
       activityLevel: '',
+      id: '',
+      email: '',
+    },
+    physicalInfo: {
+      bmi: null,
+      bmr: null,
+      caloriePerDay: null,
     },
   }),
   mutations: {
@@ -25,6 +32,8 @@ export const accounts = {
       state.refreshToken = token;
     },
     SET_USER_INFO: (state, payload) => {
+      state.userInfo.id = payload.id;
+      state.userInfo.email = payload.email;
       state.userInfo.nick = payload.nick;
       state.userInfo.gender = payload.gender;
       state.userInfo.age = payload.age;
@@ -34,6 +43,17 @@ export const accounts = {
       state.userInfo.activityHour = payload.activityHour;
       state.userInfo.activityLevel = payload.activityLevel;
       console.log(state.userInfo);
+      if (state.userInfo.nick === '' || !state.userInfo.nick) {
+        const { email } = state.userInfo;
+        const atSignIndex = email.indexOf('@');
+        const emailNick = email.substr(0, atSignIndex);
+        state.userInfo.nick = emailNick;
+      }
+    },
+    SET_PHYSICAL_INFO: (state, payload) => {
+      state.physicalInfo.bmi = payload.bmi;
+      state.physicalInfo.bmr = payload.bmr;
+      state.physicalInfo.caloriePerDay = payload.caloriePerDay;
     },
   },
   actions: {
@@ -70,6 +90,9 @@ export const accounts = {
           console.log(err);
         });
     },
+    setPhysicalInfo({ commit }, payload) {
+      commit('SET_PHYSICAL_INFO', payload);
+    },
     logout({ state, dispatch }) {
       // eslint-disable-next-line
       axios({
@@ -90,9 +113,38 @@ export const accounts = {
           console.log(err);
         });
     },
+    physicalInfo({ dispatch, state }, physicalInfo) {
+      axios.get(`https://i7c202.p.ssafy.io:8282/api/user/bmi/${state.userInfo.id}`, physicalInfo)
+        .then((res) => {
+          console.log(res);
+          dispatch('setPhysicalInfo', res.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    updateUserInfo({ state, dispatch }, payload) {
+      axios({
+        url: 'https://i7c202.p.ssafy.io:8282/api/user',
+        method: 'put',
+        headers: {
+          'X-AUTH-TOKEN': state.accessToken,
+          'REFRESH-TOKEN': state.refreshToken,
+        },
+        data: payload,
+      })
+        .then((res) => {
+          console.log(res.data);
+          dispatch('setUserInfo', res.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
   },
   getters: {
     isLogin: (state) => !!state.accessToken,
     userInfo: (state) => state.userInfo,
+    physicalInfo: (state) => state.physicalInfo,
   },
 };

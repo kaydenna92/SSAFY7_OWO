@@ -6,11 +6,9 @@ import MyPageAnalysView from '../views/MyPage/MyPageAnalysView.vue';
 import MyPageUpdateView from '../views/MyPage/MyPageUpdateView.vue';
 import MyPageScheduleView from '../views/MyPage/MyPageScheduleView.vue';
 import MyPageSlideView from '../views/MyPage/MyPageSlideView.vue';
-import CompetitionView from '../views/Room/ACompetition.vue';
-import FriendChatView from '../views/Room/FriendChatView.vue';
-import FriendNoChatView from '../views/Room/FriendNoChatView.vue';
-import YoutubeChatView from '../views/Room/YoutubeChatView.vue';
-import YoutubeNoChatView from '../views/Room/YoutubeNoChatView.vue';
+import CompetitionView from '../views/Room/CompetitionView.vue';
+import FriendView from '../views/Room/FriendView.vue';
+import YoutubeView from '../views/Room/YoutubeView.vue';
 import login from '../views/accounts/loginView.vue';
 import register from '../components/MainPage/joinModal.vue';
 
@@ -30,7 +28,6 @@ const routes = [
     name: 'join',
     component: register,
   },
-
   {
     path: '/mypage',
     name: 'MyPage',
@@ -64,29 +61,19 @@ const routes = [
     component: MyPageSlideView,
   },
   {
-    path: '/competition',
+    path: '/room/competition',
     name: 'competition',
     component: CompetitionView,
   },
   {
-    path: '/friendchat',
-    name: 'friendChat',
-    component: FriendChatView,
+    path: '/room/friend',
+    name: 'friend',
+    component: FriendView,
   },
   {
-    path: '/friendnochat',
-    name: 'friendNoChat',
-    component: FriendNoChatView,
-  },
-  {
-    path: '/youtubechat',
-    name: 'YoutubeChat',
-    component: YoutubeChatView,
-  },
-  {
-    path: '/youtubenochat',
-    name: 'YoutubeNoChat',
-    component: YoutubeNoChatView,
+    path: '/room/youtube',
+    name: 'Youtube',
+    component: YoutubeView,
   },
 ];
 
