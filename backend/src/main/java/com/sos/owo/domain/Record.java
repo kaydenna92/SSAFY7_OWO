@@ -45,4 +45,8 @@ public class Record {
 
     @Column(name="record_secret")
     private int record_secret;
+
+    public void updateRecordImg(RecordImg recordImg){
+        this.recordImg = recordImg;
+    }
 }
