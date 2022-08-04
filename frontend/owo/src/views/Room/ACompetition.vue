@@ -1,5 +1,5 @@
 <template>
-  <div class="container-wrap d-flex justify-content-center">
+  <div class="d-flex justify-content-center">
     <div>
       <div class="d-flex justify-content-between align-items-center" style="height: 80px">
         <h3 class="m-0">팔굽혀펴기</h3>
@@ -19,70 +19,63 @@
       <p class="text-center">
         <button class="btn btn-lg btn-success" @click="getRoomList(mode[2])">게임방 목록</button>
       </p>
-      <div class="container d-flex align-items-start justify-content-between">
-        <div class="row">
-          <!-- <WebRTC v-if="true" class="col-lg-4 mb-5"></WebRTC>
-          <WebRTC v-if="true" class="col-4 mb-5"></WebRTC>
-          <WebRTC v-if="true" class="col-4 mb-5"></WebRTC>
-          <WebRTC v-if="true" class="col-4 mb-5"></WebRTC>
-          <WebRTC v-if="true" class="col-4 mb-5"></WebRTC>
-          <WebRTC v-if="true" class="col-4 mb-5"></WebRTC> -->
-          <div id="join" v-if="!session">
-            <div id="img-div">
-              <img src="resources/images/openvidu_grey_bg_transp_cropped.png" />
-            </div>
-            <div id="join-dialog" class="jumbotron vertical-center">
-              <h1>Join a video session</h1>
-              <div class="form-group">
-                <p>
-                  <label>Participant</label>
-                  <input v-model="myUserName" class="form-control" type="text" required />
-                </p>
-                <p>
-                  <label>Session</label>
-                  <input v-model="sessionId" class="form-control" type="text" required />
-                </p>
-                <p class="text-center">
-                  <button class="btn btn-lg btn-success" @click="joinSession(sessionId)">
-                    Join!
-                  </button>
-                </p>
-              </div>
-            </div>
+      <div id="join" v-if="!session">
+        <div id="img-div">
+          <img src="resources/images/openvidu_grey_bg_transp_cropped.png" />
+        </div>
+        <div id="join-dialog" class="jumbotron vertical-center">
+          <h1>Join a video session</h1>
+          <div class="form-group">
+            <p>
+              <label>Participant</label>
+              <input v-model="myUserName" class="form-control" type="text" required />
+            </p>
+            <p>
+              <label>Session</label>
+              <input v-model="sessionId" class="form-control" type="text" required />
+            </p>
+            <p class="text-center">
+              <button class="btn btn-lg btn-success" @click="joinSession(sessionId)">
+                Join!
+              </button>
+            </p>
           </div>
-          <div id="session" v-if="session">
-            <div id="session-header">
-              <h1 id="session-title">{{ mySessionId }}</h1>
-              <input
-                class="btn btn-large btn-danger"
-                type="button"
-                id="buttonLeaveSession"
-                @click="leaveSession"
-                value="Leave session"
-              />
-            </div>
-            <div id="main-video" class="col-md-6">
-              <WebRTC :stream-manager="mainStreamManager" />
-            </div>
-            <div id="video-container" class="col-md-6">
-              <!-- <WebRTC
-                :stream-manager="publisher"
-                @click="updateMainVideoStreamManager(publisher)"
-              /> -->
-              <WebRTC
-                v-for="sub in subscribers"
-                :key="sub.stream.connection.connectionId"
-                :stream-manager="sub"
-                @click="updateMainVideoStreamManager(sub)"
-              />
-            </div>
-          </div>
-          <RoomButton></RoomButton>
         </div>
       </div>
+      <div id="session" v-if="session">
+        <div id="session-header">
+          <h1 id="session-title">{{ mySessionId }}</h1>
+          <input
+            class="btn btn-large btn-danger"
+            type="button"
+            id="buttonLeaveSession"
+            @click="leaveSession"
+            value="Leave session"
+          />
+        </div>
+        <div class="d-flex align-items-start justify-content-between">
+          <div class="row">
+          <!-- <div id="main-video"></div> -->
+            <!-- <div> -->
+            <WebRTC :stream-manager="mainStreamManager"/>
+            <!-- </div> -->
+          <!-- </div> -->
+          <!-- <div id="video-container" class="row"> -->
+            <!-- <WebRTC
+              :stream-manager="publisher"
+              @click="updateMainVideoStreamManager(publisher)"
+            /> -->
+            <WebRTC
+            v-for="sub in subscribers"
+            :key="sub.stream.connection.connectionId"
+            :stream-manager="sub"
+            @click="updateMainVideoStreamManager(sub)"/>
+            </div>
+          </div>
+        </div>
+        <RoomButton></RoomButton>
+      </div>
     </div>
-  </div>
-  <AfterExerciseModal></AfterExerciseModal>
 </template>
 <script>
 import Timer from "@/components/SetTimer.vue";
@@ -116,7 +109,7 @@ export default {
       // mySessionId: "SessionA",
       // myUserName: `Participant${Math.floor(Math.random() * 100)}`,
       myUserName: "",
-      sessionId: 0,
+      sessionId: 'SessionA',
     };
   },
   setup() {},
