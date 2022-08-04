@@ -93,7 +93,7 @@ import axios from "axios";
 import { OpenVidu } from "openvidu-browser";
 
 axios.defaults.headers.post["Content-Type"] = "application/json";
-import { mapState, mapActions, mapMutations } from "vuex";
+import { mapState, mapActions, mapMutations, mapGetters } from "vuex";
 const openvidu = "openvidu";
 const accounts = "accounts";
 const meetingroom = "meetingroom";
@@ -119,13 +119,14 @@ export default {
       sessionId: 0,
     };
   },
-  watch: {
-    mySessionId: function () {},
-  },
   setup() {},
   created() {},
   moundted() {},
   unmounted() {},
+  watch: {
+    mySessionId: function () {},
+  },
+
   computed: {
     ...mapState(accounts, ["accessToken", "userInfo"]),
     ...mapState(openvidu, ["OPENVIDU_SERVER_URL", "OPENVIDU_SERVER_SECRET"]),
@@ -153,6 +154,8 @@ export default {
         link: "",
       };
       await this.makeSession(requestDto);
+      console.log("=========================");
+      console.log(this.mySessionId);
       this.joinSession(this.mySessionId);
     },
     getRoomList(m) {
@@ -165,15 +168,15 @@ export default {
     getToken(mySessionId) {
       return this.createSession(mySessionId).then((sessionId) => this.createToken(sessionId));
     },
-    async joinSession(sessionNum) {
+    joinSession(sessionNum) {
       this.SET_SESSION_ID(sessionNum);
       console.log("sessionID = " + sessionNum);
       const requestDto = {
         accesstoken: this.accessToken,
-        roomId: sessionNum,
+        roomId: String(sessionNum),
       };
       console.log(sessionNum);
-      await this.enterMeetingRoom(requestDto);
+      this.enterMeetingRoom(requestDto);
       // --- Get an OpenVidu object ---
       this.OV = new OpenVidu();
 

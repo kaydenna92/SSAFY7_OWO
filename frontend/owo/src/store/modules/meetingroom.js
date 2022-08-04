@@ -9,17 +9,17 @@ export const meetingroom = {
   },
   mutations: {
     SET_SESSION_ID: (state, mySessionId) => {
-      state.mySessionId = mySessionId;
+      state.mySessionId = String(mySessionId);
     },
     SET_MEETING_ROOM_LIST: (state, list) => {
       state.meetingRoomList = list;
     },
   },
   actions: {
-    makeSession({ commit }, requestDto) {
+    async makeSession({ commit, state }, requestDto) {
       console.log(requestDto);
 
-      axios({
+      await axios({
         url: "http://localhost:9000/api/room",
         method: "post",
         data: {
@@ -39,6 +39,7 @@ export const meetingroom = {
           console.log(res.data);
           const roomId = res.data.data.roomId;
           commit("SET_SESSION_ID", roomId);
+          console.log("test = " + state.mySessionId);
           router.push("/competition");
         })
         .catch((err) => {
@@ -96,8 +97,7 @@ export const meetingroom = {
         });
     },
   },
-  //   getters: {
-  //     isLogin: (state) => state.accessToken,
-  //     userInfo: (state) => state.userInfo,
-  //   },
+  // getters: {
+  //   sessionId: (state) => state.mySessionId,
+  // },
 };
