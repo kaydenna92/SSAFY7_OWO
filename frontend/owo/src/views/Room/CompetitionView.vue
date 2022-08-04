@@ -75,6 +75,11 @@
             </div>
           </div>
         </div>
+        <p class="text-center">
+              <button class="btn btn-lg btn-success" @click="start()">
+                게임시작
+              </button>
+            </p>
         <RoomButton></RoomButton>
         <div>
           <div>채팅</div>
@@ -135,12 +140,30 @@ export default {
   unmounted() {},
   watch: {
     mySessionId() {},
+    camera() {
+      if (this.publisher !== undefined) {
+        if (this.camera) {
+          this.publisher.publishVideo(true);
+        } else {
+          this.publisher.publishVideo(false);
+        }
+      }
+    },
+    mic() {
+      if (this.publisher !== undefined) {
+        if (this.mic) {
+          this.publisher.publishAudio(true);
+        } else {
+          this.publisher.publishAudio(false);
+        }
+      }
+    },
   },
 
   computed: {
     ...mapState(accounts, ['accessToken', 'userInfo']),
     ...mapState(openvidu, ['OPENVIDU_SERVER_URL', 'OPENVIDU_SERVER_SECRET']),
-    ...mapState(meetingroom, ['mySessionId', 'meetingRoomList']),
+    ...mapState(meetingroom, ['mySessionId', 'meetingRoomList', 'camera', 'mic']),
     // ...openviduHelper.mapState(["OPENVIDU_SERVER_URL", "OPENVIDU_SERVER_SECRET"]),
     // ...meetingRoomHelper.mapState(["sessionID", "meetingRoomList"]),
   },
@@ -151,6 +174,7 @@ export default {
       'getMeetingRoomList',
       'enterMeetingRoom',
       'leaveMeetingRoom',
+      'startMeetingRoom',
     ]),
     async makeRoom() {
       const requestDto = {
@@ -258,6 +282,12 @@ export default {
         // console.log(this.recvList[0].m);
       });
 
+      // Receiver of the message (usually before calling 'session.connect')
+      this.session.on('signal:start', (event) => {
+        console.log(event);
+        console.log('게임! start');
+      });
+
       window.addEventListener('beforeunload', this.leaveSession);
     },
 
@@ -271,6 +301,28 @@ export default {
         })
         .then(() => {
           console.log('Message successfully sent');
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    },
+
+    start() {
+      const requestDto = {
+        accesstoken: this.accessToken,
+        roomId: this.mySessionId,
+      };
+      console.log('========================');
+      console.log(requestDto);
+      this.startMeetingRoom(requestDto);
+      this.session
+        .signal({
+          data: 'stameetingRoomStartrt', // Any string (optional)
+          to: [], // Array of Connection objects (optional. Broadcast to everyone if empty)
+          type: 'start', // The type of message (optional)
+        })
+        .then(() => {
+          console.log('Message successfully sent(start)');
         })
         .catch((error) => {
           console.error(error);

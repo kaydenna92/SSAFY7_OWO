@@ -6,6 +6,8 @@ export const meetingroom = {
   state: {
     mySessionId: '12341234',
     meetingRoomList: [],
+    camera: true,
+    mic: true,
   },
   mutations: {
     SET_SESSION_ID: (state, mySessionId) => {
@@ -13,6 +15,14 @@ export const meetingroom = {
     },
     SET_MEETING_ROOM_LIST: (state, list) => {
       state.meetingRoomList = list;
+    },
+    SET_CAMERA: (state, s) => {
+      state.camera = s;
+      console.log(state.camera);
+    },
+    SET_MIC: (state, s) => {
+      state.mic = s;
+      console.log(state.mic);
     },
   },
   actions: {
@@ -34,13 +44,14 @@ export const meetingroom = {
         headers: {
           'X-AUTH-TOKEN': requestDto.accesstoken,
         },
+
       })
         .then((res) => {
           console.log(res.data);
           const { roomId } = res.data.data;
           commit('SET_SESSION_ID', roomId);
           console.log(`test = ${state.mySessionId}`);
-          router.push('/competition');
+          router.push('/room/competition');
         })
         .catch((err) => {
           console.log(err);
@@ -58,7 +69,7 @@ export const meetingroom = {
           console.log(res.data);
           const list = res.data.data;
           commit('SET_MEETING_ROOM_LIST', list);
-          router.push('/competition');
+          router.push('/room/competition');
         })
         .catch((err) => {
           console.log(err);
@@ -96,6 +107,23 @@ export const meetingroom = {
           console.log(err);
         });
     },
+    startMeetingRoom(requestDto) {
+      console.log(requestDto);
+      axios({
+        url: `http://localhost:9000/api/room/start/${requestDto.roomId}`,
+        method: 'put',
+        headers: {
+          'X-AUTH-TOKEN': requestDto.accesstoken,
+        },
+      })
+        .then((res) => {
+          console.log(res.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+
   },
   // getters: {
   //   sessionId: (state) => state.mySessionId,

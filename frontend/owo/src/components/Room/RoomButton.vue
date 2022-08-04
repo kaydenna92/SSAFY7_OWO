@@ -50,12 +50,14 @@
 </template>
 <script>
 import html2canvas from 'html2canvas';
+import { mapMutations } from 'vuex';
 import AfterExerciseModal from './AfterExerciseModal.vue';
 import Emoji from '../MyEmoji.vue';
 import RoomSetting from './RoomSetting.vue';
 
 let emojiX;
 let emojiY;
+const meetingroom = 'meetingroom';
 
 window.onload = function () {
   emojiX = document.getElementById('emoji_btn').getClientRects()[0].x;
@@ -100,19 +102,27 @@ export default {
   created() {},
   moundted() {
   },
+  computed: {
+
+  },
   unmounted() {},
   methods: {
+    ...mapMutations(meetingroom, ['SET_CAMERA', 'SET_MIC']),
     mic_on() {
       this.mic = true;
+      this.SET_MIC(false);
     },
     mic_off() {
       this.mic = false;
+      this.SET_MIC(true);
     },
     video_on() {
       this.video = true;
+      this.SET_CAMERA(false);
     },
     video_off() {
       this.video = false;
+      this.SET_CAMERA(true);
     },
     take_photo() {
       this.temp_timer = this.timer;
