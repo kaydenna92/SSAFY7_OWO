@@ -1,5 +1,7 @@
 package com.sos.owo.domain.repository;
 
+import com.sos.owo.domain.MeetingRoom;
+import com.sos.owo.domain.Member;
 import com.sos.owo.domain.Record;
 import com.sos.owo.dto.RecordDto;
 import lombok.RequiredArgsConstructor;
@@ -21,9 +23,13 @@ public class RecordRepository {
         return findRecord;
     }
 
-    public void registRecord(RecordDto recordDto){
-        //recordDto.setRecordCreateTime(LocalDateTime.now());
-        em.persist(recordDto);
+    public void registRecord(int memberId, int meetingRoomId, Record record){
+        Member findMember = em.find(Member.class,memberId);
+        record.setMember(findMember);
+
+        MeetingRoom findMeetingRoom = em.find(MeetingRoom.class,meetingRoomId);
+        record.setMeetingRoom(findMeetingRoom);
+        em.persist(record);
     }
 
 

@@ -1,6 +1,7 @@
 package com.sos.owo.controller;
 
 import com.sos.owo.domain.MD5Generator;
+import com.sos.owo.domain.Record;
 import com.sos.owo.dto.*;
 import com.sos.owo.service.RecordImgService;
 import com.sos.owo.service.RecordService;
@@ -27,13 +28,13 @@ public class RecordController {
     private final RecordService recordService;
 
     @ApiOperation(value = "운동 종료 후 기록 저장",notes = "운동 종료 후 기록한 정보를 저장한다.")
-    @PostMapping("/api/record/finish")
-    public ResponseEntity<?> registerRecord(@RequestBody RecordDto recordDto){
+    @PostMapping("/api/record/finish/{memberId}/{meetingRoomId}")
+    public ResponseEntity<?> registerRecord(@PathVariable("memberId") int memberId, @PathVariable("meetingRoomId") int meetingRoomId, @RequestBody RecordDto recordDto){
         Message message = new Message();
         HttpHeaders headers= new HttpHeaders();
         headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
         try {
-            recordService.registRecord(recordDto);
+            recordService.registRecord(memberId,meetingRoomId,recordDto.toEntity());
             message.setStatus(StatusEnum.OK);
             message.setMessage("운동기록 저장 성공");
             return new ResponseEntity<>(message, headers, HttpStatus.OK);
