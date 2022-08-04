@@ -122,10 +122,16 @@ export default {
         console.log(this.timer);
         if (this.timer === 0) {
           console.log('사진찍는 모션');
-          html2canvas(document.querySelector('#take_photo_WebRTC')).then((canvas) => {
+          const el = document.querySelector('#take_photo_WebRTC');
+          html2canvas(el).then((canvas) => {
             // document.body.appendChild(canvas);
-            console.log(canvas.toDataURL('image/jpeg'));
-            this.pictures.push(canvas.toDataURL('image/jpeg'));
+            const link = document.createElement('a');
+            document.body.appendChild(link);
+            link.href = canvas.toDataURL('image/jpeg');
+            localStorage.setItem('userImage', link);
+            // link.download = '안녕하세요?.jpg';
+            link.click();
+            document.body.removeChild(link);
           });
           clearInterval(this.take_photo_timer);
           this.is_take_photo = false;
