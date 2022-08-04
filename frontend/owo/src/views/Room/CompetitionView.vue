@@ -84,7 +84,7 @@
           <div>
             <ul>
               <!-- <li> {{ allChat }}</li> -->
-              <li v-for="(item, i) in recvList" :key="i">{{ item.m }}</li>
+              <li v-for="(item, i) in recvList" :key="i">{{item.p}} - {{ item.m }}</li>
             </ul>
           </div>
         </div>
@@ -121,8 +121,6 @@ export default {
       publisher: undefined,
       subscribers: [],
       mode: ['FREE', 'STREAMING', 'GAME'],
-      // mySessionId: "SessionA",
-      // myUserName: `Participant${Math.floor(Math.random() * 100)}`,
       myUserName: '',
       sessionId: 'SessionA',
       myChat: '',
@@ -248,12 +246,15 @@ export default {
       });
       // Receiver of the message (usually before calling 'session.connect')
       this.session.on('signal:my-chat', (event) => {
-        console.log(event.data); // Message
+        const chatdata = event.data.split(',');
         // console.log(event.from); // Connection object of the sender //누가 보냈는지가 아니네..?
         // console.log(event.type); // The type of message ("my-chat")
         // this.allChat = event.data;
         // this.who = event.from; //누가 보냈는지
-        const obj = { m: event.data, p: event.from };
+        const obj = {
+          m: chatdata[0],
+          p: chatdata[1],
+        };
         this.recvList.push(obj);
         // console.log(this.recvList[0].m);
       });
@@ -265,7 +266,7 @@ export default {
       // Sender of the message (after 'session.connect')
       this.session
         .signal({
-          data: this.myChat, // Any string (optional)
+          data: `${this.myChat},${this.myUserName}`, // Any string (optional)
           to: [], // Array of Connection objects (optional. Broadcast to everyone if empty)
           type: 'my-chat', // The type of message (optional)
         })
