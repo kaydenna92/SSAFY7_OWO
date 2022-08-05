@@ -5,7 +5,7 @@
         <h3 class="m-0">팔굽혀펴기</h3>
         <Timer />
       </div>
-      <!-- <p class="text-center">
+      <p class="text-center">
         <button class="btn btn-lg btn-success" @click="makeRoom()">세션열기</button>
       </p>
       <p class="text-center">
@@ -18,7 +18,7 @@
       </p>
       <p class="text-center">
         <button class="btn btn-lg btn-success" @click="getRoomList(mode[2])">게임방 목록</button>
-      </p> -->
+      </p>
       <div id="join" v-if="!session">
         <div id="img-div">
           <img src="resources/images/openvidu_grey_bg_transp_cropped.png" alt="">
