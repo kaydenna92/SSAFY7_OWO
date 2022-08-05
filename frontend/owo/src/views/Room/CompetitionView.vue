@@ -52,16 +52,7 @@
         </div>
         <div class="d-flex align-items-start justify-content-between">
           <div class="row">
-          <!-- <div id="main-video"></div> -->
-            <!-- <div> -->
             <WebRTC :stream-manager="mainStreamManager"/>
-            <!-- </div> -->
-          <!-- </div> -->
-          <!-- <div id="video-container" class="row"> -->
-            <!-- <WebRTC
-              :stream-manager="publisher"
-              @click="updateMainVideoStreamManager(publisher)"
-            /> -->
             <WebRTC
             v-for="sub in subscribers"
             :key="sub.stream.connection.connectionId"
@@ -71,52 +62,53 @@
         </div>
       </div>
       <RoomButton></RoomButton>
-      <button v-if="chatONOFF" @click="chatoff" class="chat">
-        <img class="chatimg" src="@/assets/icon/commentoff.png" alt="">
-      </button>
-      <button v-if="!chatONOFF" @click="chaton" class="chat">
-        <img class="chatimg" src="@/assets/icon/commenton.png" alt="">
-      </button>
-      <div v-if="chatONOFF" class="achat d-flex justify-content-center align-items-center">
-        <div class="d-flex align-items-center achat-submit">
-          <label class="m-0" for="chatting">
-            <!-- @keyup="checkmychatlength(this)" -->
-            <textarea id="mychat" name="chatting" type="text"
-            v-model="myChat" style="resize:none; border-radius:5px;" placeholder=" 채팅 입력"
-            rows="2" cols="25"></textarea>
-          </label>
-          <button @click="sendMassage" class="btn btn-light achat-submit2">
-          Send</button>
-        </div>
-        <div class="fluid achat-content" style="overflow:auto; height:490px;">
-          <div v-for="(item, i) in recvList" :key="i">
-            <div class="mychatting p-0" style="margin-top:0px; margin-bottom:10px;
-            margin-left:auto; margin-right:30px; width:220px; height:90px;"
-            v-if="item.p === this.myUserName">
-              <div style="text-align:left; margin-top:5px; margin-left:5px; font-size:large;">
-                <strong>{{item.p}}</strong>
+      <div v-if="this.session">
+        <button v-if="chatONOFF" @click="chatoff" class="chat">
+          <img class="chatimg" src="@/assets/icon/commentoff.png" alt="">
+        </button>
+        <button v-if="!chatONOFF" @click="chaton" class="chat">
+          <img class="chatimg" src="@/assets/icon/commenton.png" alt="">
+        </button>
+        <div v-if="chatONOFF" class="achat d-flex justify-content-center align-items-center">
+          <div class="d-flex align-items-center achat-submit">
+            <label class="m-0" for="chatting">
+              <!-- @keyup="checkmychatlength(this)" -->
+              <textarea @keyup.enter="sendMassage" id="mychat" name="chatting" type="text"
+              v-model="myChat" style="resize:none; border-radius:5px;" placeholder=" 채팅 입력"
+              rows="2" cols="25"></textarea>
+            </label>
+            <button @click="sendMassage" class="btn btn-light achat-submit2">
+            Send</button>
+          </div>
+          <div id="chattingList" class="fluid achat-content"
+          style="overflow:auto; height:490px;">
+            <div v-for="(item, i) in recvList" :key="i">
+              <div class="mychatting p-0" style="margin-top:0px; margin-bottom:10px;
+              margin-left:auto; margin-right:30px; width:220px; height:90px;"
+              v-if="item.p === this.myUserName">
+                <div style="text-align:left; margin-top:5px; margin-left:5px; font-size:large;">
+                  <strong>{{item.p}}</strong>
+                </div>
+                <div style="word-wrap:break-word; text-align:left; margin-top:5px;
+                margin-left:5px; font-size:medium;">
+                  {{item.m}}
+                </div>
               </div>
-              <div style="word-wrap:break-word; text-align:left; margin-top:5px;
-              margin-left:5px; font-size:medium;">
-                {{item.m}}
-              </div>
-            </div>
-            <div class="yourchatting p-0" style="margin-top:0px; margin-bottom:10px;
-            margin-right:auto; margin-left:30px; width:220px; height:90px;"
-            v-if="item.p !== this.myUserName">
-              <div style="text-align:left; margin-top:5px; margin-left:5px; font-size:large;">
-                <strong>{{item.p}}</strong>
-              </div>
-              <div style="text-align:left; margin-top:5px; margin-left:5px; font-size:medium;">
-                {{item.m}}
+              <div class="yourchatting p-0" style="margin-top:0px; margin-bottom:10px;
+              margin-right:auto; margin-left:30px; width:220px; height:90px;"
+              v-if="item.p !== this.myUserName">
+                <div style="text-align:left; margin-top:5px; margin-left:5px; font-size:large;">
+                  <strong>{{item.p}}</strong>
+                </div>
+                <div style="text-align:left; margin-top:5px; margin-left:5px; font-size:medium;">
+                  {{item.m}}
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-    안녕하세요?
-    (<span id="nowByte">0</span>/100bytes)
   </div>
 </template>
 <script>
@@ -164,6 +156,8 @@ export default {
   unmounted() {},
   watch: {
     mySessionId() {},
+    recvList() {
+    },
   },
 
   computed: {
@@ -287,9 +281,7 @@ export default {
           p: chatdata[1],
         };
         this.recvList.push(obj);
-        // console.log(this.recvList[0].m);
       });
-
       window.addEventListener('beforeunload', this.leaveSession);
     },
 
@@ -302,6 +294,8 @@ export default {
           type: 'my-chat', // The type of message (optional)
         })
         .then(() => {
+          const chat = document.querySelector('#chattingList');
+          chat.scrollTop = chat.scrollHeight + 1000;
           console.log('Message successfully sent');
         })
         .catch((error) => {
@@ -410,30 +404,6 @@ export default {
     chaton() {
       this.chatONOFF = true;
     },
-    // checkmychatlength() {
-    //   const obj = document.getElementById('#mychat').innerText;
-    //   console.log('전데요?', obj.value);
-    //   const maxByte = 100;
-    //   const textval = obj.value;
-    //   const textlen = textval.length;
-    //   let totalByte = 0;
-    //   for (let i = 0; i < textlen; i += 1) {
-    //     const eachchar = textval.charAt(i);
-    //     const unichar = escape(eachchar);
-    //     if (unichar.length > 4) {
-    //       totalByte += 2;
-    //     } else {
-    //       totalByte += 1;
-    //     }
-    //   }
-    //   if (totalByte > maxByte) {
-    //     document.getElementById('nowByte').innerText = totalByte;
-    //     document.getElementById('nowByte').style.color = 'red';
-    //   } else {
-    //     document.getElementById('nowByte').innerText = totalByte;
-    //     document.getElementById('nowByte').style.color = 'green';
-    //   }
-    // },
   },
 };
 </script>
