@@ -58,11 +58,11 @@
               :key="sub.stream.connection.connectionId"
               @click="updateMainVideoStreamManager(sub)"
             />
-            <div v-if="subscribers.length <= 1" class="webrtcetc col-4"></div>
-            <div v-if="subscribers.length <= 2" class="webrtcetc col-4"></div>
-            <div v-if="subscribers.length <= 3" class="webrtcetc col-4"></div>
-            <div v-if="subscribers.length <= 4" class="webrtcetc col-4"></div>
-            <div v-if="subscribers.length <= 5" class="webrtcetc col-4"></div>
+            <div v-if="this.subscribers.length <= 0" class="webrtcetc col-4"></div>
+            <div v-if="this.subscribers.length <= 1" class="webrtcetc col-4"></div>
+            <div v-if="this.subscribers.length <= 2" class="webrtcetc col-4"></div>
+            <div v-if="this.subscribers.length <= 3" class="webrtcetc col-4"></div>
+            <div v-if="this.subscribers.length <= 4" class="webrtcetc col-4"></div>
           </div>
         </div>
       </div>
