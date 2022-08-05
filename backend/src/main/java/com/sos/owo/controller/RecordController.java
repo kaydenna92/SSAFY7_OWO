@@ -177,4 +177,36 @@ public class RecordController {
             return new ResponseEntity<>(message, headers,  HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @ApiOperation(value = "사용자의 달 단위의 운동 리스트 조회",notes = "사용자의 특정 월에 해당하는 운동 기록 리스트를 조회한다.")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "memberId",value = "사용자 id",dataType = "int",paramType = "path"),
+            @ApiImplicitParam(name = "date",value = "운동한 날짜 (형식 : 20220805)",dataType = "LocalDate",paramType = "path")
+    })
+    @GetMapping("/api/record/month/{memberId}/{date}")
+    public ResponseEntity<?> findRecordByMonth(@PathVariable("memberId") int memberId,@PathVariable("date") @DateTimeFormat(pattern = "yyyyMMdd") @Parameter(schema = @Schema(type="string" ,format = "date", example = "20220805")) LocalDate dateTime){
+        Message message = new Message();
+        HttpHeaders headers= new HttpHeaders();
+        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+        try {
+            System.out.println(dateTime);
+            List<RecordResponseDto> recordResponseDtoList = recordService.findRecordByDay(memberId,dateTime);
+
+            message.setStatus(StatusEnum.OK);
+            message.setMessage("특정월 운동 리스트 조회 성공");
+            message.setData(recordResponseDtoList);
+
+            return new ResponseEntity<>(message, headers, HttpStatus.OK);
+        } catch (IllegalStateException e){
+            e.printStackTrace();
+            message.setStatus(StatusEnum.BAD_REQUEST);
+            message.setMessage("특정월 운동 리스트 조회 실패");
+            return new ResponseEntity<String>("OVERLAP", HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            e.printStackTrace();
+            message.setStatus(StatusEnum.INTERNAL_SERVER_ERROR);
+            message.setMessage("서버 에러 발생(ex.값이 잘 안들어가거나 sql문이 제대로 실행되지 않는 경우)");
+            return new ResponseEntity<>(message, headers,  HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

@@ -81,4 +81,20 @@ public class RecordRepository {
         return recordResponseDtoList;
     }
 
+    public List<RecordResponseDto> findRecordByMonth(int memberId, LocalDate dateTime){
+        System.out.println(dateTime);
+        List<Record> recordList = em.createQuery("SELECT r FROM Record as r WHERE r.member.id = :memberId", Record.class)
+                .setParameter("memberId",memberId).getResultList(); // 사용자에 대한 모든 운동 기록 리스트
+
+        List<RecordResponseDto> monthList = new ArrayList<>();
+        for(Record r:recordList){
+            List<TagResponseDto> tagList = tagRepository.findTagList(r.getRecordId());
+            monthList.add(new RecordResponseDto(r.getRecordId(), r.getMember().getId(),r.getMeetingRoom().getId(),tagList,
+                    r.getRecordHour(),// f.getRecordImg().getId(),
+                    r.getRecordMemo() ,r.getRecordDatetime(),r.isRecordSecret(),r.getRecordExercise().toString()));
+        }
+
+        return monthList;
+    }
+
 }

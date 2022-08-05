@@ -14,17 +14,17 @@ public class GoalSaveRequestDto {
     @ApiModelProperty(example="YOGA")
     private Exercise exercise;
     @ApiModelProperty(example = "2")
-    private int hour;
+    private int time;
 
 
     @Builder
-    public GoalSaveRequestDto(Exercise exercise, int hour) {
+    public GoalSaveRequestDto(Exercise exercise, int time) {
         this.exercise = exercise;
-        this.hour = hour;
+        this.time = time;
 
     }
 
     public Goal toEntity(){
-        return Goal.builder().exercise(exercise).hour(hour).build();
+        return Goal.builder().exercise(exercise).time(time).build();
     }
 }
