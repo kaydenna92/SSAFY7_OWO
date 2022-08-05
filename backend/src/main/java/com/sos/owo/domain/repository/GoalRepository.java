@@ -3,6 +3,7 @@ package com.sos.owo.domain.repository;
 import com.sos.owo.domain.Exercise;
 import com.sos.owo.domain.Goal;
 import com.sos.owo.domain.Member;
+import com.sos.owo.dto.GoalResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Repository;
@@ -46,19 +47,29 @@ public class GoalRepository{
     }
 
 
-    public void deleteGoal(int memberId, int goal_id){
-        Member findMember = em.find(Member.class,memberId);
-        Goal findGoal = em.find(Goal.class,goal_id);
-        findMember.getGoalList().remove(findGoal);
-        findGoal.setMember(null);
-        em.remove(findGoal);
-        em.flush();
+    //goal_id로 실질적으로 db에서 삭제되고, memberId는 ..? -> 추후 코드 수정해야함
+    public int deleteGoal(int memberId, int goalId){
+        return em.createQuery("delete from Goal as g where g.id = :goalId and g.member.id = :memberId")
+                .setParameter("goalId",goalId).setParameter("memberId",memberId).executeUpdate();
+
+//        Member findMember = em.find(Member.class,memberId);
+//        Goal findGoal = em.find(Goal.class,goalId);
+//        findMember.getGoalList().remove(findGoal);
+//        findGoal.setMember(null);
+//        em.remove(findGoal);
+//        em.persist(findMember);
+//        em.flush();
 
     }
 
-    public List<Goal> findGoal(int memberId){
+    public List<GoalResponseDto> findGoal(int memberId){
         Member findMember = em.find(Member.class,memberId);
+        List<Goal> list = findMember.getGoalList();
+        List<GoalResponseDto> responseList = new ArrayList<>();
+        for (Goal item:list) {
+            responseList.add(new GoalResponseDto(item.getId(),item.getExercise().name(),item.getMember().getId(),item.getHour()));
+        }
 
-        return findMember.getGoalList();
+        return responseList;
     }
 }
