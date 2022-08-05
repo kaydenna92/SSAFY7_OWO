@@ -30,7 +30,7 @@ export const meetingroom = {
       console.log(requestDto);
 
       await axios({
-        url: 'http://localhost:9000/api/room',
+        url: 'https://i7c202.p.ssafy.io:8282/api/room',
         method: 'post',
         data: {
           memberId: requestDto.memberId,
@@ -44,7 +44,6 @@ export const meetingroom = {
         headers: {
           'X-AUTH-TOKEN': requestDto.accesstoken,
         },
-
       })
         .then((res) => {
           console.log(res.data);
@@ -59,7 +58,7 @@ export const meetingroom = {
     },
     getMeetingRoomList({ commit }, requestDto) {
       axios({
-        url: `http://localhost:9000/room/${requestDto.mode}`,
+        url: `https://i7c202.p.ssafy.io:8282/${requestDto.mode}`,
         method: 'get',
         headers: {
           'X-AUTH-TOKEN': requestDto.accesstoken,
@@ -77,7 +76,7 @@ export const meetingroom = {
     },
     enterMeetingRoom({ commit }, requestDto) {
       axios({
-        url: `http://localhost:9000/api/room/${requestDto.roomId}`,
+        url: `https://i7c202.p.ssafy.io:8282/${requestDto.roomId}`,
         method: 'get',
         headers: {
           'X-AUTH-TOKEN': requestDto.accesstoken,
@@ -93,7 +92,7 @@ export const meetingroom = {
     },
     leaveMeetingRoom({ commit }, requestDto) {
       axios({
-        url: `http://localhost:9000/api/room/exit/${requestDto.roomId}`,
+        url: `https://i7c202.p.ssafy.io:8282/${requestDto.roomId}`,
         method: 'put',
         headers: {
           'X-AUTH-TOKEN': requestDto.accesstoken,
@@ -107,23 +106,25 @@ export const meetingroom = {
           console.log(err);
         });
     },
-    startMeetingRoom(requestDto) {
-      console.log(requestDto);
-      axios({
-        url: `http://localhost:9000/api/room/start/${requestDto.roomId}`,
-        method: 'put',
-        headers: {
-          'X-AUTH-TOKEN': requestDto.accesstoken,
-        },
-      })
-        .then((res) => {
-          console.log(res.data);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    },
-
+    // startMeetingRoom({ commit }, requestDto) {
+    //   console.log('=============*******************');
+    //   console.log(requestDto);
+    //   console.log(requestDto.accesstoken);
+    //   console.log(requestDto.roomId);
+    //   axios({
+    //     url: `http://localhost:9000/api/room/start/${Number(requestDto.roomId)}`,
+    //     method: 'put',
+    //     headers: {
+    //       'X-AUTH-TOKEN': requestDto.accesstoken,
+    //     },
+    //   })
+    //     .then((res) => {
+    //       console.log(res.data);
+    //     })
+    //     .catch((err) => {
+    //       console.log(err);
+    //     });
+    // },
   },
   // getters: {
   //   sessionId: (state) => state.mySessionId,

@@ -21,25 +21,30 @@
       </p>
       <div id="join" v-if="!session">
         <div id="img-div">
-          <img src="resources/images/openvidu_grey_bg_transp_cropped.png" alt="">
+          <img src="resources/images/openvidu_grey_bg_transp_cropped.png" alt="" />
         </div>
         <div id="join-dialog" class="jumbotron vertical-center">
           <h1>Join a video session</h1>
           <div class="form-group">
             <p>
-              <label for="participant">Participant
-              <input for="participant" v-model="myUserName"
-              class="form-control" type="text" required /></label>
+              <label for="participant"
+                >Participant
+                <input
+                  for="participant"
+                  v-model="myUserName"
+                  class="form-control"
+                  type="text"
+                  required
+              /></label>
             </p>
             <p>
-              <label for="session">Session
-              <input for="session" v-model="sessionId"
-              class="form-control" type="text" required /></label>
+              <label for="session"
+                >Session
+                <input for="session" v-model="sessionId" class="form-control" type="text" required
+              /></label>
             </p>
             <p class="text-center">
-              <button class="btn btn-lg btn-success" @click="joinSession(sessionId)">
-                Join!
-              </button>
+              <button class="btn btn-lg btn-success" @click="joinSession(sessionId)">Join!</button>
             </p>
           </div>
         </div>
@@ -57,44 +62,47 @@
         </div>
         <div class="d-flex align-items-start justify-content-between">
           <div class="row">
-          <!-- <div id="main-video"></div> -->
+            <!-- <div id="main-video"></div> -->
             <!-- <div> -->
-            <WebRTC :stream-manager="mainStreamManager"/>
+            <WebRTC :stream-manager="mainStreamManager" />
             <!-- </div> -->
-          <!-- </div> -->
-          <!-- <div id="video-container" class="row"> -->
+            <!-- </div> -->
+            <!-- <div id="video-container" class="row"> -->
             <!-- <WebRTC
               :stream-manager="publisher"
               @click="updateMainVideoStreamManager(publisher)"
             /> -->
             <WebRTC
-            v-for="sub in subscribers"
-            :key="sub.stream.connection.connectionId"
-            :stream-manager="sub"
-            @click="updateMainVideoStreamManager(sub)"/>
-            </div>
-          </div>
-        </div>
-        <p class="text-center">
-              <button class="btn btn-lg btn-success" @click="start()">
-                게임시작
-              </button>
-            </p>
-        <RoomButton></RoomButton>
-        <div>
-          <div>채팅</div>
-          <label for="chat">
-          <input for="chat" type="text" v-model="myChat" placeholder="채팅 입력"></label>
-          <button @click="sendMassage">보내기</button>
-          <div>
-            <ul>
-              <!-- <li> {{ allChat }}</li> -->
-              <li v-for="(item, i) in recvList" :key="i">{{ item.m }}</li>
-            </ul>
+              v-for="sub in subscribers"
+              :key="sub.stream.connection.connectionId"
+              :stream-manager="sub"
+              @click="updateMainVideoStreamManager(sub)"
+            />
           </div>
         </div>
       </div>
+      <p class="text-center">
+        <button class="btn btn-lg btn-success" @click="start()">게임시작</button>
+      </p>
+      <p class="text-center">
+        <button class="btn btn-lg btn-success" @click="end()">게임종료</button>
+      </p>
+      <RoomButton></RoomButton>
+      <div>
+        <div>채팅</div>
+        <label for="chat">
+          <input for="chat" type="text" v-model="myChat" placeholder="채팅 입력"
+        /></label>
+        <button @click="sendMassage">보내기</button>
+        <div>
+          <ul>
+            <!-- <li> {{ allChat }}</li> -->
+            <li v-for="(item, i) in recvList" :key="i">{{ item.m }}</li>
+          </ul>
+        </div>
+      </div>
     </div>
+  </div>
 </template>
 <script>
 import Timer from '@/components/SetTimer.vue';
@@ -102,9 +110,7 @@ import WebRTC from '@/components/Room/WebRTC.vue';
 import RoomButton from '@/components/Room/RoomButton.vue';
 import axios from 'axios';
 import { OpenVidu } from 'openvidu-browser';
-import {
-  mapState, mapActions, mapMutations,
-} from 'vuex';
+import { mapState, mapActions, mapMutations } from 'vuex';
 
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
@@ -288,6 +294,12 @@ export default {
         console.log('게임! start');
       });
 
+      this.session.on('signal:end', (event) => {
+        console.log(event);
+        console.log('게임! end');
+        this.leaveSession();
+      });
+
       window.addEventListener('beforeunload', this.leaveSession);
     },
 
@@ -307,14 +319,60 @@ export default {
         });
     },
 
+    end() {
+      const requestDto = {
+        accesstoken: this.accessToken,
+        roomId: this.mySessionId,
+      };
+
+      axios({
+        url: `https://i7c202.p.ssafy.io:8282/api/room/end/${Number(requestDto.roomId)}`,
+        method: 'put',
+        headers: {
+          'X-AUTH-TOKEN': requestDto.accesstoken,
+        },
+      })
+        .then((res) => {
+          console.log(res.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+
+      this.session
+        .signal({
+          data: 'stameetingRoomEnd', // Any string (optional)
+          to: [], // Array of Connection objects (optional. Broadcast to everyone if empty)
+          type: 'end', // The type of message (optional)
+        })
+        .then(() => {
+          console.log('Message successfully sent(end)');
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    },
+
     start() {
       const requestDto = {
         accesstoken: this.accessToken,
         roomId: this.mySessionId,
       };
-      console.log('========================');
-      console.log(requestDto);
-      this.startMeetingRoom(requestDto);
+
+      axios({
+        url: `https://i7c202.p.ssafy.io:8282/api/room/start/${Number(requestDto.roomId)}`,
+        method: 'put',
+        headers: {
+          'X-AUTH-TOKEN': requestDto.accesstoken,
+        },
+      })
+        .then((res) => {
+          console.log(res.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+
       this.session
         .signal({
           data: 'stameetingRoomStartrt', // Any string (optional)
@@ -435,5 +493,4 @@ div {
   width: 100vw;
   height: 100vh;
 }
-
 </style>
