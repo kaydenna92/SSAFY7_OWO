@@ -6,6 +6,8 @@ export const meetingroom = {
   state: {
     mySessionId: '12341234',
     meetingRoomList: [],
+    camera: true,
+    mic: true,
   },
   mutations: {
     SET_SESSION_ID: (state, mySessionId) => {
@@ -14,13 +16,21 @@ export const meetingroom = {
     SET_MEETING_ROOM_LIST: (state, list) => {
       state.meetingRoomList = list;
     },
+    SET_CAMERA: (state, s) => {
+      state.camera = s;
+      console.log(state.camera);
+    },
+    SET_MIC: (state, s) => {
+      state.mic = s;
+      console.log(state.mic);
+    },
   },
   actions: {
     async makeSession({ commit, state }, requestDto) {
       console.log(requestDto);
 
       await axios({
-        url: 'http://localhost:9000/api/room',
+        url: 'https://i7c202.p.ssafy.io:8282/api/room',
         method: 'post',
         data: {
           memberId: requestDto.memberId,
@@ -48,7 +58,7 @@ export const meetingroom = {
     },
     getMeetingRoomList({ commit }, requestDto) {
       axios({
-        url: `http://localhost:9000/room/${requestDto.mode}`,
+        url: `https://i7c202.p.ssafy.io:8282/${requestDto.mode}`,
         method: 'get',
         headers: {
           'X-AUTH-TOKEN': requestDto.accesstoken,
@@ -66,7 +76,7 @@ export const meetingroom = {
     },
     enterMeetingRoom({ commit }, requestDto) {
       axios({
-        url: `http://localhost:9000/api/room/${requestDto.roomId}`,
+        url: `https://i7c202.p.ssafy.io:8282/api/room/${requestDto.roomId}`,
         method: 'get',
         headers: {
           'X-AUTH-TOKEN': requestDto.accesstoken,
@@ -82,7 +92,7 @@ export const meetingroom = {
     },
     leaveMeetingRoom({ commit }, requestDto) {
       axios({
-        url: `http://localhost:9000/api/room/exit/${requestDto.roomId}`,
+        url: `https://i7c202.p.ssafy.io:8282/api/room/exit/${requestDto.roomId}`,
         method: 'put',
         headers: {
           'X-AUTH-TOKEN': requestDto.accesstoken,

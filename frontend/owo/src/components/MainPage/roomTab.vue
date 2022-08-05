@@ -75,7 +75,6 @@
         </b-card>
       </b-card-group>
     </div>
-  </div>
   <button v-for="(room, i) in roomList" :key="i" @click="joinMeeting(room)">
     <div>
       {{ room }}
@@ -84,6 +83,7 @@
       이 방에 들어가시겠습니까?
     </div>
   </button>
+  </div>
 </template>
 
 <script>
@@ -94,7 +94,7 @@ export default {
   },
   data() {
     return {
-      roomList: ['hello1', 'hello2', 'hello3'],
+      roomList: [1, 2, 3, 4, 5],
     };
   },
   computed: {

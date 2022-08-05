@@ -71,8 +71,13 @@ const routes = [
     component: MyPageSlideView,
   },
   {
+    path: '/room/competition/',
+    name: 'competition1',
+    component: CompetitionView,
+  },
+  {
     path: '/room/competition/:sessionId',
-    name: 'competition',
+    name: 'competition2',
     component: CompetitionView,
   },
   {

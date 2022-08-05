@@ -18,10 +18,10 @@
       </p>
       <p class="text-center">
         <button class="btn btn-lg btn-success" @click="getRoomList(mode[2])">게임방 목록</button>
-      </p> -->
-      <!-- <div id="join" v-if="!session">
+      </p>
+      <div id="join" v-if="!session">
         <div id="img-div">
-          <img src="resources/images/openvidu_grey_bg_transp_cropped.png" alt="">
+          <img src="resources/images/openvidu_grey_bg_transp_cropped.png" alt="" />
         </div>
         <div id="join-dialog" class="jumbotron vertical-center">
           <h1>Join a video session</h1>
@@ -37,13 +37,13 @@
               class="form-control" type="text" required /></label>
             </p>
             <p class="text-center">
-              <button class="btn btn-lg btn-success" @click="joinSession('sessionId')">
+              <button class="btn btn-lg btn-success" @click="joinSession(sessionId)">
                 Join!
               </button>
             </p>
           </div>
         </div>
-      </div> -->
+      </div>
       <div id="session" v-if="session">
         <div id="session-header">
           <h1 id="session-title">{{ mySessionId }}</h1>
@@ -52,12 +52,12 @@
         </div>
         <div class="align-items-start justify-content-start">
           <div class="row">
-            <WebRTC :stream-manager="mainStreamManager"/>
-            <WebRTC
-            v-for="sub in subscribers"
-            :key="sub.stream.connection.connectionId"
-            :stream-manager="sub"
-            @click="updateMainVideoStreamManager(sub)"/>
+            <WebRTC :stream-manager="mainStreamManager" />
+            <WebRTC :stream-manager="sub"
+              v-for="sub in subscribers"
+              :key="sub.stream.connection.connectionId"
+              @click="updateMainVideoStreamManager(sub)"
+            />
             <div v-if="subscribers.length <= 1" class="webrtcetc col-4"></div>
             <div v-if="subscribers.length <= 2" class="webrtcetc col-4"></div>
             <div v-if="subscribers.length <= 3" class="webrtcetc col-4"></div>
@@ -66,6 +66,12 @@
           </div>
         </div>
       </div>
+      <p class="text-center">
+        <button class="btn btn-lg btn-success" @click="start()">게임시작</button>
+      </p>
+      <p class="text-center">
+        <button class="btn btn-lg btn-success" @click="end()">게임종료</button>
+      </p>
       <RoomButton></RoomButton>
       <div v-if="this.session">
         <button v-if="chatONOFF" @click="chatoff" class="chat">
@@ -105,7 +111,8 @@
                 <div style="text-align:left; margin-top:5px; margin-left:5px; font-size:large;">
                   <strong>{{item.p}}</strong>
                 </div>
-                <div style="text-align:left; margin-top:5px; margin-left:5px; font-size:medium;">
+                <div style="word-wrap:break-word; text-align:left; margin-top:5px;
+                margin-left:5px; font-size:medium;">
                   {{item.m}}
                 </div>
               </div>
@@ -121,18 +128,14 @@ import Timer from '@/components/SetTimer.vue';
 import WebRTC from '@/components/Room/WebRTC.vue';
 import RoomButton from '@/components/Room/RoomButton.vue';
 import axios from 'axios';
-// eslint--disable-next-line
 import { OpenVidu } from 'openvidu-browser';
-import {
-  mapState, mapActions, mapMutations,
-} from 'vuex';
+import { mapState, mapActions, mapMutations } from 'vuex';
 
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
 const openvidu = 'openvidu';
 const accounts = 'accounts';
 const meetingroom = 'meetingroom';
-
 export default {
   name: 'CompetitionView',
   components: {
@@ -144,12 +147,12 @@ export default {
     return {
       OV: undefined,
       session: undefined,
-      mainStreamManage: undefined,
+      mainStreamManager: undefined,
       publisher: undefined,
       subscribers: [],
       mode: ['FREE', 'STREAMING', 'GAME'],
       myUserName: '',
-      sessionId: 'hi',
+      sessionId: 'SessionA',
       myChat: '',
       recvList: [],
       chatONOFF: false,
@@ -164,14 +167,30 @@ export default {
   unmounted() {},
   watch: {
     mySessionId() {},
-    recvList() {
+    camera() {
+      if (this.publisher !== undefined) {
+        if (this.camera) {
+          this.publisher.publishVideo(true);
+        } else {
+          this.publisher.publishVideo(false);
+        }
+      }
+    },
+    mic() {
+      if (this.publisher !== undefined) {
+        if (this.mic) {
+          this.publisher.publishAudio(true);
+        } else {
+          this.publisher.publishAudio(false);
+        }
+      }
     },
   },
 
   computed: {
     ...mapState(accounts, ['accessToken', 'userInfo']),
     ...mapState(openvidu, ['OPENVIDU_SERVER_URL', 'OPENVIDU_SERVER_SECRET']),
-    ...mapState(meetingroom, ['mySessionId', 'meetingRoomList']),
+    ...mapState(meetingroom, ['mySessionId', 'meetingRoomList', 'camera', 'mic']),
     // ...openviduHelper.mapState(["OPENVIDU_SERVER_URL", "OPENVIDU_SERVER_SECRET"]),
     // ...meetingRoomHelper.mapState(["sessionID", "meetingRoomList"]),
   },
@@ -182,6 +201,7 @@ export default {
       'getMeetingRoomList',
       'enterMeetingRoom',
       'leaveMeetingRoom',
+      'startMeetingRoom',
     ]),
     async makeRoom() {
       const requestDto = {
@@ -289,7 +309,21 @@ export default {
           p: chatdata[1],
         };
         this.recvList.push(obj);
+        // console.log(this.recvList[0].m);
       });
+
+      // Receiver of the message (usually before calling 'session.connect')
+      this.session.on('signal:start', (event) => {
+        console.log(event);
+        console.log('게임! start');
+      });
+
+      this.session.on('signal:end', (event) => {
+        console.log(event);
+        console.log('게임! end');
+        this.leaveSession();
+      });
+
       window.addEventListener('beforeunload', this.leaveSession);
     },
 
@@ -305,6 +339,74 @@ export default {
           const chat = document.querySelector('#chattingList');
           chat.scrollTop = chat.scrollHeight + 1000;
           console.log('Message successfully sent');
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    },
+
+    end() {
+      const requestDto = {
+        accesstoken: this.accessToken,
+        roomId: this.mySessionId,
+      };
+
+      axios({
+        url: `https://i7c202.p.ssafy.io:8282/api/room/end/${Number(requestDto.roomId)}`,
+        method: 'put',
+        headers: {
+          'X-AUTH-TOKEN': requestDto.accesstoken,
+        },
+      })
+        .then((res) => {
+          console.log(res.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+
+      this.session
+        .signal({
+          data: 'stameetingRoomEnd', // Any string (optional)
+          to: [], // Array of Connection objects (optional. Broadcast to everyone if empty)
+          type: 'end', // The type of message (optional)
+        })
+        .then(() => {
+          console.log('Message successfully sent(end)');
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    },
+
+    start() {
+      const requestDto = {
+        accesstoken: this.accessToken,
+        roomId: this.mySessionId,
+      };
+
+      axios({
+        url: `https://i7c202.p.ssafy.io:8282/api/room/start/${Number(requestDto.roomId)}`,
+        method: 'put',
+        headers: {
+          'X-AUTH-TOKEN': requestDto.accesstoken,
+        },
+      })
+        .then((res) => {
+          console.log(res.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+
+      this.session
+        .signal({
+          data: 'stameetingRoomStartrt', // Any string (optional)
+          to: [], // Array of Connection objects (optional. Broadcast to everyone if empty)
+          type: 'start', // The type of message (optional)
+        })
+        .then(() => {
+          console.log('Message successfully sent(start)');
         })
         .catch((error) => {
           console.error(error);
@@ -419,7 +521,6 @@ export default {
 div {
   color: black;
 }
-
 .container {
   width: 100vw;
   height: 100vh;
@@ -488,5 +589,4 @@ solid #ccb9a8; border-top: 10px solid transparent; border-bottom: 10px solid tra
   background-size: 30px 30px;
   background-repeat: no-repeat;
 }
-
 </style>
