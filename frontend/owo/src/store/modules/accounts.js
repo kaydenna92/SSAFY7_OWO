@@ -72,19 +72,19 @@ export const accounts = {
   },
   actions: {
     saveAccessToken({ commit }, token) {
-      localStorage.setItem('accessToken', token);
+      sessionStorage.setItem('accessToken', token);
       commit('SET_ACCESS_TOKEN', token);
     },
     saveRefreshToken({ commit }, token) {
-      localStorage.setItem('refreshToken', token);
+      sessionStorage.setItem('refreshToken', token);
       commit('SET_REFRESH_TOKEN', token);
     },
     removeToken({ commit }) {
       commit('SET_ACCESS_TOKEN', null);
       commit('SET_REFRESH_TOKEN', null);
-      localStorage.removeItem('accessToken');
-      localStorage.removeItem('refreshToken');
-      localStorage.removeItem('vuex');
+      sessionStorage.removeItem('accessToken'); // accessToken 제거
+      sessionStorage.removeItem('refreshToken'); // refreshToken 제거
+      sessionStorage.removeItem('vuex'); // 사용자 정보 제거
     },
     setUserInfo({ commit }, payload) {
       commit('SET_USER_INFO', payload);

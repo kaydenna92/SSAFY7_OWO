@@ -50,26 +50,18 @@
 </template>
 <script>
 import html2canvas from 'html2canvas';
+import { mapMutations } from 'vuex';
 import AfterExerciseModal from './AfterExerciseModal.vue';
 import Emoji from '../MyEmoji.vue';
 import RoomSetting from './RoomSetting.vue';
 
 let emojiX;
 let emojiY;
+const meetingroom = 'meetingroom';
 
 window.onload = function () {
   emojiX = document.getElementById('emoji_btn').getClientRects()[0].x;
   emojiY = document.getElementById('emoji_btn').getClientRects()[0].bottom;
-  // console.log(emojiX);
-  // console.log(emojiY);
-  // console.log('top :', document.getElementById('emoji_btn').getClientRects()[0].top);
-  // console.log('bottom :', document.getElementById('emoji_btn').getClientRects()[0].bottom);
-  // console.log('left :', document.getElementById('emoji_btn').getClientRects()[0].left);
-  // console.log('right :', document.getElementById('emoji_btn').getClientRects()[0].right);
-  // console.log('height :', document.getElementById('emoji_btn').getClientRects()[0].height);
-  // console.log('width :', document.getElementById('emoji_btn').getClientRects()[0].width);
-  // console.log('x :', document.getElementById('emoji_btn').getClientRects()[0].x);
-  // console.log('y :', document.getElementById('emoji_btn').getClientRects()[0].y);
 };
 
 export default {
@@ -84,8 +76,8 @@ export default {
       // search: '',
       Emoji_ONOFF: null,
       isMaster: true,
-      video: true,
-      mic: true,
+      video: false,
+      mic: false,
       timer: 3,
       temp_timer: 3,
       take_photo_timer: null,
@@ -102,17 +94,22 @@ export default {
   },
   unmounted() {},
   methods: {
+    ...mapMutations(meetingroom, ['SET_CAMERA', 'SET_MIC']),
     mic_on() {
       this.mic = true;
+      this.SET_MIC(false);
     },
     mic_off() {
       this.mic = false;
+      this.SET_MIC(true);
     },
     video_on() {
       this.video = true;
+      this.SET_CAMERA(false);
     },
     video_off() {
       this.video = false;
+      this.SET_CAMERA(true);
     },
     take_photo() {
       this.temp_timer = this.timer;

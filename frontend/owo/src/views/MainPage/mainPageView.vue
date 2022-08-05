@@ -42,7 +42,7 @@
       </div>
     </div>
   </div>
-</template>>
+</template>
 
 <script>
 // import { useStore } from 'vuex';
