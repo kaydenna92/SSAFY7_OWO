@@ -27,7 +27,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final CustomOAuth2UserService oAuth2UserService;
     private final OAuth2SuccessHandler successHandler;
 
-
     private static final String[] AUTH_WHITELIST = {
             "/authenticate",
             "/swagger-resources/**",
@@ -35,7 +34,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             "/v3/api-docs",
             "/webjars/**"
     };
-
 
     // 암호화에 필요한 PasswordEncoder를 Bean으로 등록
     @Bean
@@ -56,8 +54,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
-
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
@@ -76,6 +72,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/**").authenticated()
                 .antMatchers("/user/**").hasRole("USER")
                 .anyRequest().permitAll()  // 그 외 나머지 요청은 누구나 접근 가능
+                .and()
+                .cors()
                 .and() /* OAuth */
                 .cors()
                 .and()
@@ -88,7 +86,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
                 http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),
                         UsernamePasswordAuthenticationFilter.class);
-
 
     }
 
