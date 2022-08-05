@@ -28,6 +28,10 @@ public class RecordController {
     private final RecordService recordService;
 
     @ApiOperation(value = "운동 종료 후 기록 저장",notes = "운동 종료 후 기록한 정보를 저장한다.")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "exp",value = "자유/영상모드 경험치",dataType = "int",paramType = "path"),
+            @ApiImplicitParam(name = "memberId",value = "사용자 id",dataType = "int",paramType = "path")
+    })
     @PostMapping("/api/record/finish/{memberId}/{meetingRoomId}")
     public ResponseEntity<?> registerRecord(@PathVariable("memberId") int memberId, @PathVariable("meetingRoomId") int meetingRoomId, @RequestBody RecordDto recordDto){
         Message message = new Message();
