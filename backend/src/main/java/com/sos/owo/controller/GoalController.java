@@ -32,11 +32,6 @@ public class GoalController {
     //운동 목표 추가
     @ApiOperation(value = "운동 목표 추가",notes = "memberId와 목표운동, 목표시간을 받아서 추가한다.")
     @ApiImplicitParam(name = "memberId",value = "사용자 id",dataType = "int",paramType = "path")
-//    @ApiResponses({@ApiResponse(code = 200,message = "운동 목표 추가 성공"),
-//            @ApiResponse(code = 400,message = "잘못된 요청"),
-//            @ApiResponse(code = 403,message = "금지됨"),
-//            @ApiResponse(code = 500,message = "내부 서버 에러___")
-//    })
     @PostMapping("/api/user/goal/{memberId}")
     public ResponseEntity<?> saveGoal(@PathVariable("memberId") int memberId, @RequestBody GoalSaveRequestDto goalSaveRequestDto){
         Message message = new Message();
@@ -48,21 +43,16 @@ public class GoalController {
             message.setMessage("운동 목표 추가 성공");
             message.setData(goalSaveRequestDto);
             return new ResponseEntity<>(message,httpHeaders,HttpStatus.OK);
-//            return new ResponseEntity<String>("SUCCESS INSERT GOAL",HttpStatus.OK);
         } catch (IllegalStateException e){
             e.printStackTrace();
             message.setStatus(StatusEnum.BAD_REQUEST);
             message.setMessage("잘못된 요청(ex. memberId가 null인 경우)");
             return new ResponseEntity<>(message,httpHeaders,HttpStatus.BAD_REQUEST);
-//            return new ResponseEntity<String>("OVERLAP", HttpStatus.BAD_REQUEST);g
-
         } catch (Exception e){
             e.printStackTrace();
             message.setStatus(StatusEnum.INTERNAL_SERVER_ERROR);
             message.setMessage("내부 서버 에러");
             return new ResponseEntity<>(message,httpHeaders,HttpStatus.INTERNAL_SERVER_ERROR);
-//            return new ResponseEntity<String>("SERVER_ERROR", HttpStatus.INTERNAL_SERVER_ERROR);
-
         }
     }
 
@@ -80,19 +70,16 @@ public class GoalController {
             message.setMessage("운동 목표 수정 성공");
             message.setData(goalSaveRequestDto);
             return new ResponseEntity<>(message,httpHeaders,HttpStatus.OK);
-//            return new ResponseEntity<String>("SUCCESS UPDATE GOAL", HttpStatus.OK);
         } catch (IllegalStateException e){
             e.printStackTrace();
             message.setStatus(StatusEnum.BAD_REQUEST);
             message.setMessage("잘못된 요청(ex. memberId가 null인 경우)");
             return new ResponseEntity<>(message,httpHeaders,HttpStatus.BAD_REQUEST);
-//            return new ResponseEntity<String>("OVERLAP", HttpStatus.CONFLICT);
         } catch (Exception e){
             e.printStackTrace();
             message.setStatus(StatusEnum.INTERNAL_SERVER_ERROR);
             message.setMessage("내부 서버 에러");
             return new ResponseEntity<>(message,httpHeaders,HttpStatus.INTERNAL_SERVER_ERROR);
-//            return new ResponseEntity<String>("SERVER_ERROR", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

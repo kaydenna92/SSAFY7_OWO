@@ -26,13 +26,13 @@ public class Goal {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @Column(name = "goal_time")
-    private int time;
+    @Column(name = "goal_hour")
+    private int hour;
 
-    public Goal(Exercise exercise, Member member, int time) {
+    public Goal(Exercise exercise, Member member, int hour) {
         this.exercise = exercise;
         this.member = member;
-        this.time = time;
+        this.hour = hour;
     }
 
 

@@ -36,7 +36,7 @@ public class Record {
     private List<Tag> tags = new ArrayList<>();
 
     @Column(name="record_time")
-    private int recordTime;
+    private int recordTime;//한 운동방으로 운동한 총 시간
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "record_img_id")

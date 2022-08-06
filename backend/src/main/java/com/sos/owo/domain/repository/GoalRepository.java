@@ -40,7 +40,7 @@ public class GoalRepository {
         for (Goal g:goalList) {
             System.out.println(g.getExercise());
             if(g.getExercise() == goal.getExercise()){
-                g.setTime(goal.getTime());
+                g.setHour(goal.getHour());
                 break;
 
             }
@@ -68,7 +68,7 @@ public class GoalRepository {
         List<Goal> list = findMember.getGoalList();
         List<GoalResponseDto> responseList = new ArrayList<>();
         for (Goal item:list) {
-            responseList.add(new GoalResponseDto(item.getId(),item.getExercise().name(),item.getMember().getId(),item.getTime()));
+            responseList.add(new GoalResponseDto(item.getId(),item.getExercise().name(),item.getMember().getId(),item.getHour()));
         }
 
         return responseList;
