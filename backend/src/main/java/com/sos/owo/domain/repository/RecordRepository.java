@@ -81,4 +81,10 @@ public class RecordRepository {
         return recordResponseDtoList;
     }
 
+
+    public List<RecordResponseDto> findRecordYesterday(int memberId){
+        LocalDate yesterday = LocalDate.now().minusDays(1);
+        return findRecordByDay(memberId,yesterday);
+    }
+
 }
