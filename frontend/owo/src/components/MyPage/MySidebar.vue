@@ -1,58 +1,41 @@
 <template>
+<div class="container p-0 justify-content-center">
   <div class="row">
     <div class="profile">
-        <img class="profile-img" src="https://picsum.photos/150" alt="">
-        <p class="name">
+      <div class="img-wrapper">
+        <img
+          class="profile-img"
+          src="https://picsum.photos/150"
+          alt="프로필이미지"
+        >
+      </div>
+        <p class="name" v-once>
           {{ user.nick }} <span class="sm-name">님</span>
         </p>
+    </div>
+    <div>
       <button type="button" class="btn btn-primary"
-      data-bs-toggle="modal" data-bs-target="#exampleModal">
-        Launch demo modal
-      </button>
-
-      <div class="modal fade" id="exampleModal" tabindex="-1"
-      aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-              <button type="button" class="btn-close"
-              data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-              <form action="">
-                <label for="profileImag">이미지
-                  <input class="input-image" accept="image/*" type="file"
-                    ref="profileImg" @change="onInputImage()" id="profileImg">
-                </label>
-                <button class="send-btn" @click="onClickImgButton">이미지버튼</button>
-              </form>
-            </div>
-            <!-- <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-              <button type="button" class="btn btn-primary">Save changes</button>
-            </div> -->
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="sidebar-menus text-center justify-content-center;">
-      <button class="row sidebar-menu">
-        <router-link to="/mypage/main">⚒ 운동 기록</router-link>
-      </button>
-      <button class="row sidebar-menu">
-        <router-link to="/mypage/schedule">📆 운동 일지</router-link>
-      </button>
-      <button class="row sidebar-menu">
-        <router-link to="/mypage/analys">⚒ 운동 분석</router-link>
-      </button>
-      <button class="row sidebar-menu">
-        <router-link to="/mypage/update">👧 내 정보 수정</router-link>
+        data-bs-toggle="modal" data-bs-target="#exampleModal">
+          ImgBtn
       </button>
     </div>
 
+    <div class="sidebar-menus text-center justify-content-center pe-0">
+      <button class="row sidebar-menu">
+        <router-link class="sidebar-menu" to="/mypage/main">운동 기록</router-link>
+      </button>
+      <button class="row sidebar-menu">
+        <router-link class="sidebar-menu" to="/mypage/schedule">운동 일지</router-link>
+      </button>
+      <button class="row sidebar-menu">
+        <router-link class="sidebar-menu" to="/mypage/analys">운동 분석</router-link>
+      </button>
+      <button class="row sidebar-menu">
+        <router-link class="sidebar-menu" to="/mypage/update">내 정보 수정</router-link>
+      </button>
+    </div>
   </div>
+</div>
 </template>
 <script>
 import { useStore } from 'vuex';
@@ -80,21 +63,17 @@ export default {
       },
       testText: '할수있다',
     });
-    console.log(user);
-    const update = function (userInfo) {
-      console.log(userInfo);
-      store.dispatch('accounts/updateUserInfo', userInfo);
-    };
+
     // Methods
-    const onInputImage = () => {
-      const input = document.querySelector('.input-image');
-      console.log(input.files[0].type);
-    };
+    // const onInputImage = () => {
+    //   const input = document.querySelector('.input-image');
+    //   console.log(input.files);
+    // };
+
     return {
       state,
       user,
-      update,
-      onInputImage,
+      // onInputImage,
     };
   },
   components: {},
@@ -104,9 +83,22 @@ export default {
 </script>
 
 <style scoped>
-  .profile-img {
+  .img-wrapper {
+    position: relative;
+    width: 150px;
+    height: 150px;
+  }
+  .img-wrapper img {
     border-radius: 50%;
-    margin: 0 auto;
+    /* margin: 0 auto; */
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: translate(50, 50);
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    margin: auto;
   }
   .name {
     font-weight: 900;
@@ -134,7 +126,7 @@ export default {
   .tag:hover {
     background-color: #DE7474;
     color: white;
-    transition: 0.2s;
+    transition: 0.9s;
     cursor: pointer;
 
   }
@@ -147,26 +139,37 @@ export default {
     margin: 0;
   }
   .sidebar-menu {
-    border: solid black 1px;
-    margin: 5px;
-    width: 200px;
+    /* border: solid black 1px; */
+    /* border-radius: 5px; */
+    /* margin: 5px; */
+    /* padding: 10px; */
+    width: 100%;
     height: 40px;
-    padding: 10px;
-    border-radius: 5px;
     background-color: #2E2E2E;
     box-shadow: 3px 3px 5px gray;
+    /* display: table; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
   .sidebar-menu > a {
     color: white;
     font-weight: 700;
     text-decoration: none;
+    /* display: table-cell;
+    vertical-align: middle;
+    text-align: center; */
   }
   .sidebar-menu:hover {
     background-color: #F6F7F9;
     color: black;
+    transition: 0.3s;
   }
-  .sidbar-menu > a:hover {
+  .sidebar-menu > a:hover {
     color: black;
+    transition: 0.1s;
+    font-weight: 900;
+    font-size: 16px;
   }
   .goal-type-select {
     width: 120px;

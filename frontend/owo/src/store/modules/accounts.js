@@ -9,7 +9,7 @@ export const accounts = {
     accessToken: null,
     refreshToken: null,
     userInfo: {
-      nick: '',
+      nick: '안녕하세요?',
       gender: '',
       age: '',
       height: '',
@@ -24,6 +24,17 @@ export const accounts = {
       bmi: null,
       bmr: null,
       caloriePerDay: null,
+    },
+    slogandata: '',
+    image: '',
+    record: {
+      point: '', // 경쟁
+      exp: '', // 자유, 영상 경험치
+    },
+    compete: {
+      workout1: '', // 운동1 최고기록
+      workout2: '', // 운동2 최고기록
+      workout3: '', // 운동3 최고기록
     },
   }),
   mutations: {
@@ -61,6 +72,20 @@ export const accounts = {
       state.physicalInfo.bmr = payload.bmr;
       state.physicalInfo.caloriePerDay = payload.caloriePerDay;
     },
+    SET_SLOGAN: (state, payload) => {
+      state.slogan = payload.slogan;
+    },
+    SET_PROFILE_IMG: (state, payload) => {
+      state.image = payload.image;
+    },
+    SET_POINT: (state, payload) => {
+      state.record.point = payload;
+    },
+    SET_COMPETE: (state, payload) => {
+      state.compete.workout1 = payload.workout1;
+      state.compete.workout2 = payload.workout2;
+      state.compete.workout3 = payload.workout3;
+    },
   },
   actions: {
     saveAccessToken({ commit }, token) {
@@ -89,8 +114,11 @@ export const accounts = {
           const refresh = response.refreshToken;
           dispatch('saveAccessToken', access);
           dispatch('saveRefreshToken', refresh);
-          dispatch('setUserInfo', response);
-          dispatch('physicalInfo');
+          dispatch('setUserInfo', response); // 사용자정보 조회
+          dispatch('fetchPhysicalInfo'); // 운동분석 조회
+          dispatch('fetchSlogan'); // 슬로건 조회
+          dispatch('fetchPoint'); // 포인트 조회
+          dispatch('fetchCompete'); // 경쟁모드 최고기록 조회
           router.push('/'); // main 페이지로 이동
         })
         .catch((err) => {
@@ -146,7 +174,7 @@ export const accounts = {
           console.log(payload);
         });
     },
-    physicalInfo({ state, commit }) {
+    fetchPhysicalInfo({ state, commit }) {
       axios({
         url: `https://i7c202.p.ssafy.io:8282/api/user/bmi/${state.userInfo.id}`,
         method: 'get',
@@ -162,9 +190,51 @@ export const accounts = {
           console.log(err);
         });
     },
+    setSlogan({ commit }, payload) {
+      commit('SET_SLOGAN', payload);
+    },
+    fetchSlogan({ state, commit }) {
+      axios({
+        url: `https://i7c202.p.ssafy.io:8282/api/user/slogan/${state.userInfo.id}`,
+        method: 'get',
+        headers: {
+          'X-AUTH-TOKEN': state.accessToken,
+          'REFRESH-TOKEN': state.refreshToken,
+        },
+      })
+        .then((res) => {
+          // console.log(res);
+          commit('SET_SLOGAN', res.data.data);
+          // dispatch('setSlogan', res.data.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    updateSlogan({ state, dispatch }, payload) {
+      console.log('axios 하기 전');
+      axios({
+        url: 'https://i7c202.p.ssafy.io:8282/api/user',
+        method: 'put',
+        headers: {
+          'X-AUTH-TOKEN': state.accessToken,
+          'REFRESH-TOKEN': state.refreshToken,
+          'Content-Type': 'application/json',
+        },
+        data: payload,
+      })
+        .then((res) => {
+          console.log('res');
+          console.log(res.data.data);
+          console.log(payload);
+          dispatch('setSlogan', payload.slogan);
+          // router.push({ name: 'MyPageMainView' });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
     updateUserInfo({ state, dispatch }, payload) {
-      console.log(payload);
-      console.log('액시오스하기전');
       axios({
         url: 'https://i7c202.p.ssafy.io:8282/api/user',
         method: 'put',
@@ -177,10 +247,66 @@ export const accounts = {
         .then((res) => {
           // console.log(res.data.data);
           dispatch('setUserInfo', res.data.data);
-          router.push({ name: 'MyPageMainView' });
+          // router.push({ name: 'MyPageMainView' });
         })
         .catch((err) => {
           console.log(err.toJSON());
+        });
+    },
+    setProfileImg({ commit }, payload) {
+      commit('SET_PROFILE_IMG', payload);
+    },
+    fetchProfileImg({ state, commit }) {
+      axios({
+        url: `https://i7c202.p.ssafy.io:8282/api/user/bmi/${state.userInfo.id}`,
+        method: 'get',
+        headers: {
+          'X-AUTH-TOKEN': state.accessToken,
+          'REFRESH-TOKEN': state.refreshToken,
+          'Content-Type': 'pultipart/form-data',
+        },
+      })
+        .then((res) => {
+          commit('SET_PHYSICAL_INFO', res.data.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    fetchPoint({ state, commit }) {
+      axios({
+        url: `https://i7c202.p.ssafy.io:8282/api/user/point/${state.userInfo.id}`,
+        method: 'get',
+        headers: {
+          'X-AUTH-TOKEN': state.accessToken,
+          'REFRESH-TOKEN': state.refreshToken,
+        },
+      })
+        .then((res) => {
+          // console.log(res.data.message);
+          console.log(res.data.data);
+          commit('SET_POINT', res.data.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    fetchCompete({ state, commit }) {
+      axios({
+        url: `https://i7c202.p.ssafy.io:8282/api/user/compete/${state.userInfo.id}`,
+        method: 'get',
+        headers: {
+          'X-AUTH-TOKEN': state.accessToken,
+          'REFRESH-TOKEN': state.refreshToken,
+        },
+      })
+        .then((res) => {
+          // console.log(res.data.message);
+          console.log(res.data.data);
+          commit('SET_COMPETE', res.data.data);
+        })
+        .catch((err) => {
+          console.log(err);
         });
     },
   },
@@ -188,5 +314,8 @@ export const accounts = {
     isLogin: (state) => !!state.accessToken,
     userInfo: (state) => state.userInfo,
     physicalInfo: (state) => state.physicalInfo,
+    slogan: (state) => state.slogan,
+    record: (state) => state.record,
+    workout: (state) => state.workout,
   },
 };

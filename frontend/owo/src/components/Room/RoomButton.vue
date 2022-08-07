@@ -28,13 +28,6 @@
             <b-dropdown-item :value="timer" @click="set_timer_10">10초</b-dropdown-item>
           </b-dropdown>
         </div>
-        <div>
-          <Emoji v-bind:style="{position: 'fixed', top: ey-480 +'px', left: ex + 'px'}"
-          v-if="Emoji_ONOFF"/>
-            <button id="emoji_btn" @click="open_emoji" class="btn btn-outline-secondary m-2">이모티콘
-              <img class="menu_icon" src="@/assets/icon/emoji.png" alt="emoji">
-            </button>
-        </div>
         <RoomSetting></RoomSetting>
         <AfterExerciseModal/>
       </div>
@@ -52,31 +45,12 @@
 import html2canvas from 'html2canvas';
 import { mapMutations } from 'vuex';
 import AfterExerciseModal from './AfterExerciseModal.vue';
-import Emoji from '../MyEmoji.vue';
 import RoomSetting from './RoomSetting.vue';
 
-let emojiX;
-let emojiY;
 const meetingroom = 'meetingroom';
-
-window.onload = function () {
-  emojiX = document.getElementById('emoji_btn').getClientRects()[0].x;
-  emojiY = document.getElementById('emoji_btn').getClientRects()[0].bottom;
-  // console.log(emojiX);
-  // console.log(emojiY);
-  // console.log('top :', document.getElementById('emoji_btn').getClientRects()[0].top);
-  // console.log('bottom :', document.getElementById('emoji_btn').getClientRects()[0].bottom);
-  // console.log('left :', document.getElementById('emoji_btn').getClientRects()[0].left);
-  // console.log('right :', document.getElementById('emoji_btn').getClientRects()[0].right);
-  // console.log('height :', document.getElementById('emoji_btn').getClientRects()[0].height);
-  // console.log('width :', document.getElementById('emoji_btn').getClientRects()[0].width);
-  // console.log('x :', document.getElementById('emoji_btn').getClientRects()[0].x);
-  // console.log('y :', document.getElementById('emoji_btn').getClientRects()[0].y);
-};
 
 export default {
   components: {
-    Emoji,
     AfterExerciseModal,
     RoomSetting,
   },
@@ -84,15 +58,13 @@ export default {
     return {
       // input: '',
       // search: '',
-      Emoji_ONOFF: null,
+
       isMaster: true,
       video: false,
       mic: false,
       timer: 3,
       temp_timer: 3,
       take_photo_timer: null,
-      ey: null,
-      ex: null,
       is_take_photo: false,
       pictures: [],
       // emoji_h: document.getElementById('emoji_btn').top,
@@ -157,11 +129,6 @@ export default {
     set_timer_10() {
       this.timer = 10;
       console.log(this.timer);
-    },
-    open_emoji() {
-      this.Emoji_ONOFF = !this.Emoji_ONOFF;
-      this.ex = emojiX;
-      this.ey = emojiY;
     },
   },
 };
