@@ -1,19 +1,23 @@
 <template>
   <div class="webrtctag col-4 m0p0 mb-2 mx-1">
-    <div class="m0p0">
+    <!-- <div class="m0p0">
       <button id="img" @click="get_out">
         <img style="width: 25px" src="@/assets/icon/get_out.png" alt="" />
       </button>
-    </div>
+    </div> -->
     <!-- <p>개인 WebRTC 영상</p> -->
-    <div v-if="streamManager" class="m0p0">
-      <p class="myname">{{ clientData }}</p>
+    <div v-if="streamManager" class="position-relative m0p0">
+      <div class="myreaction">{{newAllEMojiList[0]}}</div>
+      <p class="myname">&ensp;{{ clientData }}&ensp;</p>
       <ov-video class="ov-video" :stream-manager="streamManager" />
     </div>
   </div>
 </template>
 <script>
+import { mapState } from 'vuex';
 import OvVideo from './OvVideo.vue';
+
+const emoji = 'emoji';
 
 export default {
   components: {
@@ -43,6 +47,17 @@ export default {
   },
 
   computed: {
+    ...mapState(emoji, ['allEmojiList']),
+    newAllEMojiList() {
+      const newList = [];
+      for (let i = this.allEmojiList.length - 1; i >= 0; i -= 1) {
+        if (this.allEmojiList[i][0] === this.clientData) {
+          newList.push(this.allEmojiList[i][1]);
+          break;
+        }
+      }
+      return newList;
+    },
     clientData() {
       const { clientData } = this.getConnectionData();
       return clientData;
@@ -67,7 +82,7 @@ export default {
 .m0p0 {
   margin:0;
   padding:0;
-  border: solid 1px black;
+  border-radius: 10px;
 }
 
 #img:hover {
@@ -75,21 +90,31 @@ export default {
 }
 
 .webrtctag {
-  width: 600px;
-  height:100%;
+  width:500px;
+  height:360px;
 }
 
 .myname {
-  display: inline;
-  position:relative;
+  position:absolute;
   top:0px;
   left:0px;
   background-color:white;
   font-size:24px;
-  padding: 10px;
+  border-radius: 0px 0px 10px 0px;
 }
-/* .ov-video {
+
+.myreaction {
+  position:absolute;
+  height:100%;
+  top:0px;
+  right:0px;
+  font-size:150px;
+  z-index:500;
+}
+
+.ov-video {
   width: 100%;
   height: 100%;
-} */
+  border-radius: 20px;
+}
 </style>
