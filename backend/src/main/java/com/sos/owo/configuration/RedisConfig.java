@@ -1,6 +1,7 @@
 package com.sos.owo.configuration;
 
-import lombok.Value;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CachingConfigurerSupport;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,7 +19,7 @@ import java.time.Duration;
 
 @Configuration
 @EnableRedisRepositories
-public class RedisConfig extends CachingConfigurerSupport {
+public class RedisConfig  {
 
     @Value("${spring.redis.port}")
     private int port;
@@ -32,8 +33,8 @@ public class RedisConfig extends CachingConfigurerSupport {
     }
 
     @Bean
-    public RedisTemplate<String, Integer> redisTemplate(){
-        RedisTemplate<String, Integer> redisTemplate = new RedisTemplate<>();
+    public RedisTemplate<String, String> redisTemplate(){
+        RedisTemplate<String, String> redisTemplate = new RedisTemplate<>();
         // key, value 깨짐 방지
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new StringRedisSerializer());
@@ -43,22 +44,22 @@ public class RedisConfig extends CachingConfigurerSupport {
 
 
     //레디스 캐시
-    @Bean
-    public RedisCacheManager redisCacheManager(RedisConnectionFactory redisConnectionFactory) {
-        RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
-                .serializeKeysWith(RedisSerializationContext
-                        .SerializationPair.fromSerializer(new StringRedisSerializer()))
-                .serializeValuesWith(RedisSerializationContext
-                        .SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()))
-                .entryTtl(Duration.ofDays(1)); //캐시 삭제 주기
-
-
-        return RedisCacheManager
-                .RedisCacheManagerBuilder
-                .fromConnectionFactory(redisConnectionFactory)
-                .cacheDefaults(redisCacheConfiguration)
-                .build();
-    }
+//    @Bean
+//    public RedisCacheManager redisCacheManager(RedisConnectionFactory redisConnectionFactory) {
+//        RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
+//                .serializeKeysWith(RedisSerializationContext
+//                        .SerializationPair.fromSerializer(new StringRedisSerializer()))
+//                .serializeValuesWith(RedisSerializationContext
+//                        .SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()))
+//                .entryTtl(Duration.ofDays(1)); //캐시 삭제 주기
+//
+//
+//        return RedisCacheManager
+//                .RedisCacheManagerBuilder
+//                .fromConnectionFactory(redisConnectionFactory)
+//                .cacheDefaults(redisCacheConfiguration)
+//                .build();
+//    }
 
 
 
