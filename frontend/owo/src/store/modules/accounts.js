@@ -90,6 +90,7 @@ export const accounts = {
           dispatch('saveAccessToken', access);
           dispatch('saveRefreshToken', refresh);
           dispatch('setUserInfo', response);
+          dispatch('physicalInfo');
           router.push('/'); // main 페이지로 이동
         })
         .catch((err) => {
@@ -107,9 +108,6 @@ export const accounts = {
             }
           }
         });
-    },
-    setPhysicalInfo({ commit }, payload) {
-      commit('SET_PHYSICAL_INFO', payload);
     },
     logout({ state, dispatch }) {
       // eslint-disable-next-line
@@ -148,7 +146,7 @@ export const accounts = {
           console.log(payload);
         });
     },
-    physicalInfo({ dispatch, state }, { bmi, bmr, caloriePerDay }) {
+    physicalInfo({ state, commit }) {
       axios({
         url: `https://i7c202.p.ssafy.io:8282/api/user/bmi/${state.userInfo.id}`,
         method: 'get',
@@ -156,13 +154,9 @@ export const accounts = {
           'X-AUTH-TOKEN': state.accessToken,
           'REFRESH-TOKEN': state.refreshToken,
         },
-        data: {
-          bmi, bmr, caloriePerDay,
-        },
       })
         .then((res) => {
-          console.log(res);
-          dispatch('setPhysicalInfo', res.data);
+          commit('SET_PHYSICAL_INFO', res.data.data);
         })
         .catch((err) => {
           console.log(err);
