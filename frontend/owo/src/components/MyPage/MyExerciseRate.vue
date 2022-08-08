@@ -23,7 +23,7 @@
                   class="progress-bar"
                   role="progressbar" aria-label="Segment one"
                   :style="{width: record.exerciseRate + '%',
-                    backgroundColor: '#2E2E2E' }"
+                    backgroundColor: '#828282' }"
                   :aria-valuenow=record.exerciseRate
                   aria-valuemin="0" aria-valuemax="100">
                 </div>
