@@ -330,6 +330,9 @@
         </div>
       </div>
       <!-- 채팅영역 끝 -->
+      <button @click="hello" id="hello">
+        안녕하세요?
+      </button>
     </div>
   </div>
 </template>
