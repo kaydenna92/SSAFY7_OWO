@@ -223,11 +223,6 @@ export const accounts = {
           'X-AUTH-TOKEN': state.accessToken,
           'REFRESH-TOKEN': state.refreshToken,
         },
-        data: {
-          bmi,
-          bmr,
-          caloriePerDay,
-        },
       })
         .then((res) => {
           commit('SET_PHYSICAL_INFO', res.data.data);
