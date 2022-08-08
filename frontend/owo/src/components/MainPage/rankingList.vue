@@ -22,7 +22,6 @@
             {{userrank.rate}}위 {{userrank.username}}님 {{userrank.workoutTime}}분</b-button>
         </div>
       </b-card>
-
       <b-card class="rounded-5 cards">
         <h5 class="card-title">운동왕의 record</h5>
         <h2>{{userrank.username}}</h2>
@@ -51,12 +50,12 @@ import { useStore } from 'vuex';
 import { reactive, computed } from 'vue';
 import 'vue3-circle-progress/dist/circle-progress.css';
 import CircleProgress from 'vue3-circle-progress';
-import MySmCalendar from '../MyPage/MySmCalendar.vue';
+// import MySmCalendar from '../MyPage/MySmCalendar.vue';
 
 export default {
   components: {
     CircleProgress,
-    MySmCalendar,
+    // MySmCalendar,
   },
   setup() {
     const store = useStore();
