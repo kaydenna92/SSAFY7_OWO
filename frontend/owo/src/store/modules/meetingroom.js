@@ -58,7 +58,7 @@ export const meetingroom = {
     },
     getMeetingRoomList({ commit }, requestDto) {
       axios({
-        url: `https://i7c202.p.ssafy.io:8282/${requestDto.mode}`,
+        url: `https://i7c202.p.ssafy.io:8282/api/${requestDto.mode}`,
         method: 'get',
         headers: {
           'X-AUTH-TOKEN': requestDto.accesstoken,
