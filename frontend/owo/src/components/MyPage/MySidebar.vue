@@ -232,6 +232,7 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
+    /* background-color: white; */
   }
   .sidebar-menu > a {
     font-weight: 700;
@@ -285,5 +286,8 @@ export default {
     cursor: pointer;
     transition: 0.4s;
     border: solid #6f6f6f 1px;
+  }
+  button {
+    border: none;
   }
 </style>

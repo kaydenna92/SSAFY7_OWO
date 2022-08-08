@@ -70,9 +70,9 @@ export const accounts = {
       }
     },
     SET_PHYSICAL_INFO: (state, payload) => {
-      state.bmi = payload.bmi;
-      state.bmr = payload.bmr;
-      state.caloriePerDay = payload.caloriePerDay;
+      state.physicalInfo.bmi = payload.bmi;
+      state.physicalInfo.bmr = payload.bmr;
+      state.physicalInfo.caloriePerDay = payload.caloriePerDay;
     },
     SET_SLOGAN: (state, payload) => {
       state.slogan = payload.slogan;
@@ -222,11 +222,6 @@ export const accounts = {
         headers: {
           'X-AUTH-TOKEN': state.accessToken,
           'REFRESH-TOKEN': state.refreshToken,
-        },
-        data: {
-          bmi,
-          bmr,
-          caloriePerDay,
         },
       })
         .then((res) => {

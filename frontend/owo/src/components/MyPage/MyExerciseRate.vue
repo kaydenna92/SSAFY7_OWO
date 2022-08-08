@@ -87,7 +87,7 @@ export default {
   padding-top: 30px;
   font-size: 18px;
   padding-left: 40px;
-  padding-bottom: 30px;
+  padding-bottom: 10px;
 }
 
 .my-rate-info {
