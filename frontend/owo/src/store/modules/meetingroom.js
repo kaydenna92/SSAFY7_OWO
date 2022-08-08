@@ -50,7 +50,7 @@ export const meetingroom = {
           const { roomId } = res.data.data;
           commit('SET_SESSION_ID', roomId);
           console.log(`test = ${state.mySessionId}`);
-          router.push('/competition');
+          router.push('/room/competition');
         })
         .catch((err) => {
           console.log(err);
@@ -58,7 +58,7 @@ export const meetingroom = {
     },
     getMeetingRoomList({ commit }, requestDto) {
       axios({
-        url: `https://i7c202.p.ssafy.io:8282/${requestDto.mode}`,
+        url: `https://i7c202.p.ssafy.io:8282/api/${requestDto.mode}`,
         method: 'get',
         headers: {
           'X-AUTH-TOKEN': requestDto.accesstoken,
@@ -68,7 +68,7 @@ export const meetingroom = {
           console.log(res.data);
           const list = res.data.data;
           commit('SET_MEETING_ROOM_LIST', list);
-          router.push('/competition');
+          router.push('/room/competition');
         })
         .catch((err) => {
           console.log(err);
@@ -107,7 +107,26 @@ export const meetingroom = {
         });
     },
   },
-  // getters: {
-  //   sessionId: (state) => state.mySessionId,
+  // startMeetingRoom({ commit }, requestDto) {
+  //   console.log('=============*******************');
+  //   console.log(requestDto);
+  //   console.log(requestDto.accesstoken);
+  //   console.log(requestDto.roomId);
+  //   axios({
+  //     url: `http://localhost:9000/api/room/start/${Number(requestDto.roomId)}`,
+  //     method: 'put',
+  //     headers: {
+  //       'X-AUTH-TOKEN': requestDto.accesstoken,
+  //     },
+  //   })
+  //     .then((res) => {
+  //       console.log(res.data);
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
   // },
+// getters: {
+//   sessionId: (state) => state.mySessionId,
+// },
 };
