@@ -30,7 +30,7 @@
           :percent="80"
           :show-percent="true"
           :viewport="true"
-          :size="100"/>
+          :size="200"/>
       </div>
       <h3 style="margin-top:10px">연속 3일동안 운동하고 있어요!</h3>
     </b-card>

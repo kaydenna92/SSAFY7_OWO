@@ -12,6 +12,8 @@ import YoutubeView from '../views/Room/YoutubeView.vue';
 import login from '../views/accounts/loginView.vue';
 import register from '../views/accounts/registerView.vue';
 import emailVerify from '../views/accounts/emailVerify.vue';
+import TestView from '../views/accounts/TestView.vue';
+import OauthRedirect from '../views/accounts/RedirectView.vue';
 
 const routes = [
   {
@@ -24,6 +26,18 @@ const routes = [
     path: '/login',
     name: 'login',
     component: login,
+    meta: { unauthorized: true },
+  },
+  {
+    path: '/social',
+    name: 'TestPage',
+    component: TestView,
+    meta: { unauthorized: true },
+  },
+  {
+    path: '/oauth/redirect',
+    name: 'OauthRedrect',
+    component: OauthRedirect,
     meta: { unauthorized: true },
   },
   {
