@@ -224,9 +224,7 @@ export const accounts = {
           'REFRESH-TOKEN': state.refreshToken,
         },
         data: {
-          bmi,
-          bmr,
-          caloriePerDay,
+          payload
         },
       })
         .then((res) => {
