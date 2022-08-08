@@ -113,7 +113,7 @@ export const accounts = {
     },
     login({ dispatch, commit }, credentials) { // 로그인
       axios
-        .post('https://i7c202.p.ssafy.io:8282/auth/login', credentials)        .then((res) => {
+        .post('https://i7c202.p.ssafy.io:8282/auth/login', credentials).then((res) => {
           const response = res.data.data;
           const access = response.accessToken;
           const refresh = response.refreshToken;
