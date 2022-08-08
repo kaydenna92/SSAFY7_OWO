@@ -9,6 +9,7 @@
     <div v-if="streamManager" class="position-relative m0p0">
       <div class="myreaction">{{newAllEMojiList[0]}}</div>
       <p class="myname">&ensp;{{ clientData }}&ensp;</p>
+      <!-- <img class="mymic" v-if="!mic" src="@/assets/icon/micmute.png" alt=""> -->
       <ov-video class="ov-video" :stream-manager="streamManager" />
     </div>
   </div>
@@ -18,6 +19,7 @@ import { mapState } from 'vuex';
 import OvVideo from './OvVideo.vue';
 
 const emoji = 'emoji';
+// const meetingroom = 'meetingroom';
 
 export default {
   components: {
@@ -48,6 +50,7 @@ export default {
 
   computed: {
     ...mapState(emoji, ['allEmojiList']),
+    // ...mapState(meetingroom, ['mic']),
     newAllEMojiList() {
       const newList = [];
       for (let i = this.allEmojiList.length - 1; i >= 0; i -= 1) {
@@ -116,5 +119,13 @@ export default {
   width: 100%;
   height: 100%;
   border-radius: 20px;
+}
+
+.mymic {
+  position:absolute;
+  bottom:20px;
+  right:10px;
+  font-size:15px;
+  width:50px;
 }
 </style>

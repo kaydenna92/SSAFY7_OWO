@@ -107,7 +107,7 @@ export const accounts = {
       commit('SET_USER_INFO', payload);
     },
     login({ dispatch, commit }, credentials) {
-      axios.post('https://i7c202.p.ssafy.io:8282/auth/login', credentials)
+      axios.post('https://i7c202.p.ssafy.io:8282/api/auth/login', credentials)
         .then((res) => {
           const response = res.data.data;
           const access = response.accessToken;
@@ -158,7 +158,7 @@ export const accounts = {
         });
     },
     register({ dispatch, state }, payload) {
-      axios.post('https://i7c202.p.ssafy.io:8282/auth/join', payload)
+      axios.post('https://i7c202.p.ssafy.io:8282/api/auth/join', payload)
         .then((res) => {
           const response = res.data.data;
           console.log(response);
