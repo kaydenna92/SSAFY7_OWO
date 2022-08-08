@@ -1,6 +1,6 @@
 <template>
   <a
-    href="https://i7c202.p.ssafy.io:8282/oauth2/authorization/google?redirect_uri=https://i7c202.p.ssafy.io:3443/oauth/redirect"
+    href="npm ruhttps://i7c202.p.ssafy.io:8282/oauth2/authorization/google?redirect_uri=https://i7c202.p.ssafy.io:3443/oauth/redirect"
     class="btn btn-success active"
     role="button"
     >Google Login</a
