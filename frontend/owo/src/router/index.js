@@ -42,6 +42,7 @@ const routes = [
     path: '/mypage',
     name: 'MyPage',
     component: MyPageView,
+    meta: { unauthorized: true },
     children: [
       {
         path: 'main',
