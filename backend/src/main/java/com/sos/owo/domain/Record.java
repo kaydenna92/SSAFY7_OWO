@@ -5,9 +5,11 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+
+
 
 @Entity
 @Getter
@@ -35,8 +37,8 @@ public class Record {
     @OneToMany(mappedBy = "record",cascade = CascadeType.ALL)
     private List<Tag> tags = new ArrayList<>();
 
-    @Column(name="record_hour")
-    private int recordHour;
+    @Column(name="record_time")
+    private int recordTime;//한 운동방으로 운동한 총 시간
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "record_img_id")
@@ -61,18 +63,5 @@ public class Record {
         this.recordImg = recordImg;
     }
 
-//    @Override
-//    public String toString() {
-//        return "Record{" +
-//                "recordId=" + recordId +
-//                ", member=" + member.getNick() +
-//                ", meetingRoom=" + meetingRoom.getName() +
-//                ", recordHour=" + recordHour +
-//                ", recordImg=" + recordImg +
-//                ", recordMemo='" + recordMemo + '\'' +
-//                ", recordDatetime=" + recordDatetime +
-//                ", recordSecret=" + recordSecret +
-//                ", recordExercise=" + recordExercise +
-//                '}';
-//    }
+
 }
