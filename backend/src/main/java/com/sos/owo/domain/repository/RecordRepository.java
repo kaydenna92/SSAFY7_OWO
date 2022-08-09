@@ -86,7 +86,8 @@ public class RecordRepository {
         for(Record r:recordList){
             List<TagResponseDto> tagList = tagRepository.findTagList(r.getRecordId());
             recordResponseDtoList.add(new RecordResponseDto(r.getRecordId(), r.getMember().getId(),r.getMeetingRoom().getId(),tagList,
-                    r.getRecordTime(), r.getRecordImg().getId(),
+                    r.getRecordTime(),
+                    r.getRecordImg().getId(),
                     r.getRecordMemo() ,r.getRecordDatetime(),r.isRecordSecret(),r.getRecordExercise().toString()));
         }
 
@@ -110,7 +111,8 @@ public class RecordRepository {
                     && r.getRecordDatetime().getMonthValue() == month){
                 List<TagResponseDto> tagList = tagRepository.findTagList(r.getRecordId());
                 monthList.add(new RecordResponseDto(r.getRecordId(), r.getMember().getId(),r.getMeetingRoom().getId(),tagList,
-                        r.getRecordTime(), r.getRecordImg().getId(),
+                        r.getRecordTime(),
+                        r.getRecordImg().getId(),
                         r.getRecordMemo() ,r.getRecordDatetime(),r.isRecordSecret(),r.getRecordExercise().toString()));
             }
         }

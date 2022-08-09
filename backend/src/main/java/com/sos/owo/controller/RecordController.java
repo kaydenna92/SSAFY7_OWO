@@ -14,6 +14,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.codec.binary.Base64;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -25,14 +26,14 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -407,10 +408,12 @@ public class RecordController {
         try {
             if (file != null) {
                 String fileOriName = file.getOriginalFilename();
-                String fileName = new MD5Generator(fileOriName).toString();
-                String savePath = System.getProperty("user.dir") +"\\src\\main\\resources\\static\\img\\profile";
+                String fileName = recordId+"_"+fileOriName;
+                String savePath = System.getProperty("user.dir") +"\\src\\main\\resources\\static\\img\\record";
+
                 if (!new File(savePath).exists()) {
                     try {
+                        System.out.println("폴더 생성");
                         new File(savePath).mkdir();
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -431,7 +434,7 @@ public class RecordController {
         } catch (IllegalStateException e){
             e.printStackTrace();
             message.setStatus(StatusEnum.BAD_REQUEST);
-            message.setMessage("해당 이메일이 존재하지 않습니다.");
+            message.setMessage("해당 기록이 존재하지 않습니다.");
             return new ResponseEntity<>(message, headers, HttpStatus.BAD_REQUEST);
         } catch (Exception e){
             e.printStackTrace();
@@ -443,7 +446,7 @@ public class RecordController {
 
 
     @ApiOperation(value = "운동 사진 요청" ,notes = "운동 기록에 대한 운동 사진파일을 요청한다.")
-    @ApiImplicitParam(name = "memberId",value = "사용자 recordId",dataType = "int",paramType = "path")
+    @ApiImplicitParam(name = "recordId",value = "사용자 recordId",dataType = "int",paramType = "path")
     @GetMapping("/api/record/img/{recordId}")
     public ResponseEntity<?> getRecordImg(@PathVariable("recordId") int recordId) throws IOException {
         RecordFileDto fileDto = recordImgService.getFile(recordId);
@@ -452,27 +455,138 @@ public class RecordController {
         }
         Path path = Paths.get(fileDto.getFileUrl());
         Resource resource = new InputStreamResource(Files.newInputStream(path));
-        return ResponseEntity.ok().contentType(MediaType.parseMediaType("application/octet-stream"))
+        return ResponseEntity.ok().contentType(MediaType.parseMediaType("image/png"))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileDto.getFileOriName() + "\"")
                 .body(resource);
     }
 
     @ApiOperation(value = "하루 운동 사진들 요청" ,notes = "하루의 운동 기록에 대한 운동 사진파일을 리스트로 요청한다.")
     @ApiImplicitParam(name = "memberId",value = "사용자 recordId",dataType = "int",paramType = "path")
-    @GetMapping("/api/record/img/{recordId}/{date}")
-    public ResponseEntity<?> getRecordImgDay(@PathVariable("recordId") int recordId,@PathVariable("date") LocalDate date) throws IOException {
-        List<RecordFileDto> fileDto = recordImgService.getFileDayList(recordId,date);
-        if(fileDto == null){
-            return new ResponseEntity<String>("null", HttpStatus.OK);
-        }
-        for (RecordFileDto r:fileDto){
-            Path path = Paths.get(r.getFileUrl());
-            Resource resource = new InputStreamResource(Files.newInputStream(path));
-        }
+    @GetMapping("/api/record/img/{memberId}/{date}")
+    public ResponseEntity<?> getRecordImgDay(@PathVariable("memberId") int memberId,@DateTimeFormat(pattern = "yyyyMMdd") @Parameter(schema = @Schema(type="string" ,format = "date", example = "20220805"))@PathVariable("date") LocalDate date) throws IOException {
+        Message message = new Message();
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(new MediaType("application","json", Charset.forName("UTF-8")));
+        try {
+            List<RecordFileDto> fileDto = recordImgService.getFileDayList(memberId, date);
+            if (fileDto == null) {
+                System.out.println(">>>fileDto null");
+                return new ResponseEntity<String>("null", HttpStatus.OK);
+            }
+            System.out.println(">>>>"+fileDto.size());
+            System.out.println(">>>>"+fileDto.get(0).getFileName());
 
+            String[] imageString = new String[fileDto.size()];
+            List<String> result = new ArrayList<>();
+            for (int i = 0; i < fileDto.size(); i++) {
+                InputStream inputStream = null;
+                ByteArrayOutputStream byteArrayOutputStream = null;
+                try {
+                    File file = new File(fileDto.get(i).getFileUrl());
+                    if (file.exists()) {
+                        System.out.println(">>file exists");
+                        inputStream = new FileInputStream(file);
+                        byteArrayOutputStream = new ByteArrayOutputStream();
 
-        return ResponseEntity.ok().contentType(MediaType.parseMediaType("application/octet-stream"))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileDto.getFileOriName() + "\"")
-                .body(resource);
+                        int len = 0;
+                        byte[] buf = new byte[1024];
+                        while ((len = inputStream.read(buf)) != -1) {
+                            byteArrayOutputStream.write(buf, 0, len);
+                        }
+                        byte[] fileArray = byteArrayOutputStream.toByteArray();
+                        imageString[i] = new String(Base64.encodeBase64(fileArray));
+
+                        String changeString = "data:image/png;base64," + imageString[i];
+                        result.add(changeString);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    inputStream.close();
+                    byteArrayOutputStream.close();
+                }
+            }
+            message.setStatus(StatusEnum.OK);
+            message.setMessage("하루 운동 사진리스트 조회 성공");
+            message.setData(result);
+            return new ResponseEntity<>(message,httpHeaders,HttpStatus.OK);
+        }catch (IllegalStateException e){
+            e.printStackTrace();
+            message.setStatus(StatusEnum.BAD_REQUEST);
+            message.setMessage("잘못된 요청");
+            return new ResponseEntity<>(message,httpHeaders,HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            e.printStackTrace();
+            message.setStatus(StatusEnum.INTERNAL_SERVER_ERROR);
+            message.setMessage("내부 서버 에러");
+            return new ResponseEntity<>(message,httpHeaders,HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @ApiOperation(value = "한달 운동 사진들 요청" ,notes = "한달의 운동 기록에 대한 운동 사진파일을 리스트로 요청한다.")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "memberId",value = "사용자 id",dataType = "int",paramType = "path"),
+            @ApiImplicitParam(name = "year",value = "연도(ex.1998)",dataType = "int",paramType = "path"),
+            @ApiImplicitParam(name = "month",value = "달(ex.8)",dataType = "int",paramType = "path"),
+    })
+    @GetMapping("/api/record/img/{memberId}/{year}/{month}")
+    public ResponseEntity<?> getRecordImgMonth(@PathVariable("memberId") int memberId,@PathVariable("year")int year, @PathVariable("month")int month) throws IOException {
+        Message message = new Message();
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(new MediaType("application","json", Charset.forName("UTF-8")));
+        try {
+            List<RecordFileDto> fileDto = recordImgService.getFileMonthList(memberId, year,month);
+            if (fileDto == null) {
+                System.out.println("기록이 없음");
+                return new ResponseEntity<String>("null_기록이 없다", HttpStatus.OK);
+            }
+            System.out.println(">>>>"+fileDto.size());
+            System.out.println(">>>>"+fileDto.get(0).getFileName());
+
+            String[] imageString = new String[fileDto.size()];
+            List<String> result = new ArrayList<>();
+            for (int i = 0; i < fileDto.size(); i++) {
+                InputStream inputStream = null;
+                ByteArrayOutputStream byteArrayOutputStream = null;
+                try {
+                    File file = new File(fileDto.get(i).getFileUrl());
+                    if (file.exists()) {
+                        System.out.println(">>file exists");
+                        inputStream = new FileInputStream(file);
+                        byteArrayOutputStream = new ByteArrayOutputStream();
+
+                        int len = 0;
+                        byte[] buf = new byte[1024];
+                        while ((len = inputStream.read(buf)) != -1) {
+                            byteArrayOutputStream.write(buf, 0, len);
+                        }
+                        byte[] fileArray = byteArrayOutputStream.toByteArray();
+                        imageString[i] = new String(Base64.encodeBase64(fileArray));
+
+                        String changeString = "data:image/png;base64," + imageString[i];
+                        result.add(changeString);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    inputStream.close();
+                    byteArrayOutputStream.close();
+                }
+            }
+            message.setStatus(StatusEnum.OK);
+            message.setMessage("한달 운동 사진리스트 조회 성공");
+            message.setData(result);
+            return new ResponseEntity<>(message,httpHeaders,HttpStatus.OK);
+        }catch (IllegalStateException e){
+            e.printStackTrace();
+            message.setStatus(StatusEnum.BAD_REQUEST);
+            message.setMessage("잘못된 요청");
+            return new ResponseEntity<>(message,httpHeaders,HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            e.printStackTrace();
+            message.setStatus(StatusEnum.INTERNAL_SERVER_ERROR);
+            message.setMessage("내부 서버 에러(테이블에 null값이 있을 수 있음)");
+            return new ResponseEntity<>(message,httpHeaders,HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

@@ -28,18 +28,29 @@ public class RecordImgService {
 
     @Transactional
     public RecordFileDto saveFile(int recordId, String fileOriName, String fileName, String fileUrl) throws IllegalStateException{
+        System.out.println(">>>>>>>"+fileOriName+" "+fileName+" "+fileUrl);
+
         Record findRecord = recordRepository.findOneRecord(recordId);
         RecordFileDto fileDto = new RecordFileDto();
         fileDto.setFileName(fileOriName);
         fileDto.setFileOriName(fileName);
         fileDto.setFileUrl(fileUrl);
         RecordImg recordImg = fileDto.toEntity();
-        if(findRecord.getRecordImg() == null){
-            recordImgRepository.save(recordImg);
-        } else{
+        System.out.println(">>>>>+"+recordImg.getFileName()+" "+recordImg.getFileUrl()+" "+recordImg.getFileOriName());
+        try{
             RecordImg findRecordImg = findRecord.getRecordImg();
             findRecordImg.updateRecordImg(recordImg);
+        } catch (NullPointerException n){
+            System.out.println("nullPointerException__");
+            recordImgRepository.save(recordImg);
         }
+//        if(findRecord.getRecordImg() == null){
+//
+//            recordImgRepository.save(recordImg);
+//        } else{
+//            RecordImg findRecordImg = findRecord.getRecordImg();
+//            findRecordImg.updateRecordImg(recordImg);
+//        }
         findRecord.updateRecordImg(recordImg);
 
         return fileDto;
