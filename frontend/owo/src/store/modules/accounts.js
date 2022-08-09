@@ -301,23 +301,24 @@ export const accounts = {
         headers: {
           'X-AUTH-TOKEN': state.accessToken,
           'REFRESH-TOKEN': state.refreshToken,
-          // 'Content-Type': 'pultipart/form-data',
         },
+        // responseType: 'blob',
       })
         .then((res) => {
+          // eslint-disable-next-line
+          // const url = window.URL.createObjectURL(new Blob([res.data], { type: res.headers['content-type'] }));
           console.log('이미지axios응답');
           dispatch('setProfileImg', res.data.data);
-          // commit('SET_PROFILE_IMG', res.data.data);
         })
         .catch((err) => {
           console.log(err);
         });
     },
     updateProfileImg({ state, dispatch }, payload) {
-      console.log('axios 하기 전');
+      console.log('이미지 업데이트 axios 하기 전');
       axios({
         url: `https://i7c202.p.ssafy.io:8282/api/user/img/${state.userInfo.id}`,
-        method: 'put',
+        method: 'post',
         headers: {
           'X-AUTH-TOKEN': state.accessToken,
           'REFRESH-TOKEN': state.refreshToken,
@@ -326,10 +327,11 @@ export const accounts = {
         data: payload,
       })
         .then((res) => {
-          // console.log('res');
-          console.log(res.data.data);
+          console.log('이미지 업데이트 res.data.data 보내기 전');
+          console.log(res);
+          alert(res.data.message);
           // console.log(payload);
-          dispatch('setProfileImg', res.data.data);
+          dispatch('setProfileImg', res.data);
           // router.push({ name: 'MyPageMainView' });
         })
         .catch((err) => {
