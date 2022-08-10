@@ -44,7 +44,6 @@ pipeline {
                 }
 
              stage {
-                stages {
                 dir('backend'){
                 sh 'docker ps -f name=owo_backend -q | xargs --no-run-if-empty docker container stop'
                 sh 'docker container ls -a -f name=owo_backend -q | xargs -r docker container rm'
@@ -59,5 +58,4 @@ pipeline {
             
         }
         
-    }
 }
