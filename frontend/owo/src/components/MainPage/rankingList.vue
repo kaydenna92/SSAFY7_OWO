@@ -41,14 +41,14 @@
 import 'vue3-circle-progress/dist/circle-progress.css';
 import CircleProgress from 'vue3-circle-progress';
 import { mapActions, mapState } from 'vuex';
-// import MySmCalendar from '../MyPage/MySmCalendar.vue';
+import MySmCalendar from '../MyPage/MySmCalendar.vue';
 
 const mainpage = 'mainpage';
 
 export default {
   components: {
     CircleProgress,
-    // MySmCalendar,
+    MySmCalendar,
   },
   computed: {
     ...mapState(mainpage, ['rankingList', 'myranking']),
