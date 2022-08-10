@@ -25,17 +25,16 @@ export const accounts = {
       bmr: '',
       caloriePerDay: '',
     },
-    slogandata: '',
     image: '',
     record: {
       point: '', // 경쟁
       exp: '', // 자유, 영상 경험치
     },
-    compete: {
-      workout1: '', // 운동1 최고기록
-      workout2: '', // 운동2 최고기록
-      workout3: '', // 운동3 최고기록
-    },
+    // compete: {
+    //   workout1: '', // 운동1 최고기록
+    //   workout2: '', // 운동2 최고기록
+    //   workout3: '', // 운동3 최고기록
+    // },
     goals: '',
     profileImg: '',
   }),
@@ -61,7 +60,7 @@ export const accounts = {
       state.userInfo.activityNum = payload.activityNum;
       state.userInfo.activityHour = payload.activityHour;
       state.userInfo.activityLevel = payload.activityLevel;
-      console.log(state.userInfo);
+      // console.log(state.userInfo);
       if (state.userInfo.nick === '' || !state.userInfo.nick) {
         const { email } = state.userInfo;
         const atSignIndex = email.indexOf('@');
@@ -70,9 +69,9 @@ export const accounts = {
       }
     },
     SET_PHYSICAL_INFO: (state, payload) => {
-      state.bmi = payload.bmi;
-      state.bmr = payload.bmr;
-      state.caloriePerDay = payload.caloriePerDay;
+      state.physicalInfo.bmi = payload.bmi;
+      state.physicalInfo.bmr = payload.bmr;
+      state.physicalInfo.caloriePerDay = payload.caloriePerDay;
     },
     SET_SLOGAN: (state, payload) => {
       state.slogan = payload.slogan;
@@ -83,11 +82,11 @@ export const accounts = {
     SET_POINT: (state, payload) => {
       state.record.point = payload;
     },
-    SET_COMPETE: (state, payload) => {
-      state.compete.workout1 = payload.workout1;
-      state.compete.workout2 = payload.workout2;
-      state.compete.workout3 = payload.workout3;
-    },
+    // SET_COMPETE: (state, payload) => {
+    //   state.compete.workout1 = payload.workout1;
+    //   state.compete.workout2 = payload.workout2;
+    //   state.compete.workout3 = payload.workout3;
+    // },
     SET_GOAL: (state, payload) => {
       state.goals = payload;
     },
@@ -123,7 +122,7 @@ export const accounts = {
           dispatch('fetchPhysicalInfo'); // 운동분석 조회
           dispatch('fetchSlogan'); // 슬로건 조회
           dispatch('fetchPoint'); // 포인트 조회
-          dispatch('fetchCompete'); // 경쟁모드 최고기록 조회
+          // dispatch('fetchCompete'); // 경쟁모드 최고기록 조회
           dispatch('fetchGoal'); // 운동목표조회
           dispatch('fetchProfileImg'); // 프로필이미지 조회
           router.push('/'); // main 페이지로 이동
@@ -155,7 +154,7 @@ export const accounts = {
         },
       })
         .then(() => {
-          alert('로그아웃');
+          // alert('로그아웃');
           dispatch('removeToken');
           dispatch('setUserInfo', null);
           router.push('/');
@@ -223,13 +222,10 @@ export const accounts = {
           'X-AUTH-TOKEN': state.accessToken,
           'REFRESH-TOKEN': state.refreshToken,
         },
-        data: {
-          // bmi,
-          // bmr,
-          // caloriePerDay,
-        },
       })
         .then((res) => {
+          console.log('운동분석 업데이트');
+          console.log(res.data.data);
           commit('SET_PHYSICAL_INFO', res.data.data);
         })
         .catch((err) => {
@@ -297,7 +293,7 @@ export const accounts = {
           // router.push({ name: 'MyPageMainView' });
         })
         .catch((err) => {
-          console.log(err.toJSON());
+          console.log(err);
         });
     },
     setProfileImg({ commit }, payload) {
@@ -317,7 +313,11 @@ export const accounts = {
           // eslint-disable-next-line
           // const url = window.URL.createObjectURL(new Blob([res.data], { type: res.headers['content-type'] }));
           console.log('이미지axios응답');
-          dispatch('setProfileImg', res.data.data);
+          console.log(res);
+          console.log(res.data);
+          console.log('응답 끝');
+          const url = URL.createObjectURL(res.data);
+          dispatch('setProfileImg', url);
         })
         .catch((err) => {
           console.log(err);
@@ -341,6 +341,7 @@ export const accounts = {
           alert(res.data.message);
           // console.log(payload);
           dispatch('setProfileImg', res.data);
+          // dispatch('fetchProfileImg', res.data);  // 이미지 바꾸고 바로 페치하고싶은데, 이미지 바꾼 게 완료된 후 하고싶은데
           // router.push({ name: 'MyPageMainView' });
         })
         .catch((err) => {
@@ -358,31 +359,31 @@ export const accounts = {
       })
         .then((res) => {
           // console.log(res.data.message);
-          console.log(res.data.data);
+          // console.log(res.data.data);
           commit('SET_POINT', res.data.data);
         })
         .catch((err) => {
           console.log(err);
         });
     },
-    fetchCompete({ state, commit }) {
-      axios({
-        url: `https://i7c202.p.ssafy.io:8282/api/user/compete/${state.userInfo.id}`,
-        method: 'get',
-        headers: {
-          'X-AUTH-TOKEN': state.accessToken,
-          'REFRESH-TOKEN': state.refreshToken,
-        },
-      })
-        .then((res) => {
-          // console.log(res.data.message);
-          console.log(res.data.data);
-          commit('SET_COMPETE', res.data.data);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    },
+    // fetchCompete({ state, commit }) {
+    //   axios({
+    //     url: `https://i7c202.p.ssafy.io:8282/api/user/compete/${state.userInfo.id}`,
+    //     method: 'get',
+    //     headers: {
+    //       'X-AUTH-TOKEN': state.accessToken,
+    //       'REFRESH-TOKEN': state.refreshToken,
+    //     },
+    //   })
+    //     .then((res) => {
+    //       // console.log(res.data.message);
+    //       console.log(res.data.data);
+    //       commit('SET_COMPETE', res.data.data);
+    //     })
+    //     .catch((err) => {
+    //       console.log(err);
+    //     });
+    // },
     setGoals({ commit }, payload) {
       commit('SET_GOALS', payload);
     },
