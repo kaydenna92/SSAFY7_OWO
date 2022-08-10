@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex justify-content-center" style="width: 100%; height:100%">
+  <div class="d-flex justify-content-center" style="width: 100%; height:100vh">
     <div style="width:1600px;">
     <!-- <div style="width:90%;"> -->
       <!-- eslint-disable-next-line -->
@@ -27,7 +27,6 @@
           </div>
         </div>
       </div>
-      <!-- Rooom 버튼 -->
       <div>
         <div class="d-flex justify-content-center">
           <div class="d-flex justify-content-start align-items-center">
@@ -41,30 +40,34 @@
               </button>
                 <b-modal id="after-exercise-modal" size="xl" hide-footer hide-header>
                   <form @submit.prevent="sendRecord(credentials, credentialsUser)">
-                  <div>
-                    <h1 class="title text-center mt-4">운동일지 작성하기</h1>
-                    <!-- 운동일지, 사진 -->
-                    <div class="checkboxposition">
-                      <div class="md-title2 text-center">오늘의 운동 사진 고르기📷</div>
+                  <div class="checkboxposition">
+                    <h1 class="title text-center mt-4">🏃‍♂️운동 일지</h1>
+                    <label for="my-checkbox m-0" class="secretcheckbox d-flex align-items-center">
+                      <input v-model="credentials.secret" type="checkbox">
+                      <div v-if="credentials.secret">
                         <!-- eslint-disable-next-line -->
-                      <label for="my-checkbox m-0" class="secretcheckbox d-flex align-items-center">
-                        <input v-model="credentials.secret" type="checkbox">
-                        <div v-if="credentials.secret">
-                          <!-- eslint-disable-next-line -->
-                          &ensp;&ensp;<span style="color:#de7474;">비공개</span>&ensp;<img class="menu_icon1" src="@/assets/icon/lock.png" alt="">
-                        </div>
-                        <div  v-if="!credentials.secret">
-                          <!-- eslint-disable-next-line -->
-                          &ensp;&ensp;&ensp;&ensp;<span style="color:#4e8aff;">공개</span>&ensp;<img class="menu_icon1" src="@/assets/icon/unlock.png" alt="">
-                        </div>
-                        <!-- eslint-disable-next-line -->
-                      </label>
-                      <div class="row d-flex align-items-start justify-content-center">
-                        <!-- eslint-disable-next-line -->
-                        <button v-for="(mypicture, i) in mypictures" :key="i" class="col-4 m0p0" style="padding:0px; width:330px;">
-                          <img :src="mypicture" alt="img" style="width:330px;">
-                        </button>
+                        &ensp;&ensp;<span style="color:#de7474;">비공개</span>&ensp;<img class="menu_icon1" src="@/assets/icon/lock.png" alt="">
                       </div>
+                      <div  v-if="!credentials.secret">
+                        <!-- eslint-disable-next-line -->
+                        &ensp;&ensp;&ensp;&ensp;<span style="color:#4e8aff;">공개</span>&ensp;<img class="menu_icon1" src="@/assets/icon/unlock.png" alt="">
+                      </div>
+                      <!-- eslint-disable-next-line -->
+                    </label>
+                  </div>
+                  <div>
+                    <br>
+                    <!-- 운동일지, 사진 -->
+                    <div>
+                      <div class="md-title2 text-center">📷오늘의 운동 사진</div>
+                      <br>
+                        <!-- eslint-disable-next-line -->
+                    </div>
+                    <div class="row d-flex align-items-start justify-content-center">
+                      <!-- eslint-disable-next-line -->
+                      <button v-for="(mypicture, i) in mypictures" :key="i" class="col-4 m0p0" style="padding:0px; width:330px;">
+                        <img :src="mypicture" alt="img" style="width:330px;">
+                      </button>
                     </div>
                     <!-- 메모 남기기 버튼 -->
                     <div>
@@ -130,8 +133,6 @@
           <div class="d-flex justify-content-center align-items-center text-white mt-4"
           v-if="is_take_photo" id="take_photo_timer">{{ timer }}</div>
         </div>
-        <!-- <div v-for="(picture, index) in pictures" :key=index><img :src="picture" alt="">
-        </div> -->
       </div>
       <!-- 이모티콘 영역 -->
       <div class="emoji_position" v-if="Emoji_ONOFF">
@@ -973,7 +974,7 @@ solid #ccb9a8; border-top: 10px solid transparent; border-bottom: 10px solid tra
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 99;
+    z-index: 600;
     opacity: 0.7;
     font-size:300px;
 }
@@ -986,7 +987,7 @@ solid #ccb9a8; border-top: 10px solid transparent; border-bottom: 10px solid tra
   left: 50%;
   transform: translate(-50%, -50%);
   /* height: 80%; */
-  z-index: 600;
+  z-index: 601;
 }
 
 #take_photo_timer {
@@ -995,7 +996,7 @@ solid #ccb9a8; border-top: 10px solid transparent; border-bottom: 10px solid tra
     left: 0%;
     width: 100%;
     height: 100%;
-    z-index: 601;
+    z-index: 602;
     font-size:300px;
 }
 
@@ -1136,8 +1137,8 @@ solid #ccb9a8; border-top: 10px solid transparent; border-bottom: 10px solid tra
   background-color:transparent;
   border:none;
   position:fixed;
-  bottom:30px;
-  right: 120px;
+  top:30px;
+  right: 30px;
   z-index: 700;
 }
 
