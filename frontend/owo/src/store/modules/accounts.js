@@ -308,7 +308,7 @@ export const accounts = {
         },
       })
         .then((res) => {
-          console.log('');
+          // console.log('');
           dispatch('setSlogan', res.data.data.slogan);
         })
         .catch((err) => {
@@ -327,7 +327,7 @@ export const accounts = {
         data: payload,
       })
         .then((res) => {
-          console.log('res');
+          // console.log('res');
           console.log(res.data.message);
           dispatch('fetchSlogan');
           alert('수정되었습니다.');
@@ -374,10 +374,10 @@ export const accounts = {
         .then((res) => {
           // eslint-disable-next-line
           // const url = window.URL.createObjectURL(new Blob([res.data], { type: res.headers['content-type'] }));
-          console.log('이미지axios응답');
-          console.log(res);
-          console.log(res.data);
-          console.log('응답 끝');
+          // console.log('이미지axios응답');
+          // console.log(res);
+          // console.log(res.data);
+          // console.log('응답 끝');
           const url = URL.createObjectURL(res.data);
           dispatch('setProfileImg', url);
         })
@@ -386,7 +386,7 @@ export const accounts = {
         });
     },
     updateProfileImg({ state, dispatch }, payload) {
-      console.log('이미지 업데이트 axios 하기 전');
+      // console.log('이미지 업데이트 axios 하기 전');
       axios({
         url: `https://i7c202.p.ssafy.io:8282/api/user/img/${state.userInfo.id}`,
         method: 'post',
@@ -398,8 +398,8 @@ export const accounts = {
         data: payload,
       })
         .then((res) => {
-          console.log('이미지 업데이트 res.data.data 보내기 전');
-          console.log(res);
+          // console.log('이미지 업데이트 res.data.data 보내기 전');
+          // console.log(res);
           alert(res.data.message);
           // console.log(payload);
           dispatch('setProfileImg', res.data);

@@ -12,8 +12,8 @@ export const record = {
     percentage: '',
   }),
   getters: {
-    percentage: (state) => !!state.percentage,
-    userId: (state) => !!state.userId,
+    percentage: (state) => state.percentage,
+    userId: (state) => state.userId,
   },
   mutations: {
     SET_PERCENTAGE: (state, payload) => {
@@ -42,7 +42,8 @@ export const record = {
       commit('SET_SESSIONS', payload);
     },
     fetchPercentage({ state, commit }, date) {
-      console.log('axios 전');
+      console.log(' fetchPercentage axios 전');
+      // console.log(state.userId);
       axios({
         url: `https://i7c202.p.ssafy.io:8282/api/record/percentage/${state.userId}`,
         method: 'get',
@@ -53,6 +54,7 @@ export const record = {
       })
         .then((res) => {
           commit('SET_PERCENTAGE', res.data.data);
+          // console.log(state.percentage);
         })
         .catch((err) => {
           console.log(err);
