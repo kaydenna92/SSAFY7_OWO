@@ -1,14 +1,6 @@
 pipeline {
     agent any
     stages {
-        stage('Build') {
-            steps  {
-                dir('backend'){
-                    sh 'chmod +x ./gradlew'
-                    sh './gradlew bootJar'
-                }
-            }
-        }
         stage('docker build'){
             steps {
                
