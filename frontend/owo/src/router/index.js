@@ -12,7 +12,7 @@ import YoutubeView from '../views/Room/YoutubeView.vue';
 import login from '../views/accounts/loginView.vue';
 import register from '../views/accounts/registerView.vue';
 import TestView from '../views/Room/TestView.vue';
-import OauthRedirect from '../views/Room/RedirectView.vue';
+import redirectView from '../views/Room/RedirectView.vue';
 
 const routes = [
   {
