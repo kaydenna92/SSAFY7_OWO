@@ -155,20 +155,9 @@ export default {
     // eslint-disable-next-line
     if (this.user.gender === '' || this.user.weight === '' || this.user.weight === '' || this.user.height === '' || this.user.activityLevel === '') {
       this.state.text = '신체정보를 추가해주세요!';
-    }
-
-    // bmr
-    if (this.physical.bmr == null || this.physical.bmr <= 0) {
-      this.state.bmr = 0;
-    } else {
-      this.state.bmr = Math.round(this.physical.bmr);
-    }
-
-    // bmi 초기화
-    if (this.physical.bmr == null || this.physical.bmr <= 0) {
-      this.state.bmr = 0;
-    } else {
-      this.state.bmr = Math.round(this.physical.bmr);
+      this.state.bmi = '';
+      this.state.bmr = '';
+      this.state.caloriePerDay = '';
     }
 
     // 칼로리를 계산하기에 부족한 정보 분류
@@ -182,6 +171,7 @@ export default {
       }
     }
 
+    // 계산 공식들
     // 성별에 따른 기초대사량 계산 (미플린-지어(Mifflin-St.Jeor)공식)
     // if (this.user.gender === 'femail') {
     //   this.physical.bmr = Math.round(
@@ -193,7 +183,6 @@ export default {
     //   );
     // }
     // const activityrule = [1.2, 1.375, 1.55, 1.725, 1.9];
-
     // // BMI
     // this.physical.bmi = Math.round(this.user.weight / ((this.user.height / 100) ** 2));
     // eslint-disable-next-line
@@ -223,6 +212,8 @@ export default {
         this.state.avgMaxBmr = Math.round(1311.5 + 233);
       }
     }
+    console.log('TEST');
+    console.log(this.state.notEnoughInfo);
     // // 기초대사량이 평균에 속하면
     if (this.physical.bmr >= this.state.avgMinBmr && this.physical.bmr <= this.state.avgMaxBmr) {
       this.state.bmrColor = '#198754';

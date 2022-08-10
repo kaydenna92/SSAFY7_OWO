@@ -13,6 +13,7 @@ export const record = {
   }),
   getters: {
     percentage: (state) => !!state.percentage,
+    userId: (state) => !!state.userId,
   },
   mutations: {
     SET_PERCENTAGE: (state, payload) => {
@@ -21,7 +22,7 @@ export const record = {
     SET_SESSIONS: (state, payload) => {
       state.accessToken = payload.accessToken;
       state.refreshToken = payload.refreshToken;
-      state.userId = payload.userId;
+      state.userId = payload.user.id;
     },
   },
   actions: {
@@ -30,12 +31,13 @@ export const record = {
       userInfo = JSON.parse(userInfo);
       const accessToken = userInfo['accounts']['accessToken'];
       const refreshToken = userInfo['accounts']['refreshToken'];
-      const userId = userInfo['accounts']['userInfo.id'];
+      const user = userInfo['accounts']['userInfo'];
       const payload = {
         accessToken: accessToken,
         refreshToken: refreshToken,
-        userId: userId,
+        user: user,
       };
+      console.log('record test');
       console.log(payload);
       commit('SET_SESSIONS', payload);
     },
