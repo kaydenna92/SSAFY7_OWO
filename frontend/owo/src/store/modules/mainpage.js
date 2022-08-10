@@ -1,12 +1,13 @@
 import axios from 'axios';
-
 // eslint-disable-next-line
 export const mainpage = {
+  namespaced: true,
   state: () => ({
     userImg: '',
     rankingList: null,
-    myranking: null,
+    myranking: '',
     achievement: null,
+    lastingDay: null,
   }),
   mutations: {
     SET_RANKING_LIST: (state, payload) => {
@@ -21,39 +22,57 @@ export const mainpage = {
     SET_ACHIEVEMENT: (state, payload) => {
       state.achievement = payload;
     },
+    SET_LASTING_DAY: (state, payload) => {
+      state.lastingDay = payload;
+    },
   },
   actions: {
-    getRankingList({ state, commit }) {
+    getRankingList({ state, commit, dispatch }) {
+      console.log(state.rankingList);
       axios({
-        url: `https://i7c202.p.ssafy.io:8282/api/ranking/api/${sessionStorage.getItem('userInfo.id')}`,
-        method: '',
-        headers: {
-          'X-AUTH-TOKEN': state.accessToken,
-          'REFRESH-TOKEN': state.refreshToken,
-        },
+        url: 'https://i7c202.p.ssafy.io:8282/api/rankingList',
+        method: 'get',
       })
         .then((res) => {
-          console.log(res);
-          commit('SET_RANKIGN_LIST', res);
+          commit('SET_RANKING_LIST', res.data.data);
+          console.log(state.rankingList);
+          dispatch('getLastingDay', res.data.data[0].member_id);
+          console.log('getL');
         })
         .catch((err) => {
           console.log(err);
         });
     },
-    getMyRanking({ state, commit }) {
+    getMyRanking({ commit }) {
+      let userInfo = sessionStorage.getItem('vuex');
+      userInfo = JSON.parse(userInfo);
+      // eslint-disable-next-line
+      const userId = userInfo['accounts']['userInfo']['id'];
+      // eslint-disable-next-line
+      const accessToken = userInfo['accounts']['accessToken'];
+      console.log(accessToken);
       axios({
-        url: 'https://i7c202.p.ssafy.io:8282/api/rankingList',
+        url: `https://i7c202.p.ssafy.io:8282/api/ranking/${userId}`,
         method: 'get',
-        headers: {
-          'X-AUTH-TOKEN': state.accessToken,
-          'REFRESH-TOKEN': state.refreshToken,
-        },
       })
         .then((res) => {
-          console.log(res);
-          commit('SET_MY_RANKING', res);
+          commit('SET_MY_RANKING', res.data.data.ranking);
+          console.log(res.data.data.ranking);
         })
         .catch((err) => {
+          console.log(err);
+        });
+    },
+    getLastingDay({ commit }, KingID) {
+      axios({
+        url: `https://i7c202.p.ssafy.io:8282/api/record/lastingDay/${KingID}`,
+        method: 'get',
+      })
+        .then((res) => {
+          commit('SET_LASTING_DAY', res.data);
+        })
+        .catch((err) => {
+          console.log('getLastingDay_ERROR');
           console.log(err);
         });
     },

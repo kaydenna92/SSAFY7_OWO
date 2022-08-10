@@ -49,12 +49,13 @@
 import Carousel from '@/components/MainPage/Carousel.vue';
 import rankingList from '@/components/MainPage/rankingList.vue';
 import roomTab from '@/components/MainPage/roomTab.vue';
-import { createNamespacedHelpers } from 'vuex';
 import swal from 'sweetalert2';
+import { mapActions, mapGetters } from 'vuex';
 
 window.Swal = swal;
 
-const { mapGetters } = createNamespacedHelpers('accounts');
+const mainpage = 'mainpage';
+const accounts = 'accounts';
 
 export default {
   components: {
@@ -63,7 +64,7 @@ export default {
     roomTab,
   },
   computed: {
-    ...mapGetters(['userInfo', 'isLogin']),
+    ...mapGetters(accounts, ['userInfo', 'isLogin']),
   },
   setup() {
     const onInputImage = () => {
@@ -74,16 +75,49 @@ export default {
       onInputImage,
     };
   },
+  methods: {
+    setCookie() {
+      this.$cookies.set('nosee', 'Y', '7d');
+    },
+    ...mapActions(mainpage, ['getRankingList']),
+  },
   created() {
-    if (this.userInfo.weight === null && this.isLogin === true) {
-      this.$swal({
-        title: '#오운완',
-        html:
-          '추가 정보를 입력하시면, 더 많은 서비스를 이용하실 수 있습니다. <a href="mypage/update"><strong>마이페이지</strong></a>로 이동하기',
-        icon: 'info',
-        showCloseButton: true,
-      });
+    const check = this.$cookies.get('nosee');
+    if (check !== null) { // 쿠키가 있는 경우
+      if (this.userInfo.weight === null && this.isLogin === true && check !== 'Y') {
+        this.$swal({
+          title: '#오운완',
+          input: 'checkbox',
+          inputPlaceholder: '일주일 간 보지 않기',
+          html:
+            '추가 정보를 입력하시면, <br>더 많은 서비스를 이용하실 수 있습니다. <br> <a href="mypage/update"><strong>My Page</strong></a>로 이동하기. <hr>',
+          icon: 'info',
+          showCloseButton: true,
+        }).then((res) => {
+          if (res.value === 1) {
+            this.setCookie();
+          }
+        });
+      }
     }
+    if (check === null) { // 쿠키가 없는 경우
+      if (this.userInfo.weight !== null && this.isLogin === true) {
+        this.$swal({
+          title: '#오운완',
+          input: 'checkbox',
+          inputPlaceholder: '일주일 간 보지 않기',
+          html:
+            '추가 정보를 입력하시면, <br>더 많은 서비스를 이용하실 수 있습니다. <br> <a href="mypage/update"><strong>My Page</strong></a>로 이동하기. <hr>',
+          icon: 'info',
+          showCloseButton: true,
+        }).then((res) => {
+          if (res.value === 1) {
+            this.setCookie();
+          }
+        });
+      }
+    }
+    this.getRankingList();
   },
 };
 </script>
