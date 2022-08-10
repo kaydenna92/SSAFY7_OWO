@@ -4,7 +4,7 @@ pipeline {
         stage('docker build'){
             steps {
                
-                dir('frontend/owo'){
+                dir('frontend/owo/'){
                 script{
                     docker.build('owo_front')
                  }
@@ -12,7 +12,7 @@ pipeline {
                 
 
            
-                dir('backend'){
+                dir('backend/'){
                 script{
                     docker.build('owo_backend')
                     }
@@ -24,7 +24,7 @@ pipeline {
             
             steps {
 
-                    dir('frontend/owo'){
+                    dir('frontend/owo/'){
                 sh 'docker ps -f name=owo_front -q | xargs --no-run-if-empty docker container stop'
                 sh 'docker container ls -a -f name=owo_front -q | xargs -r docker container rm'
                 sh 'docker images --no-trunc --all --quiet --filter="dangling=true" | xargs --no-run-if-empty docker rmi'
