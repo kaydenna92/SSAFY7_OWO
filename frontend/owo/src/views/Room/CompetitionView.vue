@@ -38,8 +38,8 @@
                 <img class="menu_icon1" src="@/assets/icon/room_end.png" alt="mic_off">
                 운동 종료
               </button>
-                <b-modal id="after-exercise-modal" size="xl" hide-footer hide-header>
-                  <form @submit.prevent="sendRecord(credentials, credentialsUser)">
+              <b-modal id="after-exercise-modal" size="xl" hide-footer hide-header>
+                <form @submit.prevent="sendRecord(credentials, credentialsUser)">
                   <div class="checkboxposition">
                     <h1 class="title text-center mt-4">🏃‍♂️운동 일지</h1>
                     <label for="my-checkbox m-0" class="secretcheckbox d-flex align-items-center">
@@ -73,34 +73,41 @@
                     <div>
                       <div class="md-title">
                         <div class="text-center">운동 종류</div>
-                        <!-- 나만의 태그 기록 -->
-                        <!-- <form action="">
-                          <label for="my-tag">
-                          <input v-model="inputMyTag" type="text">
-                          <button @click="addMyTag($event)">추가</button>
-                          </label>
-                        </form>
-                        <div class="mytags row">
-                          <div>hi</div>
-                          <div v-for="(mytag, index) in roomexercise.mytag" :key="index">
-                            <p>#{{ roomexercise.mytag }}</p>
+                        <div>
+                          <div class="d-flex justify-content-center" style="flex-flow:row wrap;">
+                            <!-- eslint-disable-next-line -->
+                            <button @click.prevent="myTagList('#유산소')" id="#유산소" class="mybutton btn btn-secondary m-2 p-2">&ensp;#유산소&ensp;</button>
+                            <!-- eslint-disable-next-line -->
+                            <button @click.prevent="myTagList('#헬스')" id="#헬스" class="mybutton btn btn-secondary m-2 p-2">&ensp;#헬스&ensp;</button>
+                            <!-- eslint-disable-next-line -->
+                            <button @click.prevent="myTagList('#스트레칭')" id="#스트레칭" class="mybutton btn btn-secondary m-2 p-2">&ensp;#스트레칭&ensp;</button>
+                            <!-- eslint-disable-next-line -->
+                            <button @click.prevent="myTagList('#맨몸운동')" id="#맨몸운동" class="mybutton btn btn-secondary m-2 p-2">&ensp;#맨몸운동&ensp;</button>
+                            <!-- eslint-disable-next-line -->
+                            <button @click.prevent="myTagList('#요가')" id="#요가" class="mybutton btn btn-secondary m-2 p-2">&ensp;#요가&ensp;</button>
+                            <!-- eslint-disable-next-line -->
+                            <button @click.prevent="myTagList('#필라테스')" id="#필라테스" class="mybutton btn btn-secondary m-2 p-2">&ensp;#필라테스&ensp;</button>
+                            <!-- eslint-disable-next-line -->
+                            <button @click.prevent="myTagList('#기타')" id="#기타" class="mybutton btn btn-secondary m-2 p-2">&ensp;#기타&ensp;</button>
                           </div>
-                        </div> -->
-                        <div class="d-flex justify-content-center" style="flex-flow:row wrap;">
                           <!-- eslint-disable-next-line -->
-                          <button @click.prevent="myTagList('#유산소')" id="#유산소" class="mybutton btn btn-secondary m-2">&ensp;#유산소&ensp;</button>
-                          <!-- eslint-disable-next-line -->
-                          <button @click.prevent="myTagList('#헬스')" id="#헬스" class="mybutton btn btn-secondary m-2 p-2">&ensp;#헬스&ensp;</button>
-                          <!-- eslint-disable-next-line -->
-                          <button @click.prevent="myTagList('#스트레칭')" id="#스트레칭" class="mybutton btn btn-secondary m-2 p-2">&ensp;#스트레칭&ensp;</button>
-                          <!-- eslint-disable-next-line -->
-                          <button @click.prevent="myTagList('#맨몸운동')" id="#맨몸운동" class="mybutton btn btn-secondary m-2 p-2">&ensp;#맨몸운동&ensp;</button>
-                          <!-- eslint-disable-next-line -->
-                          <button @click.prevent="myTagList('#요가')" id="#요가" class="mybutton btn btn-secondary m-2 p-2">&ensp;#요가&ensp;</button>
-                          <!-- eslint-disable-next-line -->
-                          <button @click.prevent="myTagList('#필라테스')" id="#필라테스" class="mybutton btn btn-secondary m-2 p-2">&ensp;#필라테스&ensp;</button>
-                          <!-- eslint-disable-next-line -->
-                          <button @click.prevent="myTagList('#기타')" id="#기타" class="mybutton btn btn-secondary m-2 p-2">&ensp;#기타&ensp;</button>
+                          <div class="d-flex justify-content-center" style="flex-flow:row wrap;">
+                            <!-- eslint-disable-next-line -->
+                            <div v-for="(myTag, i) in myTags" :key="i" class="m-0 d-flex">
+                              <!-- eslint-disable-next-line -->
+                              <button @click.prevent="myTagList(`${myTag}`)" v-bind:id="`${myTag}`" class="mybutton btn btn-secondary m-2 p-2">&ensp;#{{myTag}}&ensp;</button><button @click.prevent="deletemyTagList(`${myTag}`)" class="mybutton">X</button>
+                            </div>
+                            <form @submit.prevent="newtag(newTagContent)">
+                                <!-- eslint-disable-next-line -->
+                              <button class="mybutton btn btn-secondary m-2 p-2 d-flex align-items-center" type="submit">
+                                <!-- eslint-disable-next-line -->
+                                <label for="my-tag" class="m-0 p-0" style="width:100% - 120px;">
+                                  <!-- eslint-disable-next-line -->
+                                  <input id="myTagInput" v-model="newTagContent" type="text" style="text-align: center; width:100px; color:white; border: none; border-bottom:1px solid white; background: transparent;" placeholder="나만의 태그">
+                                </label>&ensp;추가&ensp;
+                              </button>
+                            </form>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -118,8 +125,24 @@
                       <b-button type="submit" class="mybutton btn btn-primary m-2 p-2">&ensp;작성&ensp;</b-button>
                     </div>
                   </div>
-                {{credentials}}
+                  {{credentials}}
                 </form>
+                <table class="table border">
+                  <tr>
+                    <th style="vertical-align: middle;">
+                      TextArea<br/>
+                      <sup>(<span id="nowByte">0</span>/100bytes)</sup>
+                    </th>
+                    <td>
+                      <form id="frm_textArea" name="frm_textArea">
+                        <label for="textarearesctrict">
+                          <!-- eslint-disable-next-line -->
+                          <textarea rows="10" class="form-control" id="textArea_byteLimit" name="textArea_byteLimit" @keyup="fn_checkByte(this)"></textarea>
+                        </label>
+                      </form>
+                    </td>
+                  </tr>
+                </table>
               </b-modal>
             </div>
           </div>
@@ -255,6 +278,9 @@ import emojidata from 'emoji-mart-vue-fast/data/all.json';
 import 'emoji-mart-vue-fast/css/emoji-mart.css';
 import { Picker, EmojiIndex } from 'emoji-mart-vue-fast/src';
 import { mapState, mapActions, mapMutations } from 'vuex';
+import swal from 'sweetalert2';
+
+window.Swal = swal;
 
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
@@ -319,13 +345,14 @@ export default {
         recordMemo: null,
         secret: false,
         // recordimg: null,
-        tagList: ['a'],
+        tagList: [],
       },
       credentialsUser: {
         memberId: null,
         meetingRoomId: null,
       },
-      mytags: [],
+      newTagContent: '',
+      myTags: [],
       mypictures: [],
     };
   },
@@ -370,6 +397,73 @@ export default {
     // ...meetingRoomHelper.mapState(["sessionID", "meetingRoomList"]),
   },
   methods: {
+    // textarea 바이트 수 체크하는 함수
+    fn_checkByte() {
+      const maxByte = 100; // 최대 100바이트
+      const textVal = document.getElementById('textArea_byteLimit').value; // 입력한 문자
+      const textLen = textVal.length; // 입력한 문자수
+      let totalByte = 0;
+
+      for (let i = 0; i < textLen; i += 1) {
+        const eachChar = textVal.charAt(i);
+        console.log(eachChar);
+        const uniChar = escape(eachChar); // 유니코드 형식으로 변환
+        console.log(uniChar);
+        if (uniChar.length > 4) {
+          // 한글 : 2Byte
+          totalByte += 2;
+        } else {
+          // 영문,숫자,특수문자 : 1Byte
+          totalByte += 1;
+        }
+      }
+      if (totalByte > maxByte) {
+        alert('최대 100Byte까지만 입력가능합니다.');
+        document.getElementById('nowByte').innerText = totalByte;
+        document.getElementById('nowByte').style.color = 'red';
+      } else {
+        document.getElementById('nowByte').innerText = totalByte;
+        document.getElementById('nowByte').style.color = 'green';
+      }
+    },
+    newtag(newTagContent) {
+      if (this.myTags.length >= 5) {
+        swal.fire({
+          icon: 'warning',
+          title: '알림',
+          text: '추가 태그는 5개까지 가능해요!',
+        });
+      } else {
+        if (newTagContent !== '') {
+          if (this.myTags.indexOf(newTagContent.replace(' ', '')) < 0) {
+            this.myTags.push(newTagContent.replace(' ', ''));
+            this.newTagContent = '';
+            this.myTagList(this.myTags[this.myTags.length - 1]);
+          }
+          this.newTagContent = '';
+        }
+        this.newTagContent = '';
+      }
+    },
+    deletemyTagList(newTagContent) {
+      this.myTags.splice(this.myTags.indexOf(newTagContent.replace(' ', '')), 1);
+      if (this.credentials.tagList.indexOf(newTagContent.replace(' ', '')) >= 0) {
+        this.credentials.tagList.splice(this.credentials.tagList.indexOf(newTagContent.replace(' ', '')), 1);
+      }
+    },
+    myTagList(tag) {
+      // this.credentials.tagList.push(tag);
+      // console.log(this.credentials.tagList.indexOf(tag));
+      if (this.credentials.tagList.indexOf(tag) >= 0) {
+        document.getElementById(`${tag}`).classList.add('btn-secondary');
+        document.getElementById(`${tag}`).classList.remove('btn-primary');
+        this.credentials.tagList.splice(this.credentials.tagList.indexOf(tag), 1);
+      } else {
+        document.getElementById(`${tag}`).classList.add('btn-primary');
+        document.getElementById(`${tag}`).classList.remove('btn-secondary');
+        this.credentials.tagList.push(tag);
+      }
+    },
     time() {
       this.startround1();
     },
@@ -386,23 +480,6 @@ export default {
         .catch((err) => {
           console.log('실패', err);
         });
-    },
-    // ...mapActions(record, ['sendRecord']),
-    // pickRecordImg(img) {
-    //   this.credentials.recordimg = img;
-    // },
-    myTagList(tag) {
-      // this.credentials.tagList.push(tag);
-      // console.log(this.credentials.tagList.indexOf(tag));
-      if (this.credentials.tagList.indexOf(tag) >= 0) {
-        document.getElementById(`${tag}`).classList.add('btn-secondary');
-        document.getElementById(`${tag}`).classList.remove('btn-primary');
-        this.credentials.tagList.splice(this.credentials.tagList.indexOf(tag), 1);
-      } else {
-        document.getElementById(`${tag}`).classList.add('btn-primary');
-        document.getElementById(`${tag}`).classList.remove('btn-secondary');
-        this.credentials.tagList.push(tag);
-      }
     },
     ...mapActions(emoji, ['changeEmojiList', 'removeEmojiList']),
     ...mapMutations(meetingroom, ['SET_SESSION_ID']),
@@ -1170,5 +1247,10 @@ solid #ccb9a8; border-top: 10px solid transparent; border-bottom: 10px solid tra
   right:20px;
   transform: translate(0, -50%);
   /* line-height: 0.8; */
+}
+
+::placeholder {
+  color:white;
+  text-align: center;
 }
 </style>
