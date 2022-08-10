@@ -349,7 +349,7 @@ export const accounts = {
         data: payload,
       })
         .then((res) => {
-          dispatch('setUserInfo', res.data.data.slogan);
+          dispatch('setUserInfo', res.data.data);
           dispatch('fetchPhysicalInfo');
           alert('정보가 수정되었습니다.');
           // router.push({ name: 'MyPageMainView' });
