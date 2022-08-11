@@ -6,7 +6,7 @@ pipeline {
 
                 dir('frontend/owo'){
                 script{
-                    docker.build('owo_front')
+                    docker.build('front')
                  }
                 }
 
@@ -25,11 +25,12 @@ pipeline {
 
         stage('BackEnd'){
 
+
             steps {
 
              dir('backend'){
                       script{
-                         docker.build('owo_backend')
+                         docker.build('backend')
                       }
              }
 
