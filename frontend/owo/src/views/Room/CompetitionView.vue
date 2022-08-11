@@ -330,6 +330,7 @@
         </div>
       </div>
       <!-- 채팅영역 끝 -->
+      <button @click="init">start</button>
     </div>
   </div>
 </template>
@@ -344,7 +345,8 @@ import emojidata from 'emoji-mart-vue-fast/data/all.json';
 import 'emoji-mart-vue-fast/css/emoji-mart.css';
 import { Picker, EmojiIndex } from 'emoji-mart-vue-fast/src';
 import { mapState, mapActions, mapMutations } from 'vuex';
-// import * as tf from '@tensorflow/tfjs';
+// eslint-disable-next-line
+import * as tf from '@tensorflow/tfjs';
 import * as tmPose from '@teachablemachine/pose';
 
 axios.defaults.headers.post['Content-Type'] = 'application/json';
@@ -416,7 +418,8 @@ export default {
       check: false,
       count: 0,
       // gameType: 'pushUp',
-      gameType: 1,
+      gameType: 1, // 1:squat, 2:lunge, 3:burpee
+      ctx: undefined,
     };
   },
   setup() {},
@@ -425,6 +428,7 @@ export default {
     this.joinSession(this.sessionId);
   },
   moundted() {
+    this.init();
   },
   unmounted() {},
   watch: {
@@ -467,6 +471,18 @@ export default {
       'leaveMeetingRoom',
       'startMeetingRoom',
     ]),
+    drawPose(pose) {
+      if (this.webcam.canvas) {
+        // console.log('drawPose ctx drawImage');
+        this.ctx.drawImage(this.webcam.canvas, 0, 0);
+        if (pose) {
+          // console.log('drawPose tmPose drawSkeleton');
+          const minPartConfidence = 0.5;
+          tmPose.drawKeypoints(pose.keypoints, minPartConfidence, this.ctx);
+          tmPose.drawSkeleton(pose.keypoints, minPartConfidence, this.ctx);
+        }
+      }
+    },
     async makeRoom() {
       const requestDto = {
         accesstoken: this.accessToken,
@@ -885,9 +901,10 @@ export default {
       event.preventDefault();
     },
     async setmodel() {
+      // console.log('setmodel');
       switch (this.gameType) {
         case 1: // 스쿼트
-          this.URL = 'https://teachablemachine.withgoogle.com/models/np91IAbMN/';
+          this.URL = 'https://teachablemachine.withgoogle.com/models/N9Uzcp-sg/';
           break;
         case 2: // 런지
           this.URL = 'https://teachablemachine.withgoogle.com/models/qsNO7nn-l/';
@@ -900,20 +917,33 @@ export default {
       }
       const modelURL = `${this.URL}model.json`;
       const metadataURL = `${this.URL}metadata.json`;
-      this.model = await tmPose.load(modelURL, metadataURL);
+      // console.log('model set before');
+      // this.model = await tmPose.load(modelURL, metadataURL);
+      this.model = Object.freeze(await tmPose.load(modelURL, metadataURL));
+      // console.log('model set -> ', this.model);
+      // const mymodel = await tf.loadGraphModel(modelURL);
+      // mymodel.dispose();
     },
 
     async init() {
-      const size = 200;
+      this.setmodel();
+
+      // const size = 200;
       const flip = true;
-      this.webcam = new tmPose.Webcam(size, size, flip);
+      this.webcam = new tmPose.Webcam(500, 300, flip);
       await this.webcam.setup();
       await this.webcam.play();
+      // console.log('init_webcam >> ', this.webcam);
       window.requestAnimationFrame(this.loop);
-    },
 
+      const canvas2 = this.webcam.canvas;
+      canvas2.width = 500;
+      canvas2.height = 300;
+      this.ctx = canvas2.getContext('2d');
+    },
     async loop() {
       this.webcam.update();
+
       switch (this.gameType) {
         case 1:
           await this.squatpredict();
@@ -933,17 +963,17 @@ export default {
     async squatpredict() {
       // Prediction #1: run input through posenet
       // estimatePose can take in an image, video or canvas html element
-      const { posenetOutput } = await this.model.estimatePose(
+      // console.log('squat predict -> ', this.model);
+      const { pose, posenetOutput } = await this.model.estimatePose(
         this.webcam.canvas,
       );
       // Prediction 2: run input through teachable machine classification model
       const prediction = await this.model.predict(posenetOutput);
 
-      if (prediction[0].probability.toFixed(2) > 0.99) {
+      if (prediction[1].probability.toFixed(2) > 0.99) { // 스쿼트
         if (this.check) {
-          this.setState({
-            count: this.count + 1,
-          });
+          this.count += 1;
+          console.log('squat', this.count);
           this.session
             .signal({
               data: `${this.myUserName},${this.count}`, // Any string (optional)
@@ -951,15 +981,26 @@ export default {
               type: 'count', // The type of message (optional)
             })
             .then(() => {
-              this.setState({ check: false });
+              // this.setState({ check: false });
+              this.check = false;
             })
             .catch(() => {});
         }
-        this.setState({ status: 'ready' });
-      } else if (prediction[1].probability.toFixed(2) > 0.99) {
-        this.setState({ status: 'squat' });
-        this.setState({ check: true });
+        this.status = 'squat';
+        // this.setState({ status: 'ready' });
+      } else if (prediction[0].probability.toFixed(2) > 0.99) { // 서 있는 자세
+        // const countTemp = this.count;
+        // this.count = countTemp + 1;
+
+        // this.count += 1;
+        // console.log('squat count : ', this.count);
+
+        this.status = 'ready';
+        // this.setState({ check: true });
+        this.check = true;
       }
+      // console.log('squat finish');
+      this.drawPose(pose);
     },
 
     async lungepredict() {
@@ -986,6 +1027,7 @@ export default {
             })
             .catch(() => {});
         }
+
         this.setState({ status: 'ready' });
       } else if (prediction[1].probability.toFixed(2) > 0.99) {
         this.setState({ status: 'lunge' });
