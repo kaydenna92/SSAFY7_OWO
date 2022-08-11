@@ -1,8 +1,7 @@
 <template>
   <div class="body container-fluid">
     <h1 class="title">오늘의 운동왕은 누구?</h1>
-    <b-card-group deck class="d-flex justify-content-evenly"
-    v-if="isLogin === true">
+    <b-card-group deck class="d-flex justify-content-evenly">
       <b-card class="rounded-5 cards">
         <h5 class="card-title">어제 운동왕</h5>
         <div class="ranking" v-for="(rank, index) in rankingList" :key="index">
@@ -37,46 +36,6 @@
         <MySmCalendar/>
       </b-card>
     </b-card-group>
-    <!--로그인 전  화면 부분-->
-    <a v-if="isLogin === false"><router-link to="/login">로그인 후 이용해주세요.</router-link></a>
-    <b-card-group deck class="d-flex justify-content-evenly" v-if="isLogin === false">
-        <b-card class="rounded-5 cards">
-          <h5 class="card-title"> 저번 주 운동왕</h5>
-          <div class="ranking">
-            <b-button block pill size='lg' variant="outline-primary"
-            class="button">1위 #오운완
-            </b-button>
-          </div>
-          <div class="ranking">
-            <b-button block pill size='lg' variant="outline-primary"
-            class="button">2위 #오운미완
-            </b-button>
-          </div>
-          <div class="ranking">
-            <b-button block pill size='lg' variant="outline-primary"
-            class="button">3위 #오운완자
-            </b-button>
-          </div>
-          <hr />
-          <div class="myranking">
-            <b-button class="button" block pill size='lg'
-            variant="outline-danger">로그인 해주세요.</b-button>
-          </div>
-        </b-card>
-        <b-card class="rounded-5 cards">
-          <h5 class="card-title">오운완님의 record</h5>
-          <div class="d-flex row justify-content-center" sytle="margin-bottom: 10px">
-            <p style="font-size: 20px">목표 대비 달성률</p>
-            <circle-progress class="progress-bar" :percent="0"
-            :show-percent="true" :viewport="true" :size="220"/>
-          </div>
-          <h5 class="card-bottom">연속 5일 동안 운동하고 있어요!</h5>
-        </b-card>
-        <b-card class="rounded-5 cards">
-          <h5 class="card-title">나의 운동 기록</h5>
-          <MySmCalendar/>
-        </b-card>
-      </b-card-group>
   </div>
 </template>
 
@@ -104,7 +63,6 @@ export default {
     ...mapState(mainpage, ['rankingList', 'myranking', 'lastingDay']),
     ...mapGetters(accounts, ['isLogin']),
   },
-
 };
 </script>
 
