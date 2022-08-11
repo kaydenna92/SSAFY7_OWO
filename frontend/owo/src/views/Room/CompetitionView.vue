@@ -226,7 +226,7 @@
         </button>
         <!-- eslint-disable-next-line -->
         <button class="mybtn4 dropdown dropright dropright-toggle-no-caret text-decoration-none" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-          <img class="menu_icon2" src="@/assets/icon/phototimer.png" alt="photo">
+          <img class="menu_icon2" src="@/assets/icon/setTimer.png" alt="photo">
         </button>
         <ul class="dropdown-menu" role="menu" style="width:50px;">
         <!-- eslint-disable-next-line -->
