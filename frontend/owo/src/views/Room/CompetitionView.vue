@@ -416,9 +416,10 @@ export default {
       model: undefined,
       status: 'ready',
       check: false,
+      check2: false,
       count: 0,
       // gameType: 'pushUp',
-      gameType: 1, // 1:squat, 2:lunge, 3:burpee
+      gameType: 2, // 1:squat, 2:lunge, 3:burpee
       ctx: undefined,
     };
   },
@@ -1004,18 +1005,15 @@ export default {
     },
 
     async lungepredict() {
-      // Prediction #1: run input through posenet
-      // estimatePose can take in an image, video or canvas html element
-      const { posenetOutput } = await this.model.estimatePose(
+      const { pose, posenetOutput } = await this.model.estimatePose(
         this.webcam.canvas,
       );
-      // Prediction 2: run input through teachable machine classification model
       const prediction = await this.model.predict(posenetOutput);
-      if (prediction[0].probability.toFixed(2) > 0.99) {
+
+      if (prediction[1].probability.toFixed(2) > 0.99) { // 런지
         if (this.check) {
-          this.setState({
-            count: this.count + 1,
-          });
+          this.count += 1;
+          console.log('lunge', this.count);
           this.session
             .signal({
               data: `${this.myUserName},${this.count}`, // Any string (optional)
@@ -1023,31 +1021,30 @@ export default {
               type: 'count', // The type of message (optional)
             })
             .then(() => {
-              this.setState({ check: false });
+              // this.setState({ check: false });
+              this.check = false;
             })
             .catch(() => {});
         }
-
-        this.setState({ status: 'ready' });
-      } else if (prediction[1].probability.toFixed(2) > 0.99) {
-        this.setState({ status: 'lunge' });
-        this.setState({ check: true });
+        this.status = 'lunge';
+        // this.setState({ status: 'ready' });
+      } else if (prediction[0].probability.toFixed(2) > 0.99) { // 서 있는 자세
+        this.status = 'ready';
+        this.check = true;
       }
+      this.drawPose(pose);
     },
 
     async burpeepredict() {
-      // Prediction #1: run input through posenet
-      // estimatePose can take in an image, video or canvas html element
-      const { posenetOutput } = await this.model.estimatePose(
+      const { pose, posenetOutput } = await this.model.estimatePose(
         this.webcam.canvas,
       );
-      // Prediction 2: run input through teachable machine classification model
       const prediction = await this.model.predict(posenetOutput);
-      if (prediction[0].probability.toFixed(2) > 0.99) {
-        if (this.check) {
-          this.setState({
-            count: this.state.count + 1,
-          });
+
+      if (prediction[2].probability.toFixed(2) > 0.99) { // 서 있는 자세
+        if (this.check && this.check2) {
+          this.count += 1;
+          console.log('burpee', this.count);
           this.session
             .signal({
               data: `${this.myUserName},${this.count}`, // Any string (optional)
@@ -1055,15 +1052,24 @@ export default {
               type: 'count', // The type of message (optional)
             })
             .then(() => {
-              this.setState({ check: false });
+              // this.setState({ check: false });
+              this.check = false;
+              this.check2 = false;
             })
             .catch(() => {});
         }
-        this.setState({ status: 'up' });
-      } else if (prediction[1].probability.toFixed(2) > 0.99) {
-        this.setState({ status: 'down' });
-        this.setState({ check: true });
+        this.status = 'go';
+        // this.setState({ status: 'ready' });
+      } else if (prediction[1].probability.toFixed(2) > 0.99) { // 쪼그려 앉아 있는 자세
+        this.status = 'ready';
+        if (this.check) {
+          this.check = true;
+        }
+      } else if (prediction[0].probability.toFixed(2) > 0.99) { // 엎드려 있는 자세
+        this.status = 'set';
+        this.check2 = true;
       }
+      this.drawPose(pose);
     },
   },
 };
