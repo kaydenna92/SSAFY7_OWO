@@ -2,6 +2,17 @@
   <div class="d-flex justify-content-center" style="width: 100%; height:100vh">
     <div style="width:1600px;" class="viewsetting">
       <!-- eslint-disable-next-line -->
+      <div>
+        카운트 현황
+        전체 유저 : {{roomAllUser}}
+        <div v-for="(roomUser, i) in roomAllUser" :key="i">{{roomUser.userNick}} 님의 카운트 :&ensp;
+          <span v-for="(userCounts, i) in allUserCounts" :key="i" >
+            <!-- eslint-disable-next-line -->
+            <span v-if="(roomUser.userId === userCounts[i].userId)">{{userCounts[i].userCounts}}회 입니다.</span>
+          </span>
+        </div>
+      </div>
+      <!-- eslint-disable-next-line -->
       <div class="d-flex justify-content-center align-items-center" style="width: 100%; height: 80px;">
         <h3 class="game-name m-0">{{ gameName }}</h3>
       </div>
@@ -10,12 +21,16 @@
         <!-- WebRTC 목록 -->
         <div>
           <div id="" class="row d-flex align-items-start justify-content-center">
-            <WebRTC :stream-manager="mainStreamManager"/>
+            <WebRTC id="WebRTCTmPose" :stream-manager="mainStreamManager"/>
             <WebRTC :stream-manager="sub"
               v-for="sub in subscribers"
               :key="sub.stream.connection.connectionId"
-              @click="updateMainVideoStreamManager(sub)"
             />
+            <!-- <WebRTC :stream-manager="sub"
+              v-for="sub in subscribers"
+              :key="sub.stream.connection.connectionId"
+              @click="updateMainVideoStreamManager(sub)"
+            /> -->
             <div v-if="this.subscribers.length <= 0" class="webrtcetc col-4 m0p0 mb-2 mx-1"></div>
             <div v-if="this.subscribers.length <= 1" class="webrtcetc col-4 m0p0 mb-2 mx-1"></div>
             <div v-if="this.subscribers.length <= 2" class="webrtcetc col-4 m0p0 mb-2 mx-1"></div>
@@ -174,9 +189,9 @@
             <div v-for="(item, i) in allchattingList" :key="i">
               <div class="mychatting p-0" style="margin-top:0px; margin-bottom:10px;
               margin-left:auto; margin-right:30px; width:220px; height:90px;"
-              v-if="item.p === this.userInfo.nick">
+              v-if="item.userId === this.credentials.memberId">
                 <div style="text-align:left; margin-top:5px; margin-left:5px; font-size:large;">
-                  <strong>{{item.p}}</strong>
+                  <strong>{{item.userNickname}}</strong>
                 </div>
                 <div style="word-wrap:break-word; text-align:left; margin-top:5px;
                 margin-left:5px; font-size:medium;">
@@ -241,7 +256,6 @@
         <setTimer2 ref="setTimer2" />
       </div>
       <button @click="init">start</button>
-      <div>나의 카운트 : {{ count }} </div>
     </div>
   </div>
 </template>
@@ -352,8 +366,10 @@ export default {
       check2: false,
       count: 0,
       // gameType: 'pushUp',
-      gameType: 2, // 1:squat, 2:lunge, 3:burpee
+      gameType: 1, // 1:squat, 2:lunge, 3:burpee
       ctx: undefined,
+      allUserCounts: [],
+      roomAllUser: [],
       // 각 운동의 카운트를 memberId와 함께 session.on으로 보내주고 데이터 받아서 저장한다.
       // sqcount,
       // bpcount,
@@ -586,7 +602,6 @@ export default {
 
       // --- Init a session ---
       this.session = this.OV.initSession();
-      console.log('점원목록', this.subscribers);
 
       // --- Specify the actions when events take place in the session ---
 
@@ -594,6 +609,7 @@ export default {
       this.session.on('streamCreated', ({ stream }) => {
         const subscriber = this.session.subscribe(stream);
         this.subscribers.push(subscriber);
+        console.log('새로운 방 창조됨');
       });
 
       // On every Stream destroyed...
@@ -647,16 +663,12 @@ export default {
       // Receiver of the message (usually before calling 'session.connect')
       this.session.on('signal:my-chat', (event) => {
         const chatdata = event.data.split(',');
-        // console.log(event.from); // Connection object of the sender //누가 보냈는지가 아니네..?
-        // console.log(event.type); // The type of message ("my-chat")
-        // this.allChat = event.data;
-        // this.who = event.from; //누가 보냈는지
         const obj = {
-          m: chatdata[0],
-          p: chatdata[1],
+          mesaage: chatdata[0],
+          userId: chatdata[1],
+          userNickname: chatdata[2],
         };
         this.allchattingList.push(obj);
-        // console.log(this.recvList[0].m);
         const chat = document.querySelector('#chattingList');
         chat.scrollTop = chat.scrollHeight + 10000000;
       });
@@ -694,21 +706,17 @@ export default {
         this.youtubeURL = 'https://www.youtube.com/embed/gTowV_F07uI';
       });
 
-      window.addEventListener('beforeunload', this.leavepeople);
-    },
+      this.session.on('signal:count', (event) => {
+        const userIdCount = event.data.split(',');
+        const obj = {
+          userNickName: userIdCount[0],
+          userId: userIdCount[1],
+          userCounts: userIdCount[2],
+        };
+        this.allUserCounts.push(obj);
+      });
 
-    leavepeople() {
-      alert('나가는중!');
-      this.leaveSession();
-      this.session
-        .signal({
-          data: `${this.streamManager.stream.connection.connectionId}`,
-          to: [],
-          type: 'leaveRoomMe',
-        })
-        .then(() => {
-        })
-        .catch(() => {});
+      window.addEventListener('beforeunload', this.leavepeople);
     },
 
     sendEmoji() {
@@ -727,7 +735,8 @@ export default {
       // Sender of the message (after 'session.connect')
       this.session
         .signal({
-          data: `${this.myChat},${this.userInfo.nick}`, // Any string (optional)
+          data: `${this.myChat},${this.credentialsUser.memberId}, ${this.userInfo.nick}`, // Any string (optional)
+          // 1. 채팅내용, 2. id, 3. 닉네임
           to: [], // Array of Connection objects (optional. Broadcast to everyone if empty)
           type: 'my-chat', // The type of message (optional)
         })
@@ -1026,19 +1035,18 @@ export default {
 
     async init() {
       this.setmodel();
-
+      console.log('진행중');
       // const size = 200;
       const flip = true;
       this.webcam = new tmPose.Webcam(500, 300, flip);
       await this.webcam.setup();
       await this.webcam.play();
-      // console.log('init_webcam >> ', this.webcam);
       window.requestAnimationFrame(this.loop);
 
-      const canvas2 = this.webcam.canvas;
-      canvas2.width = 500;
-      canvas2.height = 300;
-      this.ctx = canvas2.getContext('2d');
+      const canvas = document.getElementById('WebRTCTmPose');
+      canvas.width = 520;
+      canvas.height = 360;
+      this.ctx = canvas.getContext('2d');
     },
     async loop() {
       this.webcam.update();
@@ -1075,7 +1083,7 @@ export default {
           console.log('squat', this.count);
           this.session
             .signal({
-              data: `${this.myUserName},${this.count}`, // Any string (optional)
+              data: `${this.userInfo.nick},${this.credentialsUser.memberId},${this.count}`, // Any string (optional)
               to: [], // Array of Connection objects (optional. Broadcast to everyone if empty)
               type: 'count', // The type of message (optional)
             })
@@ -1111,16 +1119,16 @@ export default {
       if (prediction[1].probability.toFixed(2) > 0.99) { // 런지
         if (this.check) {
           this.count += 1;
+          this.check = false;
           console.log('lunge', this.count);
           this.session
             .signal({
-              data: `${this.myUserName},${this.count}`, // Any string (optional)
+              data: `${this.credentialsUser.memberId},${this.count}`, // Any string (optional)
               to: [], // Array of Connection objects (optional. Broadcast to everyone if empty)
               type: 'count', // The type of message (optional)
             })
             .then(() => {
               // this.setState({ check: false });
-              this.check = false;
             })
             .catch(() => {});
         }
