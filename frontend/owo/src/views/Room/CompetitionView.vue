@@ -104,7 +104,7 @@
                             <!-- eslint-disable-next-line -->
                             <label for="my-tag" class="m-0 p-0" style="width:100% - 120px;">
                               <!-- eslint-disable-next-line -->
-                              <input id="myTagInput" v-model="newTagContent" type="text" style="text-align: center; width:100px; color:white; border: none; border-bottom:1px solid white; background: transparent;" placeholder="#나만의 태그">
+                              <input id="myTagInput" v-model="newTagContent" type="text" style="text-align: center; width:100px; color:white; border: none; border-bottom:1px solid white; background: transparent;" placeholder="#나만의태그">
                             </label>&ensp;추가&ensp;
                           </button>
                         </form>
@@ -548,27 +548,24 @@ export default {
     time() {
       this.startround1();
     },
-    sendRecord(credentials, credentialsUser) {
+    async sendRecord(credentials, credentialsUser) {
+      // eslint-disable-next-line
+      let self = this;
       this.credentialsUser.memberId = encodeURI(this.credentialsUser.memberId);
       this.credentialsUser.meetingRoomId = encodeURI(this.credentialsUser.meetingRoomId);
       console.log(this.credentialsUser.memberId);
       console.log(this.credentialsUser.meetingRoomId);
       console.log('보내는 데이터 양식', this.credentials);
-      axios.post(`https://i7c202.p.ssafy.io:8282/api/user/record/finish/${credentialsUser.memberId}/${credentialsUser.meetingRoomId}`, credentials)
+      await axios.post(`https://i7c202.p.ssafy.io:8282/api/user/record/finish/${credentialsUser.memberId}/${credentialsUser.meetingRoomId}`, credentials)
         .then((res) => {
           console.log('성공', res.data);
-          this.$router.push('/');
-          document.getElementsByClassName('modal-backdrop')[0].remove();
-          document.getElementsByClassName('modal-open')[0].removeClass('modal-open');
           this.leaveSession();
+          document.getElementsByClassName('modal-backdrop')[0].remove();
+          document.getElementsByClassName('modal-open')[0].removeAttribute('style');
+          console.log(document.getElementsByClassName('modal-open')[0].classList.remove('modal-open'));
         })
         .catch((err) => {
           console.log('실패', err);
-          // this.$router.push('/');
-          // document.getElementsByClassName('modal-backdrop')[0].remove();
-          // document.getElementsByClassName('modal-open')[0].removeClass('modal-open');
-          // this.leaveSession();
-          // this.mySessionId = '';
         });
     },
     ...mapActions(emoji, ['changeEmojiList', 'removeEmojiList']),
