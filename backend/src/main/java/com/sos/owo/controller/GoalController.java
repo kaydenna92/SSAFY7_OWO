@@ -37,6 +37,7 @@ public class GoalController {
         Message message = new Message();
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(new MediaType("application","json", Charset.forName("UTF-8")));
+
         try {
             goalService.saveGoal(memberId,goalSaveRequestDto.toEntity());
             message.setStatus(StatusEnum.OK);
