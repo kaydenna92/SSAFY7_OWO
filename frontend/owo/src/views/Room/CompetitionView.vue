@@ -10,7 +10,8 @@
         <!-- WebRTC 목록 -->
         <div>
           <div id="" class="row d-flex align-items-start justify-content-center">
-            <canvas><WebRTC :stream-manager="mainStreamManager"/></canvas>
+            <canvas></canvas>
+            <WebRTC :stream-manager="mainStreamManager"/>
             <WebRTC :stream-manager="sub"
               v-for="sub in subscribers"
               :key="sub.stream.connection.connectionId"
