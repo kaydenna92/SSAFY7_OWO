@@ -204,19 +204,43 @@
           <img class="menu_icon2" src="@/assets/icon/emoji.png" alt="emoji">
         </button>
         <button class="mybtn1" @click="mic_off" v-if="mic">
-          <img class=" menu_icon2" src="@/assets/icon/mic_off.png" alt="mic_on">
+          <img class="menu_icon2" src="@/assets/icon/mic_on.png" alt="mic_off">
+          <div style="color:#4e8aff;">
+            음소거
+          </div>
         </button>
         <button class="mybtn1" @click="mic_on" v-if="!mic">
-          <img class="menu_icon2" src="@/assets/icon/mic_on.png" alt="mic_off">
+          <img class=" menu_icon2" src="@/assets/icon/mic_off.png" alt="mic_on">
+          <div style="color:#de7474;">
+            음소거
+          </div>
+          <div style="color:#de7474;">
+            해제
+          </div>
         </button>
         <button class="mybtn2" @click="video_off" v-if="video">
           <img class="menu_icon2" src="@/assets/icon/video_off.png" alt="video_on">
+          <div style="color:#de7474;">
+            비디오
+          </div>
+          <div style="color:#de7474;">
+            시작
+          </div>
         </button>
         <button class="mybtn2" @click="video_on" v-if="!video">
           <img class="menu_icon2" src="@/assets/icon/video_on.png" alt="video_off">
+          <div style="color:#4e8aff;">
+            비디오
+          </div>
+          <div style="color:#4e8aff;">
+            중지
+          </div>
         </button>
         <button class="mybtn3" @click="take_photo">
           <img class="menu_icon2" src="@/assets/icon/photo.png" alt="photo">
+          <div style="color:#4e8aff;">
+            사진
+          </div>
         </button>
         <button class="mybtn6" @click="roomOut">
           <img class="menu_icon2" src="@/assets/icon/roomout.png" alt="leaveSession">
@@ -227,6 +251,9 @@
         <!-- eslint-disable-next-line -->
         <button class="mybtn4 dropdown dropright dropright-toggle-no-caret text-decoration-none" type="button" data-bs-toggle="dropdown" aria-expanded="false">
           <img class="menu_icon2" src="@/assets/icon/setTimer.png" alt="photo">
+          <div style="color:#4e8aff;">
+            타이머
+          </div>
         </button>
         <ul class="dropdown-menu" role="menu" style="width:50px;">
         <!-- eslint-disable-next-line -->
@@ -314,7 +341,7 @@ export default {
       OV: undefined,
       session: undefined,
       video: false,
-      mic: false,
+      mic: true,
       mainStreamManager: undefined,
       publisher: undefined,
       subscribers: [],
