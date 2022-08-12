@@ -240,6 +240,8 @@
       <div class="setTimer2position">
         <setTimer2 ref="setTimer2" />
       </div>
+      <button @click="init">start</button>
+      <div>나의 카운트 : {{ count }} </div>
     </div>
   </div>
 </template>
@@ -255,7 +257,9 @@ import 'emoji-mart-vue-fast/css/emoji-mart.css';
 import { Picker, EmojiIndex } from 'emoji-mart-vue-fast/src';
 import { mapState, mapActions, mapMutations } from 'vuex';
 import swal from 'sweetalert2';
-// import { onUnmounted } from 'vue';
+// eslint-disable-next-line
+import * as tf from '@tensorflow/tfjs';
+import * as tmPose from '@teachablemachine/pose';
 
 window.Swal = swal;
 
@@ -278,6 +282,12 @@ const format = year + '-' + (('00' + month.toString()).slice(-2)) + '-' +
 
 export default {
   name: 'CompetitionView',
+  metaInfo: {
+    script: [
+      { src: 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.3.1/dist/tf.min.js', async: true, defer: true },
+      { src: 'https://cdn.jsdelivr.net/npm/@teachablemachine/pose@0.8/dist/teachablemachine-pose.min.js', async: true, defer: true },
+    ],
+  },
   components: {
     WebRTC,
     WebRTCPhoto,
@@ -333,6 +343,29 @@ export default {
       myTags: [],
       mypictures: [],
       roomTime: null,
+      // tm 영역
+      webcam: undefined,
+      URL: undefined,
+      model: undefined,
+      status: 'ready',
+      check: false,
+      check2: false,
+      count: 0,
+      // gameType: 'pushUp',
+      gameType: 2, // 1:squat, 2:lunge, 3:burpee
+      ctx: undefined,
+      // 각 운동의 카운트를 memberId와 함께 session.on으로 보내주고 데이터 받아서 저장한다.
+      // sqcount,
+      // bpcount,
+      // lgcount,
+      // 운동이 끝나면 count는 서버에 보내고, counts에 따라 임의의 score를 저장한다.
+      // sqscore,
+      // bpscore,
+      // lgscore,
+      // score의 합산으로 다시 정렬해서 순위별 등수를 매겨로 포인트를 부여한다.
+      // myscore,
+      // mypoints를 서버에 보낸다.
+      // mypoints,
     };
   },
   setup() {
@@ -348,6 +381,7 @@ export default {
     this.credentialsUser.meetingRoomId = this.mySessionId;
   },
   moundted() {
+    this.init();
   },
   unmounted() {
     this.leaveSession();
@@ -383,6 +417,18 @@ export default {
     // ...meetingRoomHelper.mapState(["sessionID", "meetingRoomList"]),
   },
   methods: {
+    drawPose(pose) {
+      if (this.webcam.canvas) {
+        // console.log('drawPose ctx drawImage');
+        this.ctx.drawImage(this.webcam.canvas, 0, 0);
+        if (pose) {
+          // console.log('drawPose tmPose drawSkeleton');
+          const minPartConfidence = 0.5;
+          tmPose.drawKeypoints(pose.keypoints, minPartConfidence, this.ctx);
+          tmPose.drawSkeleton(pose.keypoints, minPartConfidence, this.ctx);
+        }
+      }
+    },
     pickmyImg(Img) {
       this.credentials.recordImg = Img;
     },
@@ -952,6 +998,176 @@ export default {
     },
     exerciseJournalSubmit(event) {
       event.preventDefault();
+    },
+    async setmodel() {
+      // console.log('setmodel');
+      switch (this.gameType) {
+        case 1: // 스쿼트
+          this.URL = 'https://teachablemachine.withgoogle.com/models/N9Uzcp-sg/';
+          break;
+        case 2: // 런지
+          this.URL = 'https://teachablemachine.withgoogle.com/models/qsNO7nn-l/';
+          break;
+        case 3: // 버피
+          this.URL = 'https://teachablemachine.withgoogle.com/models/fR-T-F0cP/';
+          break;
+        default:
+          break;
+      }
+      const modelURL = `${this.URL}model.json`;
+      const metadataURL = `${this.URL}metadata.json`;
+      // console.log('model set before');
+      // this.model = await tmPose.load(modelURL, metadataURL);
+      this.model = Object.freeze(await tmPose.load(modelURL, metadataURL));
+      // console.log('model set -> ', this.model);
+      // const mymodel = await tf.loadGraphModel(modelURL);
+      // mymodel.dispose();
+    },
+
+    async init() {
+      this.setmodel();
+
+      // const size = 200;
+      const flip = true;
+      this.webcam = new tmPose.Webcam(500, 300, flip);
+      await this.webcam.setup();
+      await this.webcam.play();
+      // console.log('init_webcam >> ', this.webcam);
+      window.requestAnimationFrame(this.loop);
+
+      const canvas2 = this.webcam.canvas;
+      canvas2.width = 500;
+      canvas2.height = 300;
+      this.ctx = canvas2.getContext('2d');
+    },
+    async loop() {
+      this.webcam.update();
+
+      switch (this.gameType) {
+        case 1:
+          await this.squatpredict();
+          break;
+        case 2:
+          await this.lungepredict();
+          break;
+        case 3:
+          await this.burpeepredict();
+          break;
+        default:
+          break;
+      }
+      window.requestAnimationFrame(this.loop);
+    },
+
+    async squatpredict() {
+      // Prediction #1: run input through posenet
+      // estimatePose can take in an image, video or canvas html element
+      // console.log('squat predict -> ', this.model);
+      const { pose, posenetOutput } = await this.model.estimatePose(
+        this.webcam.canvas,
+      );
+      // Prediction 2: run input through teachable machine classification model
+      const prediction = await this.model.predict(posenetOutput);
+
+      if (prediction[1].probability.toFixed(2) > 0.99) { // 스쿼트
+        if (this.check) {
+          this.count += 1;
+          console.log('squat', this.count);
+          this.session
+            .signal({
+              data: `${this.myUserName},${this.count}`, // Any string (optional)
+              to: [], // Array of Connection objects (optional. Broadcast to everyone if empty)
+              type: 'count', // The type of message (optional)
+            })
+            .then(() => {
+              // this.setState({ check: false });
+              this.check = false;
+            })
+            .catch(() => {});
+        }
+        this.status = 'squat';
+        // this.setState({ status: 'ready' });
+      } else if (prediction[0].probability.toFixed(2) > 0.99) { // 서 있는 자세
+        // const countTemp = this.count;
+        // this.count = countTemp + 1;
+
+        // this.count += 1;
+        // console.log('squat count : ', this.count);
+
+        this.status = 'ready';
+        // this.setState({ check: true });
+        this.check = true;
+      }
+      // console.log('squat finish');
+      this.drawPose(pose);
+    },
+
+    async lungepredict() {
+      const { pose, posenetOutput } = await this.model.estimatePose(
+        this.webcam.canvas,
+      );
+      const prediction = await this.model.predict(posenetOutput);
+
+      if (prediction[1].probability.toFixed(2) > 0.99) { // 런지
+        if (this.check) {
+          this.count += 1;
+          console.log('lunge', this.count);
+          this.session
+            .signal({
+              data: `${this.myUserName},${this.count}`, // Any string (optional)
+              to: [], // Array of Connection objects (optional. Broadcast to everyone if empty)
+              type: 'count', // The type of message (optional)
+            })
+            .then(() => {
+              // this.setState({ check: false });
+              this.check = false;
+            })
+            .catch(() => {});
+        }
+        this.status = 'lunge';
+        // this.setState({ status: 'ready' });
+      } else if (prediction[0].probability.toFixed(2) > 0.99) { // 서 있는 자세
+        this.status = 'ready';
+        this.check = true;
+      }
+      this.drawPose(pose);
+    },
+
+    async burpeepredict() {
+      const { pose, posenetOutput } = await this.model.estimatePose(
+        this.webcam.canvas,
+      );
+      const prediction = await this.model.predict(posenetOutput);
+
+      if (prediction[2].probability.toFixed(2) > 0.99) { // 서 있는 자세
+        if (this.check && this.check2) {
+          this.count += 1;
+          console.log('burpee', this.count);
+          this.session
+            .signal({
+              data: `${this.myUserName},${this.count}`, // Any string (optional)
+              to: [], // Array of Connection objects (optional. Broadcast to everyone if empty)
+              type: 'count', // The type of message (optional)
+            })
+            .then(() => {
+              // this.setState({ check: false });
+              this.check = false;
+              this.check2 = false;
+            })
+            .catch(() => {});
+        }
+        this.status = 'go';
+        // this.setState({ status: 'ready' });
+      } else if (prediction[1].probability.toFixed(2) > 0.99) { // 쪼그려 앉아 있는 자세
+        this.status = 'ready';
+        if (this.check) {
+          this.check = true;
+        }
+      } else if (prediction[0].probability.toFixed(2) > 0.99) { // 엎드려 있는 자세
+        this.status = 'set';
+        this.check2 = true;
+      }
+      this.drawPose(pose);
     },
   },
 };
