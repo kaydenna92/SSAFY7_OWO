@@ -10,7 +10,7 @@
         <!-- WebRTC 목록 -->
         <div>
           <div id="" class="row d-flex align-items-start justify-content-center">
-            <WebRTC :stream-manager="mainStreamManager"/>
+            <canvas><WebRTC :stream-manager="mainStreamManager"/></canvas>
             <WebRTC :stream-manager="sub"
               v-for="sub in subscribers"
               :key="sub.stream.connection.connectionId"
@@ -1030,6 +1030,7 @@ export default {
       // const size = 200;
       const flip = true;
       this.webcam = new tmPose.Webcam(500, 300, flip);
+      this.webcam.canvas = document.querySelector('canvas');
       await this.webcam.setup();
       await this.webcam.play();
       // console.log('init_webcam >> ', this.webcam);
