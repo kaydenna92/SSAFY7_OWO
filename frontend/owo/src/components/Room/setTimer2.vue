@@ -1,7 +1,7 @@
 <template>
 <div style="position:relative">
   <div v-show="isStarted" class="circle">
-    <svg width="150" style="background-color:white; border-radius: 50%;" viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg">
+    <svg width="700" style="background-color:translate; border-radius: 50%;" viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg">
       <g transform="translate(110,110)">
         <circle r="100" class="e-c-base"/>
         <g transform="rotate(-90)">
@@ -14,7 +14,7 @@
     </svg>
   </div>
   <div v-show="isStarted" class="controlls">
-    <div class="display-remain-time">{{timesetting}}</div>
+    <div class="display-remain-time" style="font-size:300px;">{{timesetting}}</div>
   </div>
 </div>
 </template>
@@ -27,7 +27,7 @@ export default {
     return {
       intervalTimer: null,
       timeLeft: null,
-      wholeTime: 10,
+      wholeTime: 3,
       isPaused: false,
       isStarted: false,
       length: Math.PI * 2 * 100,
@@ -40,6 +40,7 @@ export default {
   unmounted() {},
   methods: {
     pauseTimer() {
+      console.log('시계2작동중');
       const progressBar = document.querySelector('.e-c-progress');
       progressBar.style.strokeDasharray = this.length;
       if (this.isStarted === false) {
@@ -55,10 +56,9 @@ export default {
       pointer.style.transform = `rotate(${(360 * value) / (timePercent)}deg)`;
     },
     displayTimeLeft(timeLeft) { // displays time on the input
-      const minutes = Math.floor(timeLeft / 60);
       const seconds = timeLeft % 60;
-      const displayString = `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-      this.timesetting = displayString;
+      const displayString = `${seconds}`;
+      this.timesetting = displayString === '0' ? 'GO!' : displayString;
       this.update(timeLeft, this.wholeTime);
     },
     timer(seconds) { // counts time, takes seconds
@@ -84,7 +84,7 @@ export default {
 <style scoped>
 @import url('https://fonts.googleapis.com/css?family=Roboto:100,300');
 
-button[data-setter] {
+/* button[data-setter] {
   outline: none;
   background: transparent;
   border: none;
@@ -95,18 +95,18 @@ button[data-setter] {
   height: 30px;
   color: #4E8Aff;
   cursor: pointer;
-}
+} */
 
-button[data-setter]:hover { opacity: 0.5; }
+/* button[data-setter]:hover { opacity: 0.5; } */
 
-.container {
+/* .container {
   position: relative;
   top: 0px;
   width: 0px;
   margin: 0 auto;
-}
+} */
 
-.setters {
+/* .setters {
   position: absolute;
   left: 85px;
   top: 75px;
@@ -117,13 +117,14 @@ button[data-setter]:hover { opacity: 0.5; }
   margin-right: 28px;
 }
 
-.seconds-set { float: right; }
+.seconds-set { float: right; } */
 
 .controlls {
-  position: absolute;
+  position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  z-index:1500;
 }
 
 .display-remain-time {
@@ -133,7 +134,7 @@ button[data-setter]:hover { opacity: 0.5; }
   color: #4E8Aff;
 }
 
-#pause {
+/* #pause {
   outline: none;
   background: transparent;
   border: none;
@@ -168,11 +169,11 @@ button[data-setter]:hover { opacity: 0.5; }
   border-bottom: none;
 }
 
-#pause:hover { opacity: 0.8; }
+#pause:hover { opacity: 0.8; } */
 
 .e-c-base {
   fill: none;
-  stroke: #B6B6B6;
+  stroke: white;
   stroke-width: 4px
 }
 
@@ -193,16 +194,16 @@ button[data-setter]:hover { opacity: 0.5; }
 h1 { margin-top:150px; text-align:center;}
 body { background-color:#f7f7f7;}
 
-.mybtn5 {
-  background-color:transparent;
-  border:none;
-  position:fixed;
-  top:25%;
-  right:105px;
-  z-index: 700;
-}
-
 .menu_icon2 {
   width:50px;
 }
+
+.circle {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index:1000;
+}
+
 </style>

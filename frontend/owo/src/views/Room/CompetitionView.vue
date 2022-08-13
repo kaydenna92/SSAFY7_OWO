@@ -7,20 +7,23 @@
       </div>
       <!-- 세션 -->
       <div id="session" v-if="session">
-        <!-- WebRTC 목록 -->
         <div>
           <div id="" class="row d-flex align-items-start justify-content-center">
             <WebRTC :stream-manager="mainStreamManager"/>
             <WebRTC :stream-manager="sub"
               v-for="sub in subscribers"
               :key="sub.stream.connection.connectionId"
-              @click="updateMainVideoStreamManager(sub)"
             />
-            <div v-if="this.subscribers.length <= 0" class="webrtcetc col-4 m0p0 mb-2 mx-1"></div>
-            <div v-if="this.subscribers.length <= 1" class="webrtcetc col-4 m0p0 mb-2 mx-1"></div>
-            <div v-if="this.subscribers.length <= 2" class="webrtcetc col-4 m0p0 mb-2 mx-1"></div>
-            <div v-if="this.subscribers.length <= 3" class="webrtcetc col-4 m0p0 mb-2 mx-1"></div>
-            <div v-if="this.subscribers.length <= 4" class="webrtcetc col-4 m0p0 mb-2 mx-1"></div>
+            <!-- <WebRTC :stream-manager="sub"
+              v-for="sub in subscribers"
+              :key="sub.stream.connection.connectionId"
+              @click="updateMainVideoStreamManager(sub)"
+            /> -->
+            <div v-show="this.subscribers.length <= 0" class="webrtcetc col-4 m0p0 mb-2 mx-1"></div>
+            <div v-show="this.subscribers.length <= 1" class="webrtcetc col-4 m0p0 mb-2 mx-1"></div>
+            <div v-show="this.subscribers.length <= 2" class="webrtcetc col-4 m0p0 mb-2 mx-1"></div>
+            <div v-show="this.subscribers.length <= 3" class="webrtcetc col-4 m0p0 mb-2 mx-1"></div>
+            <div v-show="this.subscribers.length <= 4" class="webrtcetc col-4 m0p0 mb-2 mx-1"></div>
           </div>
           <!-- eslint-disable-next-line -->
           <div v-for="sub in subscribers" :key="sub.stream.connection.connectionId"> {{sub.stream.connection.connectionId}} </div>
@@ -29,11 +32,6 @@
       <!-- 운동 종료 모달 -->
       <div>
         <div class="d-flex justify-content-center align-items-center">
-          <button
-          v-b-modal.after-exercise-modal class="btn btn-outline-secondary m-2">
-            <img class="menu_icon1" src="@/assets/icon/room_end.png" alt="mic_off">
-            운동 종료
-          </button>
           <!-- eslint-disable-next-line -->
           <b-modal id="after-exercise-modal" size="xl" no-close-on-esc no-close-on-backdrop hide-footer hide-header>
             <form @submit.prevent="sendRecord(credentials, credentialsUser)">
@@ -41,11 +39,11 @@
                 <h1 class="title text-center mt-4">🏃‍♂️운동 일지</h1>
                 <label for="my-checkbox m-0" class="secretcheckbox d-flex align-items-center">
                   <input v-model="credentials.secret" type="checkbox">
-                  <div v-if="credentials.secret">
+                  <div v-show="credentials.secret">
                     <!-- eslint-disable-next-line -->
                     &ensp;&ensp;<span style="color:#de7474;">비공개</span>&ensp;<img class="menu_icon1" src="@/assets/icon/lock.png" alt="">
                   </div>
-                  <div  v-if="!credentials.secret">
+                  <div  v-show="!credentials.secret">
                     <!-- eslint-disable-next-line -->
                     &ensp;&ensp;&ensp;&ensp;<span style="color:#4e8aff;">공개</span>&ensp;<img class="menu_icon1" src="@/assets/icon/unlock.png" alt="">
                   </div>
@@ -56,13 +54,13 @@
                 <br>
                 <!-- 운동일지, 사진 -->
                 <div>
-                  <div class="md-title2 text-center">📷오늘의 운동 사진</div>
+                  <div class="md-title2 text-center">📷오늘의 운동 사진 1장을 골라주세요(필수!)</div>
                   <br>
                     <!-- eslint-disable-next-line -->
                 </div>
                 <div class="row d-flex align-items-start justify-content-center">
                   <!-- eslint-disable-next-line -->
-                  <button @click.prevenet="pickmyImg(`${mypicture}`)" v-for="(mypicture, i) in mypictures" :key="i" class="col-4 m0p0" style="padding:0px; margin:0px; width:330px;">
+                  <button @click.prevent="pickmyImg(`${mypicture}`)" v-for="(mypicture, i) in mypictures" :key="i" class="col-4 m0p0 mx-1 my-1" style="padding:0px; margin:0px; width:330px;">
                     <img :src="mypicture" alt="img" style="width:328px;">
                   </button>
                 </div>
@@ -100,7 +98,7 @@
                             <!-- eslint-disable-next-line -->
                             <label for="my-tag" class="m-0 p-0" style="width:100% - 120px;">
                               <!-- eslint-disable-next-line -->
-                              <input id="myTagInput" v-model="newTagContent" type="text" style="text-align: center; width:100px; color:white; border: none; border-bottom:1px solid white; background: transparent;" placeholder="#나만의 태그">
+                              <input id="myTagInput" v-model="newTagContent" type="text" style="text-align: center; width:100px; color:white; border: none; border-bottom:1px solid white; background: transparent;" placeholder="#나만의태그">
                             </label>&ensp;추가&ensp;
                           </button>
                         </form>
@@ -122,6 +120,8 @@
                 <div class="d-flex justify-content-center">
                   <!-- eslint-disable-next-line -->
                   <b-button type="submit" class="mybutton btn btn-success m-2 p-2">&ensp;작성 완료&ensp;</b-button>
+                  <!-- eslint-disable-next-line -->
+                  <button @click="tempLeaveSession()" class="mybutton btn btn-danger m-2 p-2">저장하지않고 마치기(임시)</button>
                 </div>
               </div>
               <br>
@@ -129,28 +129,30 @@
                 <!-- eslint-disable-next-line -->
                 <div style="width: 95%; text-align: right; color:red;">강제 종료 / 새로 고침하면 기록이 저장되지 않아요!</div>
               </div>
-              <div class="text-center">{{credentials}}</div>
             </form>
           </b-modal>
         </div>
       </div>
-      <!-- 촬영 시 배경 -->
+      <!-- 사진 양식 -->
       <div class="d-flex justify-content-center align-items-center"
       v-if="is_take_photo" id="take_photo_background"></div>
       <div class="d-flex justify-content-center align-items-center text-white"
-      v-if="is_take_photo" id="">
+      v-if="is_take_photo">
+        <!-- eslint-disable-next-line -->
+        <div id="take_photo_WebRTC_warning">&ensp;사진은 최신 3장까지 저장됩니다!&ensp;</div>
         <WebRTCPhoto id="take_photo_WebRTC" :stream-manager="mainStreamManager"/>
+        <img v-if="this.photoDisplay" id="take_photo_WebRTC_photo" :src="this.mypictures[0]" alt="">
       </div>
       <div class="d-flex justify-content-center align-items-center text-white mt-4"
-      v-if="is_take_photo" id="take_photo_timer">{{ timer }}</div>
-      <!-- 이모티콘 영역 -->
+      v-if="is_take_photo" id="take_photo_timer">{{ temp_timer_2 }}</div>
+      <!-- 이모티콘 -->
       <div class="emoji_position" v-if="Emoji_ONOFF">
         <div class="row">
           <!-- apple, google, twitter, facebook -->
           <Picker :data="emojiIndex" set="twitter" @select="showEmoji" />
         </div>
       </div>
-      <!-- 채팅 영역 -->
+      <!-- 채팅 -->
       <div v-if="this.session">
         <button v-if="chatONOFF" @click="chatoff" class="chat">
           <img class="chatimg" src="@/assets/icon/commentoff.png" alt="">
@@ -203,43 +205,77 @@
         <button @click="open_emoji" class="open_emoji">
           <img class="menu_icon2" src="@/assets/icon/emoji.png" alt="emoji">
         </button>
-        <button class="mybtn1" @click="mic_off" v-if="mic">
-          <img class=" menu_icon2" src="@/assets/icon/mic_off.png" alt="mic_on">
-        </button>
-        <button class="mybtn1" @click="mic_on" v-if="!mic">
+        <button class="mybtn1" @click="mic_off" v-show="mic">
           <img class="menu_icon2" src="@/assets/icon/mic_on.png" alt="mic_off">
+          <div style="color:#4e8aff; font-size:12px;">
+            음소거
+          </div>
         </button>
-        <button class="mybtn2" @click="video_off" v-if="video">
+        <button class="mybtn1" @click="mic_on" v-show="!mic">
+          <img class=" menu_icon2" src="@/assets/icon/mic_off.png" alt="mic_on">
+          <div style="color:#de7474; font-size:12px;">
+            음소거
+          </div>
+          <div style="color:#de7474; font-size:12px; line-height:0.8;">
+            해제
+          </div>
+        </button>
+        <button class="mybtn2" @click="video_off" v-show="video">
           <img class="menu_icon2" src="@/assets/icon/video_off.png" alt="video_on">
+          <div style="color:#de7474; font-size:12px;" >
+            비디오
+          </div>
+          <div style="color:#de7474; font-size:12px; line-height:0.8;">
+            시작
+          </div>
         </button>
-        <button class="mybtn2" @click="video_on" v-if="!video">
+        <button class="mybtn2" @click="video_on" v-show="!video">
           <img class="menu_icon2" src="@/assets/icon/video_on.png" alt="video_off">
+          <div style="color:#4e8aff; font-size:12px;">
+            비디오
+          </div>
+          <div style="color:#4e8aff; font-size:12px; line-height:0.8;">
+            중지
+          </div>
         </button>
         <button class="mybtn3" @click="take_photo">
           <img class="menu_icon2" src="@/assets/icon/photo.png" alt="photo">
+          <div style="color:#4e8aff; font-size:12px;">
+            사진
+          </div>
         </button>
-        <button class="mybtn6" @click="roomOut">
+        <button v-b-modal.after-exercise-modal class="mybtn6">
           <img class="menu_icon2" src="@/assets/icon/roomout.png" alt="leaveSession">
         </button>
-        <button v-if="isStarted" class="mybtn5" @click="time">
+        <button v-if="!isStarted" class="mybtn5" @click="startround1">
           <img class="menu_icon4" src="@/assets/icon/start.png" alt="Start">
         </button>
         <!-- eslint-disable-next-line -->
         <button class="mybtn4 dropdown dropright dropright-toggle-no-caret text-decoration-none" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-          <img class="menu_icon2" src="@/assets/icon/phototimer.png" alt="photo">
+          <img class="menu_icon2" src="@/assets/icon/setTimer.png" alt="photo">
+          <div style="color:#4e8aff; font-size:12px;">
+            타이머
+          </div>
         </button>
         <ul class="dropdown-menu" role="menu" style="width:50px;">
         <!-- eslint-disable-next-line -->
-          <li role="presentation" style="width:100%;"><button @click="set_timer_3" class="dropdown-item text-center" type="button" target="_self">타이머 : 3초</button></li>
+          <li role="presentation" style="width:100%;"><button @click="set_timer_3" class="dropdown-item text-center" type="button" target="_self">3초</button></li>
         <!-- eslint-disable-next-line -->
-          <li role="presentation" style="width:100%;"><button @click="set_timer_5" class="dropdown-item text-center" type="button" target="_self">타이머 : 5초</button></li>
+          <li role="presentation" style="width:100%;"><button @click="set_timer_5" class="dropdown-item text-center" type="button" target="_self">5초</button></li>
         <!-- eslint-disable-next-line -->
-          <li role="presentation" style="width:100%;"><button @click="set_timer_10" class="dropdown-item text-center" type="button" target="_self">타이머 : 10초</button></li>
+          <li role="presentation" style="width:100%;"><button @click="set_timer_10" class="dropdown-item text-center" type="button" target="_self">10초</button></li>
         </ul>
       </div>
       <div class="setTimer2position">
-        <setTimer2 ref="setTimer2" />
       </div>
+      <div v-show="isStarted" class="myBackGroundSetting">
+        안녕하세요?
+        안녕하세요?2
+        <setTimer2 ref="setTimer2" />
+        <!-- <setTimer3 ref="setTimer3"/> -->
+      </div>
+      <button @click="init">start</button>
+      <div>나의 카운트 : {{ count }} </div>
     </div>
   </div>
 </template>
@@ -248,6 +284,7 @@ import html2canvas from 'html2canvas';
 import WebRTC from '@/components/Room/WebRTC.vue';
 import WebRTCPhoto from '@/components/Room/WebRTCPhoto.vue';
 import setTimer2 from '@/components/Room/setTimer2.vue';
+// import setTimer3 from '@/components/Room/setTimer3.vue';
 import axios from 'axios';
 import { OpenVidu } from 'openvidu-browser';
 import emojidata from 'emoji-mart-vue-fast/data/all.json';
@@ -255,7 +292,9 @@ import 'emoji-mart-vue-fast/css/emoji-mart.css';
 import { Picker, EmojiIndex } from 'emoji-mart-vue-fast/src';
 import { mapState, mapActions, mapMutations } from 'vuex';
 import swal from 'sweetalert2';
-// import { onUnmounted } from 'vue';
+// eslint-disable-next-line
+import * as tf from '@tensorflow/tfjs';
+import * as tmPose from '@teachablemachine/pose';
 
 window.Swal = swal;
 
@@ -278,17 +317,25 @@ const format = year + '-' + (('00' + month.toString()).slice(-2)) + '-' +
 
 export default {
   name: 'CompetitionView',
+  metaInfo: {
+    script: [
+      { src: 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.3.1/dist/tf.min.js', async: true, defer: true },
+      { src: 'https://cdn.jsdelivr.net/npm/@teachablemachine/pose@0.8/dist/teachablemachine-pose.min.js', async: true, defer: true },
+    ],
+  },
   components: {
     WebRTC,
     WebRTCPhoto,
     Picker,
     setTimer2,
+    // setTimer3,
   },
   data() {
     return {
       // 타이머 셋팅
       timer: 3,
       temp_timer: 3,
+      temp_timer_2: 3,
       take_photo_timer: null,
       is_take_photo: false,
       // 이모지 셋팅
@@ -304,11 +351,12 @@ export default {
       OV: undefined,
       session: undefined,
       video: false,
-      mic: false,
+      mic: true,
       mainStreamManager: undefined,
       publisher: undefined,
       subscribers: [],
       // 방 설정
+      photoDisplay: false,
       youtubeURL: '',
       lockroomcheck: false,
       isMaster: true,
@@ -318,11 +366,12 @@ export default {
       // roomName: '붙어보자!',
       gameName: ['팔굽혀펴기', '런지', '버피테스트'],
       credentials: {
-        recordImg: '',
+        fileOriName: '',
+        fileUrl: '',
         recordDatetime: format,
         recordMemo: null,
+        recordTime: 30,
         secret: false,
-        // recordimg: null,
         tagList: [],
       },
       credentialsUser: {
@@ -333,6 +382,30 @@ export default {
       myTags: [],
       mypictures: [],
       roomTime: null,
+      isStarted: false,
+      RoundStartTimer: null,
+      // tm 영역
+      webcam: undefined,
+      URL: undefined,
+      model: undefined,
+      status: 'ready',
+      check: false,
+      check2: false,
+      count: 0,
+      gameType: 2, // 1:squat, 2:lunge, 3:burpee
+      ctx: undefined,
+      // 각 운동의 카운트를 memberId와 함께 session.on으로 보내주고 데이터 받아서 저장한다.
+      // sqcount,
+      // bpcount,
+      // lgcount,
+      // 운동이 끝나면 count는 서버에 보내고, counts에 따라 임의의 score를 저장한다.
+      // sqscore,
+      // bpscore,
+      // lgscore,
+      // score의 합산으로 다시 정렬해서 순위별 등수를 매겨로 포인트를 부여한다.
+      // myscore,
+      // mypoints를 서버에 보낸다.
+      // mypoints,
     };
   },
   setup() {
@@ -348,6 +421,7 @@ export default {
     this.credentialsUser.meetingRoomId = this.mySessionId;
   },
   moundted() {
+    this.init();
   },
   unmounted() {
     this.leaveSession();
@@ -383,20 +457,61 @@ export default {
     // ...meetingRoomHelper.mapState(["sessionID", "meetingRoomList"]),
   },
   methods: {
-    pickmyImg(Img) {
-      this.credentials.recordImg = Img;
-    },
-    roomOut() {
-      // if (!this.roomTime) {
-      //   swal.fire({
-      //     icon: 'warning',
-      //     title: '알림',
-      //     text: '최대 200bytes까지 입력가능해요!',
-      //   });
-      // }
+    tempLeaveSession() {
       this.leaveSession();
+      document.body.removeAttribute('data-bs-overflow');
+      document.body.removeAttribute('data-bs-padding-right');
+      document.body.removeAttribute('class');
+      document.body.removeAttribute('style');
+      // document.getElementsByClassName('fade').remove();
+      // console.log('여기임1', document.getElementsByClassName('modal-backdrop'));
+      document.getElementsByClassName('modal-backdrop')[0].remove();
+      document.getElementsByClassName('modal-backdrop')[0].remove();
+      document.getElementsByClassName('modal-backdrop')[0].remove();
+      // document.getElementsByClassName('modal-open')[0].removeAttribute('style');
+      // document.getElementsByClassName('modal-open')[0].removeAttribute('style');
+      // console.log(document.getElementsByClassName('modal-open')[0].classList.
+      // remove('modal-open'));
     },
-    // textarea 바이트 수 체크하는 함수
+    drawPose(pose) {
+      if (this.webcam.canvas) {
+        // console.log('drawPose ctx drawImage');
+        this.ctx.drawImage(this.webcam.canvas, 0, 0);
+        if (pose) {
+          // console.log('drawPose tmPose drawSkeleton');
+          const minPartConfidence = 0.5;
+          tmPose.drawKeypoints(pose.keypoints, minPartConfidence, this.ctx);
+          tmPose.drawSkeleton(pose.keypoints, minPartConfidence, this.ctx);
+        }
+      }
+    },
+    pickmyImg(Img) {
+      this.credentials.fileOriName = `${this.userInfo.nick}_${format}.png`;
+      this.credentials.fileUrl = Img;
+    },
+    // roomOut() {
+    //   console.log(this.$bvModal);
+    //   this.$bvModal.show('after-exercise-modal');
+    //   this.leaveSession();
+    //   if (this.roomTime < 1) {
+    //     this.leaveSession();
+    //   } else if (this.roomTime < 5) {
+    //     swal.fire({
+    //       title: '퇴장하실건가요?',
+    //       text: "5분 미만 운동 시 기록이 저장되지 않습니다.",
+    //       icon: 'warning',
+    //       showCancelButton: true,
+    //       confirmButtonColor: '#d33',
+    //       confirmButtonText: '그래도 나갈게요.',
+    //       cancelButtonColor: '#3085d6',
+    //       denyButtonText: `더 운동할께요!`,
+    //     }).then(() => {
+    //       this.leaveSession();
+    //     })
+    //   } else {
+
+    //   };
+    //   }
     fn_checkByte() {
       const maxByte = 200; // 최대 200바이트
       const textVal = document.getElementById('exerciseMemo').value; // 입력한 문자
@@ -422,6 +537,7 @@ export default {
           title: '알림',
           text: '최대 200bytes까지 입력가능해요!',
         });
+        document.getElementById('exerciseMemo').value = document.getElementById('exerciseMemo').value.substr(0, 200);
         document.getElementById('nowByte').innerText = totalByte;
         document.getElementById('nowByte').style.color = 'red';
       } else {
@@ -438,9 +554,9 @@ export default {
           closeOnEsc: true,
         });
       } else {
-        if (newTagContent !== '') {
-          if (this.myTags.indexOf(newTagContent.replace(' ', '').replace('#', '')) < 0) {
-            this.myTags.push(newTagContent.replace(' ', '').replace('#', ''));
+        if (newTagContent.replace(/ /gi, '').replace(/#/gi, '') !== '') {
+          if (this.myTags.indexOf(newTagContent.replace(/ /gi, '').replace(/#/gi, '')) < 0) {
+            this.myTags.push(newTagContent.replace(/ /gi, '').replace(/#/gi, ''));
             this.newTagContent = '';
             this.myTagList(this.myTags[this.myTags.length - 1]);
           }
@@ -450,9 +566,9 @@ export default {
       }
     },
     deletemyTagList(newTagContent) {
-      this.myTags.splice(this.myTags.indexOf(newTagContent.replace(' ', '').replace('#', '')), 1);
-      if (this.credentials.tagList.indexOf(newTagContent.replace(' ', '').replace('#', '')) >= 0) {
-        this.credentials.tagList.splice(this.credentials.tagList.indexOf(newTagContent.replace(' ', '').replace('#', '')), 1);
+      this.myTags.splice(this.myTags.indexOf(newTagContent.replace(/ /gi, '').replace(/#/gi, '')), 1);
+      if (this.credentials.tagList.indexOf(newTagContent.replace(/ /gi, '').replace(/#/gi, '')) >= 0) {
+        this.credentials.tagList.splice(this.credentials.tagList.indexOf(newTagContent.replace(/ /gi, '').replace(/#/gi, '')), 1);
       }
     },
     myTagList(tag) {
@@ -468,30 +584,34 @@ export default {
         this.credentials.tagList.push(tag);
       }
     },
-    time() {
-      this.startround1();
-    },
-    sendRecord(credentials, credentialsUser) {
+    async sendRecord(credentials, credentialsUser) {
       this.credentialsUser.memberId = encodeURI(this.credentialsUser.memberId);
       this.credentialsUser.meetingRoomId = encodeURI(this.credentialsUser.meetingRoomId);
-      console.log(this.credentialsUser.memberId);
-      console.log(this.credentialsUser.meetingRoomId);
-      console.log('보내는 데이터 양식', this.credentials);
-      axios.post(`https://i7c202.p.ssafy.io:8282/api/user/record/finish/${credentialsUser.memberId}/${credentialsUser.meetingRoomId}`, credentials)
+      await axios({
+        url: `https://i7c202.p.ssafy.io:8282/api/user/record/finish/${credentialsUser.memberId}/${credentialsUser.meetingRoomId}`,
+        method: 'post',
+        headers: {
+          'X-AUTH-TOKEN': this.accessToken,
+        },
+        data: {
+          fileOriName: credentials.fileOriName, //
+          fileUrl: credentials.fileUrl, //
+          recordDatetime: credentials.recordDatetime, //
+          recordMemo: credentials.recordMemo, //
+          recordTime: credentials.recordTime, // time만 양식에 맞춰서 반영하면 될듯?
+          secret: credentials.secret,
+          tagList: credentials.tagList,
+        },
+      })
         .then((res) => {
           console.log('성공', res.data);
-          this.$router.push('/');
+          this.tempLeaveSession();
           document.getElementsByClassName('modal-backdrop')[0].remove();
-          document.getElementsByClassName('modal-open')[0].removeClass('modal-open');
-          this.leaveSession();
+          document.getElementsByClassName('modal-open')[0].removeAttribute('style');
+          console.log(document.getElementsByClassName('modal-open')[0].classList.remove('modal-open'));
         })
         .catch((err) => {
           console.log('실패', err);
-          // this.$router.push('/');
-          // document.getElementsByClassName('modal-backdrop')[0].remove();
-          // document.getElementsByClassName('modal-open')[0].removeClass('modal-open');
-          // this.leaveSession();
-          // this.mySessionId = '';
         });
     },
     ...mapActions(emoji, ['changeEmojiList', 'removeEmojiList']),
@@ -540,7 +660,6 @@ export default {
 
       // --- Init a session ---
       this.session = this.OV.initSession();
-      console.log('점원목록', this.subscribers);
 
       // --- Specify the actions when events take place in the session ---
 
@@ -642,10 +761,21 @@ export default {
           }
         }
       });
-
       this.session.on('signal:startround1', () => {
+        this.isStarted = true;
         this.$refs.setTimer2.pauseTimer();
-        this.youtubeURL = 'https://www.youtube.com/embed/gTowV_F07uI';
+        // const audio = new Audio('//bit.ly/3euuS7B');
+        console.log('음악시작');
+        // eslint-disable-next-line
+        const audio = new Audio(require('@/assets/music/321.mp3'));
+        // audio.src = '@/assest/music/321.mp3';
+        audio.play();
+        console.log('음악끝');
+        // this.RoundStartTimer = setInterval(() => {
+        // }, 4000);
+        // this.isStarted = false;
+        // clearInterval(this.RoundStartTimer);
+        // this.$refs.setTimer3.pauseTimer();
       });
 
       window.addEventListener('beforeunload', this.leavepeople);
@@ -908,32 +1038,49 @@ export default {
     },
     take_photo() {
       this.temp_timer = this.timer;
+      this.temp_timer2 = this.timer;
       this.is_take_photo = true;
+      // eslint-disable-next-line
+      const audio3 = new Audio(require('@/assets/music/10seconds.mp3'));
+      audio3.play();
+      setTimeout(() => {
+        audio3.pause();
+      }, this.timer * 1000);
       this.take_photo_timer = setInterval(() => {
         this.timer -= 1;
+        this.temp_timer_2 -= 1;
         console.log(this.timer);
         if (this.timer === 0) {
-          console.log('사진찍는 모션');
           const el = document.querySelector('#take_photo_WebRTC');
+          el.style.opacity = '0';
+          this.temp_timer_2 = '';
           // eslint-disable-next-line
-          html2canvas(el).then((canvas) => {
-            if (this.mypictures.length >= 3) { this.mypictures.pop(); }
-            console.log(canvas.toDataURL('image/png', 1.0));
-            // this.mypictures.unshift(canvas.toDataURL('image/png', 1.0));
-            this.mypictures.unshift(canvas.toDataURL('image/png', 1.0));
-            // const link = document.createElement('a');
-            // document.body.appendChild(link);
-            // link.href = canvas.toDataURL('image/png', 1.0);
-            // localStorage.setItem('userImage', link);
-            // link.download = '안녕하세요?.png';
-            // link.click();
-            // document.body.removeChild(link);
-          });
-          clearInterval(this.take_photo_timer);
-          this.is_take_photo = false;
-          this.timer = this.temp_timer;
+          const audio2 = new Audio(require('@/assets/music/takePhoto.mp3'));
+          audio2.play();
         }
+        if (this.timer === -1) {
+          this.temp_timer_2 = '';
+        }
+        if (this.timer === -1) {
+          const el = document.querySelector('#take_photo_WebRTC');
+          html2canvas(el).then((canvas) => {
+            this.mypictures.unshift(canvas.toDataURL('image/png', 1.0));
+            this.photoDisplay = true;
+            setTimeout(() => {
+              this.photoDisplay = false;
+            }, 2000);
+          });
+          if (this.mypictures.length >= 3) { this.mypictures.pop(); }
+          clearInterval(this.take_photo_timer);
+          setTimeout(() => {
+            this.is_take_photo = false;
+            this.timer = this.temp_timer;
+          }, 2000);
+        }
+        // if (this.timer === 0) {
+        // }
       }, 1000);
+      this.temp_timer_2 = this.temp_timer;
     },
     set_timer_3() {
       this.timer = 3;
@@ -952,6 +1099,177 @@ export default {
     },
     exerciseJournalSubmit(event) {
       event.preventDefault();
+    },
+    async setmodel() {
+      // console.log('setmodel');
+      switch (this.gameType) {
+        case 1: // 스쿼트
+          this.URL = 'https://teachablemachine.withgoogle.com/models/N9Uzcp-sg/';
+          break;
+        case 2: // 런지
+          this.URL = 'https://teachablemachine.withgoogle.com/models/qsNO7nn-l/';
+          break;
+        case 3: // 버피
+          this.URL = 'https://teachablemachine.withgoogle.com/models/fR-T-F0cP/';
+          break;
+        default:
+          break;
+      }
+      const modelURL = `${this.URL}model.json`;
+      const metadataURL = `${this.URL}metadata.json`;
+      // console.log('model set before');
+      // this.model = await tmPose.load(modelURL, metadataURL);
+      this.model = Object.freeze(await tmPose.load(modelURL, metadataURL));
+      // console.log('model set -> ', this.model);
+      // const mymodel = await tf.loadGraphModel(modelURL);
+      // mymodel.dispose();
+    },
+
+    async init() {
+      this.setmodel();
+
+      // const size = 200;
+      const flip = true;
+      this.webcam = new tmPose.Webcam(500, 300, flip);
+      // this.webcam.canvas = document.querySelector('canvas');
+      await this.webcam.setup();
+      await this.webcam.play();
+      // console.log('init_webcam >> ', this.webcam);
+      window.requestAnimationFrame(this.loop);
+
+      const canvas2 = this.webcam.canvas;
+      canvas2.width = 500;
+      canvas2.height = 300;
+      this.ctx = canvas2.getContext('2d');
+    },
+    async loop() {
+      this.webcam.update();
+
+      switch (this.gameType) {
+        case 1:
+          await this.squatpredict();
+          break;
+        case 2:
+          await this.lungepredict();
+          break;
+        case 3:
+          await this.burpeepredict();
+          break;
+        default:
+          break;
+      }
+      window.requestAnimationFrame(this.loop);
+    },
+
+    async squatpredict() {
+      // Prediction #1: run input through posenet
+      // estimatePose can take in an image, video or canvas html element
+      // console.log('squat predict -> ', this.model);
+      const { pose, posenetOutput } = await this.model.estimatePose(
+        this.webcam.canvas,
+      );
+      // Prediction 2: run input through teachable machine classification model
+      const prediction = await this.model.predict(posenetOutput);
+
+      if (prediction[1].probability.toFixed(2) > 0.99) { // 스쿼트
+        if (this.check) {
+          this.count += 1;
+          console.log('squat', this.count);
+          this.session
+            .signal({
+              data: `${this.myUserName},${this.count}`, // Any string (optional)
+              to: [], // Array of Connection objects (optional. Broadcast to everyone if empty)
+              type: 'count', // The type of message (optional)
+            })
+            .then(() => {
+              // this.setState({ check: false });
+              this.check = false;
+            })
+            .catch(() => {});
+        }
+        this.status = 'squat';
+        // this.setState({ status: 'ready' });
+      } else if (prediction[0].probability.toFixed(2) > 0.99) { // 서 있는 자세
+        // const countTemp = this.count;
+        // this.count = countTemp + 1;
+
+        // this.count += 1;
+        // console.log('squat count : ', this.count);
+
+        this.status = 'ready';
+        // this.setState({ check: true });
+        this.check = true;
+      }
+      // console.log('squat finish');
+      this.drawPose(pose);
+    },
+
+    async lungepredict() {
+      const { pose, posenetOutput } = await this.model.estimatePose(
+        this.webcam.canvas,
+      );
+      const prediction = await this.model.predict(posenetOutput);
+
+      if (prediction[1].probability.toFixed(2) > 0.99) { // 런지
+        if (this.check) {
+          this.count += 1;
+          console.log('lunge', this.count);
+          this.session
+            .signal({
+              data: `${this.myUserName},${this.count}`, // Any string (optional)
+              to: [], // Array of Connection objects (optional. Broadcast to everyone if empty)
+              type: 'count', // The type of message (optional)
+            })
+            .then(() => {
+              // this.setState({ check: false });
+              this.check = false;
+            })
+            .catch(() => {});
+        }
+        this.status = 'lunge';
+        // this.setState({ status: 'ready' });
+      } else if (prediction[0].probability.toFixed(2) > 0.99) { // 서 있는 자세
+        this.status = 'ready';
+        this.check = true;
+      }
+      this.drawPose(pose);
+    },
+
+    async burpeepredict() {
+      const { pose, posenetOutput } = await this.model.estimatePose(
+        this.webcam.canvas,
+      );
+      const prediction = await this.model.predict(posenetOutput);
+
+      if (prediction[2].probability.toFixed(2) > 0.99) { // 서 있는 자세
+        if (this.check && this.check2) {
+          this.count += 1;
+          console.log('burpee', this.count);
+          this.session
+            .signal({
+              data: `${this.myUserName},${this.count}`, // Any string (optional)
+              to: [], // Array of Connection objects (optional. Broadcast to everyone if empty)
+              type: 'count', // The type of message (optional)
+            })
+            .then(() => {
+              // this.setState({ check: false });
+              this.check = false;
+              this.check2 = false;
+            })
+            .catch(() => {});
+        }
+        this.status = 'go';
+        // this.setState({ status: 'ready' });
+      } else if (prediction[1].probability.toFixed(2) > 0.99) { // 쪼그려 앉아 있는 자세
+        this.status = 'ready';
+        if (this.check) {
+          this.check = true;
+        }
+      } else if (prediction[0].probability.toFixed(2) > 0.99) { // 엎드려 있는 자세
+        this.status = 'set';
+        this.check2 = true;
+      }
+      this.drawPose(pose);
     },
   },
 };
@@ -1082,7 +1400,7 @@ solid #ccb9a8; border-top: 10px solid transparent; border-bottom: 10px solid tra
 .row > * { margin: auto; }
 
 #take_photo_background {
-    background-color: gray;
+    background-color: black;
     position: fixed;
     overflow: hidden;
     top: 0;
@@ -1095,7 +1413,10 @@ solid #ccb9a8; border-top: 10px solid transparent; border-bottom: 10px solid tra
 }
 
 #take_photo_WebRTC {
-  background-color:gray;
+  background-color:transparent;
+  transition-property: opacity;
+  transition-duration: 2s;
+  transition-timing-function: ease;
   position: fixed;
   width: 60%;
   top: 50%;
@@ -1103,6 +1424,32 @@ solid #ccb9a8; border-top: 10px solid transparent; border-bottom: 10px solid tra
   transform: translate(-50%, -50%);
   /* height: 80%; */
   z-index: 601;
+  opacity: 1;
+}
+
+#take_photo_WebRTC_photo {
+  background-color:transparent;
+  position: fixed;
+  width: 60%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  /* height: 80%; */
+  z-index: 602;
+}
+
+#take_photo_WebRTC_warning {
+  position:fixed;
+  font-size:30px;
+  top: 5%;
+  left: 50%;
+  transform: translate(-50%, 0);
+  color:white;
+  padding:3px;
+  margin:3px;
+  background-color:#4e8aff;
+  z-index:603;
+  border-radius: 10px;
 }
 
 #take_photo_timer {
@@ -1308,5 +1655,16 @@ solid #ccb9a8; border-top: 10px solid transparent; border-bottom: 10px solid tra
 
 .viewsetting {
   margin:auto;
+}
+
+.myBackGroundSetting {
+  background-color: #000000;
+  position:fixed;
+  top: 0%;
+  left: 0%;
+  width: 100%;
+  height: 100%;
+  z-index:900;
+  opacity: 0.7;
 }
 </style>
