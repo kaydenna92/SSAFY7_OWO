@@ -103,7 +103,9 @@ export default {
   height:360px;
   border-radius: 20px;
   border: 3px solid #4e8aff;
-  background-color:#eaf1ff;
+  background-color:black;
+  transition-property: width, height, background-color, border;
+  transition-duration: 2s;
 }
 
 .myname {
