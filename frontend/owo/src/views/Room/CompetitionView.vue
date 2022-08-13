@@ -54,13 +54,13 @@
                 <br>
                 <!-- 운동일지, 사진 -->
                 <div>
-                  <div class="md-title2 text-center">📷오늘의 운동 사진</div>
+                  <div class="md-title2 text-center">📷오늘의 운동 사진 1장을 골라주세요(필수!)</div>
                   <br>
                     <!-- eslint-disable-next-line -->
                 </div>
                 <div class="row d-flex align-items-start justify-content-center">
                   <!-- eslint-disable-next-line -->
-                  <button @click.prevent="pickmyImg(`${mypicture}`)" v-for="(mypicture, i) in mypictures" :key="i" class="col-4 m0p0" style="padding:0px; margin:0px; width:330px;">
+                  <button @click.prevent="pickmyImg(`${mypicture}`)" v-for="(mypicture, i) in mypictures" :key="i" class="col-4 m0p0 mx-1 my-1" style="padding:0px; margin:0px; width:330px;">
                     <img :src="mypicture" alt="img" style="width:328px;">
                   </button>
                 </div>
@@ -129,7 +129,6 @@
                 <!-- eslint-disable-next-line -->
                 <div style="width: 95%; text-align: right; color:red;">강제 종료 / 새로 고침하면 기록이 저장되지 않아요!</div>
               </div>
-              <div class="text-center">{{credentials}}</div>
             </form>
           </b-modal>
         </div>
@@ -1449,7 +1448,7 @@ solid #ccb9a8; border-top: 10px solid transparent; border-bottom: 10px solid tra
   padding:3px;
   margin:3px;
   background-color:#4e8aff;
-  z-index:601;
+  z-index:603;
   border-radius: 10px;
 }
 
