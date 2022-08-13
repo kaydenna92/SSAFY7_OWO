@@ -50,6 +50,17 @@ export const accounts = {
     // },
     goals: '',
     profileImg: '',
+    // record
+    percentage: {
+      recordNames: [],
+      recordHours: [],
+      best: '',
+    },
+    achievementRate: {
+      achieveNames: [],
+      achieveRates: [],
+    },
+    monthRecord: '',
   }),
   mutations: {
     SET_FREE_ROOM_LIST: (state, payload) => {
@@ -102,7 +113,7 @@ export const accounts = {
       state.slogan = payload;
     },
     SET_PROFILE_IMG: (state, payload) => {
-      state.image = payload;
+      state.profileImg = payload;
     },
     SET_POINT: (state, payload) => {
       state.record.point = payload;
@@ -114,6 +125,45 @@ export const accounts = {
     // },
     SET_GOAL: (state, payload) => {
       state.goals = payload;
+      // console.log('남은 목표 수');
+      // console.log(payload.length);
+      // if (payload.length < 1) {
+      //   sessionStorage.removeItem('accessToken');
+      // }
+    },
+    SET_PERCENTAGE: (state, payload) => {
+      // state.percentage = payload;
+      const percentKeys = Object.keys(payload);
+      // }
+      const keys = [];
+      const values = [];
+      for (let i = 0; i < percentKeys.length; i += 1) {
+        keys.push(percentKeys[i]);
+        state.percentage.recordNames = keys;
+        values.push(payload[percentKeys[i]]);
+        state.percentage.recordHours = values;
+      }
+      const bestExercise = keys[0];
+      state.percentage.best = bestExercise;
+    },
+    SET_ACHIEVEMENT_RATE: (state, payload) => {
+      const achievementRate = payload;
+      console.log(state.goals.length);
+      if (state.goals.length >= 1) {
+        const achieve = Object.keys(achievementRate);
+        // }
+        const keys = [];
+        const values = [];
+        for (let i = 0; i < achieve.length; i += 1) {
+          keys.push(achieve[i]);
+          values.push(payload[achieve[i]]);
+        }
+        state.achievementRate.achieveNames = keys;
+        state.achievementRate.achieveRates = values;
+      }
+    },
+    SET_MONTH_RECORD: (state, payload) => {
+      state.monthRecord = payload;
     },
   },
   actions: {
@@ -138,6 +188,7 @@ export const accounts = {
     login({ dispatch, commit }, credentials) { // 로그인
       axios.post('https://i7c202.p.ssafy.io:8282/api/auth/login', credentials) //
         .then((res) => {
+          console.log('로그인!');
           const response = res.data.data;
           const access = response.accessToken;
           const refresh = response.refreshToken;
@@ -148,10 +199,10 @@ export const accounts = {
           dispatch('fetchPhysicalInfo');
           dispatch('fetchSlogan');
           dispatch('fetchPoint');
-          dispatch('fetchCompete');
+          // dispatch('fetchCompete');
           dispatch('fetchGoal');
           dispatch('fetchProfileImg');
-          router.push('/');
+          router.push({ name: 'mainpage' });
         })
         .catch((err) => {
           if (err.response.status === 400) {
@@ -210,7 +261,7 @@ export const accounts = {
           dispatch('fetchPhysicalInfo');
           dispatch('fetchSlogan');
           dispatch('fetchPoint');
-          dispatch('fetchCompete');
+          // dispatch('fetchCompete');
           dispatch('fetchGoal');
           dispatch('fetchProfileImg');
           console.log('-------state, accessToken-------');
@@ -249,7 +300,7 @@ export const accounts = {
             '로그아웃 성공!',
             'success',
           );
-          router.push('/');
+          router.push({ name: 'mainpage' });
         })
         .catch((err) => {
           console.log(err);
@@ -268,7 +319,7 @@ export const accounts = {
             '회원가입 성공! 이메일 인증 후 로그인 해주세요!',
             'success',
           );
-          router.push('/login');
+          router.push({ name: 'login' });
         })
         .catch((err) => {
           if (err.response.data === 'OVERLAP') {
@@ -278,7 +329,7 @@ export const accounts = {
               '이미 회원가입 된 이메일입니다.',
               'warning',
             );
-            router.push('/login');
+            router.push({ name: 'login' });
           } else {
             commit('SET_SIGNUP_MSG', err.response.data);
             swal.fire(
@@ -323,6 +374,15 @@ export const accounts = {
           console.log(err);
         });
     },
+    fetchMypage({ dispatch }) {
+      dispatch('fetchPhysicalInfo');
+      dispatch('fetchPercentage');
+      dispatch('fetchSlogan');
+      dispatch('fetchProfileImg');
+      dispatch('fetchPoint');
+      dispatch('fetchGoal');
+      dispatch('fetchAchievementRate');
+    },
     fetchPhysicalInfo({ state, commit }) {
       axios({
         url: `https://i7c202.p.ssafy.io:8282/api/user/bmi/${state.userInfo.id}`,
@@ -354,7 +414,8 @@ export const accounts = {
         },
       })
         .then((res) => {
-          console.log(res.data);
+          console.log(res.data.message);
+          console.log(res.data.data);
           dispatch('setSlogan', res.data.data.slogan);
         })
         .catch((err) => {
@@ -396,8 +457,8 @@ export const accounts = {
       })
         .then((res) => {
           dispatch('setUserInfo', res.data.data);
-          dispatch('fetchPhysicalInfo');
           alert('정보가 수정되었습니다.');
+          dispatch('fetchPhysicalInfo');
           // router.push({ name: 'MyPageMainView' });
         })
         .catch((err) => {
@@ -418,14 +479,10 @@ export const accounts = {
         // responseType: 'blob',
       })
         .then((res) => {
-          // eslint-disable-next-line
-          // const url = window.URL.createObjectURL(new Blob([res.data], { type: res.headers['content-type'] }));
-          // console.log('이미지axios응답');
-          // console.log(res);
-          // console.log(res.data);
-          // console.log('응답 끝');
-          const url = URL.createObjectURL(res.data);
-          dispatch('setProfileImg', url);
+          console.log('프로필 이미지 응답');
+          console.log(res.data.data);
+          console.log(res.data.message);
+          dispatch('setProfileImg', res.data.data.fileUrl);
         })
         .catch((err) => {
           console.log(err);
@@ -449,6 +506,7 @@ export const accounts = {
           alert(res.data.message);
           // console.log(payload);
           dispatch('setProfileImg', res.data);
+          dispatch('fetchProfileImg');
           // dispatch('fetchProfileImg', res.data);  // 이미지 바꾸고 바로 페치하고싶은데, 이미지 바꾼 게 완료된 후 하고싶은데
           // router.push({ name: 'MyPageMainView' });
         })
@@ -474,24 +532,24 @@ export const accounts = {
           console.log(err);
         });
     },
-    fetchCompete({ state, commit }) {
-      axios({
-        url: `https://i7c202.p.ssafy.io:8282/api/user/compete/${state.userInfo.id}`,
-        method: 'get',
-        headers: {
-          'X-AUTH-TOKEN': state.accessToken,
-          'REFRESH-TOKEN': state.refreshToken,
-        },
-      })
-        .then((res) => {
-          // console.log(res.data.message);
-          console.log(res.data.data);
-          commit('SET_COMPETE', res.data.data);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    },
+    // fetchCompete({ state, commit }) {
+    //   axios({
+    //     url: `https://i7c202.p.ssafy.io:8282/api/user/compete/${state.userInfo.id}`,
+    //     method: 'get',
+    //     headers: {
+    //       'X-AUTH-TOKEN': state.accessToken,
+    //       'REFRESH-TOKEN': state.refreshToken,
+    //     },
+    //   })
+    //     .then((res) => {
+    //       // console.log(res.data.message);
+    //       console.log(res.data.data);
+    //       commit('SET_COMPETE', res.data.data);
+    //     })
+    //     .catch((err) => {
+    //       console.log(err);
+    //     });
+    // },
     setGoal({ commit }, payload) {
       commit('SET_GOAL', payload);
     },
@@ -526,28 +584,13 @@ export const accounts = {
       })
         .then((res) => {
           console.log('addgoal 응답');
+          dispatch('setGoal', res.data.data);
           alert('목표가 추가되었습니다.');
-          dispatch('setGoal', res.data.data);
+          dispatch('fetchGoal');
+          dispatch('fetchAchievementRate');
         })
         .catch((err) => {
-          console.log(err.toJSON());
-        });
-    },
-    updateGoal({ state, dispatch }, payload) {
-      axios({
-        url: `https://i7c202.p.ssafy.io:8282/api/user/goal/${state.userInfo.id}`,
-        method: 'put',
-        headers: {
-          'X-AUTH-TOKEN': state.accessToken,
-          'REFRESH-TOKEN': state.refreshToken,
-        },
-        data: payload,
-      })
-        .then((res) => {
-          dispatch('setGoal', res.data.data);
-        })
-        .catch((err) => {
-          console.log(err.toJSON());
+          console.log(err);
         });
     },
     deleteGoal({ state, dispatch }, goalId) {
@@ -562,10 +605,13 @@ export const accounts = {
         .then((res) => {
           console.log(res.data.message);
           dispatch('setGoal', res.data.data);
-          router.push('/mypage/main');
+          alert('목표가 삭제되었습니다.');
+          dispatch('fetchGoal');
+          dispatch('fetchAchievementRate');
+          // router.push('/mypage/main');
         })
         .catch((err) => {
-          console.log(err.toJSON());
+          console.log(err);
         });
     },
     getRoomList({ commit }, mode) {
@@ -591,6 +637,66 @@ export const accounts = {
           console.log(err);
         });
     },
+    fetchPercentage({ state, commit }) {
+      console.log(' fetchPercentage axios 전');
+      axios({
+        url: `https://i7c202.p.ssafy.io:8282/api/user/record/percentage/${state.userInfo.id}`,
+        method: 'get',
+        headers: {
+          'X-AUTH-TOKEN': state.accessToken,
+          'REFRESH-TOKEN': state.refreshToken,
+        },
+      })
+        .then((res) => {
+          console.log('fetchPercentage응답');
+          console.log(res.data.message);
+          console.log(res.data.data);
+          commit('SET_PERCENTAGE', res.data.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    fetchAchievementRate({ state, commit }) {
+      console.log('fetchAchievementRate axios 전');
+      axios({
+        url: `https://i7c202.p.ssafy.io:8282/api/user/record/goal/do/${state.userInfo.id}`,
+        method: 'get',
+        headers: {
+          'X-AUTH-TOKEN': state.accessToken,
+          'REFRESH-TOKEN': state.refreshToken,
+        },
+      })
+        .then((res) => {
+          console.log('fetchAchievementRate 응답');
+          console.log(res.data.message);
+          console.log(res.data.data);
+          commit('SET_ACHIEVEMENT_RATE', res.data.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    fetchMonthRecord({ state, commit }, payload) {
+      console.log(' fetchMonthRecord axios 전');
+      console.log(payload[0], payload[1]);
+      axios({
+        url: `https://i7c202.p.ssafy.io:8282/api/user/record/month/${state.userInfo.id}/${payload[0]}/${payload[1]}`,
+        method: 'get',
+        headers: {
+          'X-AUTH-TOKEN': state.accessToken,
+          'REFRESH-TOKEN': state.refreshToken,
+        },
+      })
+        .then((res) => {
+          console.log('month record 응답');
+          console.log(res.data.data);
+          commit('SET_MONTH_RECORD', res.data.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
   },
   getters: {
     isLogin: (state) => !!state.accessToken,
@@ -602,5 +708,8 @@ export const accounts = {
     goals: (state) => state.goals,
     profileImg: (state) => state.profileImg,
     roomList: (state) => state.roomList,
+    percentage: (state) => state.percentage,
+    achievementRate: (state) => state.achievementRate,
+    monthRecord: (state) => state.monthRecord,
   },
 };
