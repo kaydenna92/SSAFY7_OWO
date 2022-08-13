@@ -12,6 +12,9 @@ export const accounts = {
     isLoginErr: false,
     accessToken: null,
     refreshToken: null,
+    noFree: '',
+    noGame: '',
+    noStreaming: '',
     roomList: {
       freeRoomList: '',
       gameRoomList: '',
@@ -61,8 +64,38 @@ export const accounts = {
       achieveRates: [],
     },
     monthRecord: '',
+    workout: {
+      유산소: 'AEROBIC',
+      헬스: 'HEALTH',
+      스트레칭: 'STRETCHING',
+      홈트레이닝: 'HOME',
+      맨몸운동: 'BODYWEIGHT',
+      요가: 'YOGA',
+      필라테스: 'PILATES',
+      게임: 'GAME',
+      기타: 'ETC',
+    },
+    make_mode: {
+      자유: 'FREE',
+      경쟁: 'GAME',
+      운동: 'STREAMING',
+    },
+    enter_mode: {
+      FREE: 'friend',
+      GAME: 'competition',
+      STREAMING: 'youtube',
+    },
   }),
   mutations: {
+    SET_FREE_SIGNAL: (state, payload) => {
+      state.noFree = !payload;
+    },
+    SET_GAME_SIGNAL: (state, payload) => {
+      state.noGame = !payload;
+    },
+    SET_STREAMING_SIGNAL: (state, payload) => {
+      state.noStreaming = !payload;
+    },
     SET_FREE_ROOM_LIST: (state, payload) => {
       state.roomList.freeRoomList = payload;
     },
@@ -621,16 +654,37 @@ export const accounts = {
       })
         .then((res) => {
           if (mode === 'FREE') {
-            console.log(res);
-            commit('SET_FREE_ROOM_LIST', res.data);
+            if (res.data.data === null || '') {
+              console.log('생성된 방이 없습니다.');
+              commit('SET_FREE_SIGNAL', res.data.data);
+              commit('SET_FREE_ROOM_LIST', '');
+            } else {
+              console.log(res.data.data);
+              commit('SET_FREE_SIGNAL', res.data.data);
+              commit('SET_FREE_ROOM_LIST', res.data.data);
+            }
           }
           if (mode === 'GAME') {
-            console.log(res);
-            commit('SET_GAME_ROOM_LIST', res.data);
+            if (res.data.data === null || '') {
+              console.log('생성된 방이 없습니다.');
+              commit('SET_GAME_SIGNAL', res.data.data);
+              commit('SET_GAME_ROOM_LIST', '');
+            } else {
+              console.log(res.data.data);
+              commit('SET_GAME_SIGNAL', res.data.data);
+              commit('SET_GAME_ROOM_LIST', res.data.data);
+            }
           }
           if (mode === 'STREAMING') {
-            console.log(res);
-            commit('SET_STREAMING_ROOM_LIST', res.data);
+            if (res.data.data === null || '') {
+              console.log('생성된 방이 없습니다.');
+              commit('SET_STREAMING_SIGNAL', res.data.data);
+              commit('SET_STREAMING_ROOM_LIST', '');
+            } else {
+              console.log(res.data.data);
+              commit('SET_STREAMING_SIGNAL', res.data.data);
+              commit('SET_STREAMING_ROOM_LIST', res.data.data);
+            }
           }
         })
         .catch((err) => {
@@ -652,6 +706,23 @@ export const accounts = {
           console.log(res.data.message);
           console.log(res.data.data);
           commit('SET_PERCENTAGE', res.data.data);
+          })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    enterroom({ state }, payload) {
+      console.log(payload.mode, payload.roomId);
+      axios({
+        url: `https://i7c202.p.ssafy.io:8282/api/user/room/${payload.roomId}`,
+        method: 'get',
+        headers: {
+          'X-AUTH-TOKEN': state.accessToken,
+        },
+      })
+        .then((res) => {
+          console.log(res);
+          router.push(`/room/${state.enter_mode[payload.mode]}/${payload.roomId}`);
         })
         .catch((err) => {
           console.log(err);
@@ -697,6 +768,33 @@ export const accounts = {
           console.log(err);
         });
     },
+    makeRoom({ state }, roomdata) {
+      console.log('makeRoom_actions');
+      console.log(roomdata);
+      axios({
+        url: 'https://i7c202.p.ssafy.io:8282/api/user/room',
+        method: 'post',
+        headers: {
+          'X-AUTH-TOKEN': state.accessToken,
+        },
+        data: {
+          memberId: state.userInfo.id,
+          secret: roomdata.secret,
+          password: roomdata.password,
+          mode: state.make_mode[roomdata.mode],
+          roomName: roomdata.roomName,
+          type: state.workout[roomdata.type],
+          link: roomdata.link,
+        },
+      })
+        .then((res) => {
+          router.push(`/room/${state.enter_mode[state.make_mode[roomdata.mode]]}/${res.data.data.roomId}`);
+          console.log(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
   },
   getters: {
     isLogin: (state) => !!state.accessToken,
@@ -711,5 +809,8 @@ export const accounts = {
     percentage: (state) => state.percentage,
     achievementRate: (state) => state.achievementRate,
     monthRecord: (state) => state.monthRecord,
+    noFree: (state) => state.noFree,
+    noGame: (state) => state.noGame,
+    noStreaming: (state) => state.noStreaming,
   },
 };
