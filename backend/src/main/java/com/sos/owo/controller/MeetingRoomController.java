@@ -4,6 +4,7 @@ import com.sos.owo.domain.MeetingRoom;
 import com.sos.owo.domain.Mode;
 import com.sos.owo.dto.*;
 import com.sos.owo.service.MeetingRoomService;
+import com.sos.owo.service.MemberService;
 import io.openvidu.java.client.OpenVidu;
 import io.openvidu.java.client.OpenViduHttpException;
 import io.openvidu.java.client.OpenViduJavaClientException;
@@ -31,6 +32,7 @@ public class MeetingRoomController {
 
     private final int LIMIT = 6;
     private final MeetingRoomService roomService;
+    private final MemberService memberService;
 
     // 오픈 비두 객체
     private OpenVidu openVidu;
@@ -45,14 +47,15 @@ public class MeetingRoomController {
 
     // MeetingRoomController 접근시에 오픈비두 서버 관련 변수를 얻음
     @Autowired
-    public MeetingRoomController(MeetingRoomService roomService, @Value("${openvidu.secret}") String secret, @Value("${openvidu.url}") String openviduUrl){
+    public MeetingRoomController(MeetingRoomService roomService, MemberService memberService, @Value("${openvidu.secret}") String secret, @Value("${openvidu.url}") String openviduUrl){
         this.roomService = roomService;
+        this.memberService = memberService;
         this.OPENVIDU_SECRET = secret;
         this.OPENVIDU_URL = openviduUrl;
         this.openVidu = new OpenVidu(OPENVIDU_URL, OPENVIDU_SECRET);
     }
 
-    @PostMapping("/api/room")
+    @PostMapping("/api/user/room")
     @ApiOperation(value="운동방을 만드는 API", notes = "방만들기를 통해 화상방에 대한 세션과 토큰을 생성한 후에 토큰, 방에 대한 정보를 반환")
     public ResponseEntity<?> makeMeetingRoom(@RequestBody MeetingRoomMakeRequestDto requestDto) throws OpenViduJavaClientException, OpenViduHttpException {
         Message message = new Message();
@@ -73,7 +76,7 @@ public class MeetingRoomController {
     @GetMapping("/room/{mode}")
     @ApiImplicitParam(name = "mode",value = "방 모드(FREE, STREAMING, GAME)",paramType = "path")
     @ApiOperation(value="활성화된 모든 운동방 불러오는 API", notes = "특정 방모드(FREE/STREAMING/GAME)에 맞춰 활성화된 운동방의 정보를 모두 반환")
-    public ResponseEntity<?> makeMeetingRoom(@PathVariable Mode mode) throws OpenViduJavaClientException, OpenViduHttpException {
+    public ResponseEntity<?> getMeetingRoom(@PathVariable Mode mode) throws OpenViduJavaClientException, OpenViduHttpException {
         Message message = new Message();
         HttpHeaders headers= new HttpHeaders();
         headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
@@ -91,6 +94,7 @@ public class MeetingRoomController {
                 meetingRooomDtoList.add(MeetingListRoomResponse.builder()
                         .roomId(meetingRoom.getId())
                         .memberId(meetingRoom.getManager())
+                        .manger_point(memberService.getMemberPoint(meetingRoom.getManager()))
                         .person(this.roomSession.get(meetingRoom.getId()))
                         .secret(meetingRoom.isSecret())
                         .password(meetingRoom.getPassword())
@@ -99,13 +103,18 @@ public class MeetingRoomController {
                         .type(meetingRoom.getType())
                         .link(meetingRoom.getLink()).build());
             }
+
+            if(meetingRooomDtoList.size() == 0){
+                message.setMessage("현재 활성화된 운동방이 존재하지 않습니다.");
+                return new ResponseEntity<>(message, headers, HttpStatus.OK);
+            }
             message.setData(meetingRooomDtoList);
             message.setStatus(StatusEnum.OK);
             return new ResponseEntity<>(message, headers, HttpStatus.OK);
         }
     }
 
-    @GetMapping("/api/room/{roomId}")
+    @GetMapping("/api/user/room/{roomId}")
     @ApiOperation(value="방 입장 처리에 대한 API", notes = "특정 방번호(roomId)를 통해 방 입장에 대한 요청 처리를 수행합니다.")
     @ApiImplicitParam(name = "roomId",value = "방의 번호",paramType = "path")
     public ResponseEntity<?> enterMeetingRoom(@PathVariable int roomId) throws OpenViduJavaClientException, OpenViduHttpException {
@@ -129,7 +138,7 @@ public class MeetingRoomController {
         }
     }
 
-    @PutMapping("/api/room/exit/{roomId}")
+    @PutMapping("/api/user/room/exit/{roomId}")
     @ApiOperation(value="방 퇴장 처리에 대한 API", notes = "특정 방번호(roomId)를 통해 방 퇴장에 대한 요청 처리를 수행합니다.")
     @ApiImplicitParam(name = "roomId",value = "방의 번호",paramType = "path")
     public ResponseEntity<?> exit(@PathVariable int roomId) throws OpenViduJavaClientException, OpenViduHttpException {
@@ -153,7 +162,7 @@ public class MeetingRoomController {
         }
     }
 
-    @PutMapping("/api/room/start/{roomId}")
+    @PutMapping("/api/user/room/start/{roomId}")
     @ApiOperation(value = "방 시작",notes = "방 시작. status start로 변경. start_date 저장")
     @ApiImplicitParam(name = "roomId",value = "방의 번호",paramType = "path")
     public ResponseEntity<?> startRoom(@PathVariable int roomId){//}, @RequestBody GameStartDto gameStartDto){
@@ -178,7 +187,7 @@ public class MeetingRoomController {
         }
     }
 
-    @PutMapping("/api/room/end/{roomId}")
+    @PutMapping("/api/user/room/end/{roomId}")
     @ApiOperation(value = "방 종료",notes = "방(운동) 끝. status end로 변경. end_date 저장")
     @ApiImplicitParam(name = "roomId",value = "방의 번호",paramType = "path")
     public ResponseEntity<?> endRoom(@PathVariable("roomId") int roomId){//}, @RequestBody GameStartDto gameStartDto){
