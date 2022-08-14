@@ -8,10 +8,10 @@
       <!-- 세션 -->
       <div id="session" v-if="session">
         <!-- WebRTC 목록 -->
+        <!-- <canvas id="tm"></canvas> -->
         <div>
           <div id="" class="row d-flex align-items-start justify-content-center">
-            <canvas></canvas>
-            <WebRTC :stream-manager="mainStreamManager"/>
+            <WebRTC id="" :stream-manager="mainStreamManager"/>
             <WebRTC :stream-manager="sub"
               v-for="sub in subscribers"
               :key="sub.stream.connection.connectionId"
@@ -284,10 +284,6 @@ const format = year + '-' + (('00' + month.toString()).slice(-2)) + '-' +
 export default {
   name: 'CompetitionView',
   metaInfo: {
-    script: [
-      { src: 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.3.1/dist/tf.min.js', async: true, defer: true },
-      { src: 'https://cdn.jsdelivr.net/npm/@teachablemachine/pose@0.8/dist/teachablemachine-pose.min.js', async: true, defer: true },
-    ],
   },
   components: {
     WebRTC,
@@ -350,15 +346,15 @@ export default {
       model: undefined,
       status: 'ready',
       check: false,
-      check2: false,
+      // check2: false,
       count: 0,
       // gameType: 'pushUp',
       gameType: 1, // 1:squat, 2:lunge, 3:burpee
       ctx: undefined,
       // 각 운동의 카운트를 memberId와 함께 session.on으로 보내주고 데이터 받아서 저장한다.
-      // sqcount,
-      // bpcount,
-      // lgcount,
+      sqcount: 0,
+      bpcount: 0,
+      lgcount: 0,
       // 운동이 끝나면 count는 서버에 보내고, counts에 따라 임의의 score를 저장한다.
       // sqscore,
       // bpscore,
@@ -1004,13 +1000,13 @@ export default {
       // console.log('setmodel');
       switch (this.gameType) {
         case 1: // 스쿼트
-          this.URL = 'https://teachablemachine.withgoogle.com/models/N9Uzcp-sg/';
+          this.URL = 'https://teachablemachine.withgoogle.com/models/mtTsf3dWh/';
           break;
         case 2: // 런지
-          this.URL = 'https://teachablemachine.withgoogle.com/models/qsNO7nn-l/';
+          this.URL = 'https://teachablemachine.withgoogle.com/models/rX6NKe6V_/';
           break;
         case 3: // 버피
-          this.URL = 'https://teachablemachine.withgoogle.com/models/fR-T-F0cP/';
+          this.URL = 'https://teachablemachine.withgoogle.com/models/bLxzzIAS3/';
           break;
         default:
           break;
@@ -1019,6 +1015,7 @@ export default {
       const metadataURL = `${this.URL}metadata.json`;
       // console.log('model set before');
       // this.model = await tmPose.load(modelURL, metadataURL);
+      // this.model = Object.freeze(await tmPose.load(modelURL, metadataURL));
       this.model = Object.freeze(await tmPose.load(modelURL, metadataURL));
       // console.log('model set -> ', this.model);
       // const mymodel = await tf.loadGraphModel(modelURL);
@@ -1028,16 +1025,15 @@ export default {
     async init() {
       this.setmodel();
 
-      // const size = 200;
-      const flip = true;
+      const flip = false;
       this.webcam = new tmPose.Webcam(500, 300, flip);
-      this.webcam.canvas = document.querySelector('canvas');
       await this.webcam.setup();
       await this.webcam.play();
       // console.log('init_webcam >> ', this.webcam);
       window.requestAnimationFrame(this.loop);
 
       const canvas2 = this.webcam.canvas;
+      // const canvas2 = document.getElementById('tm');
       canvas2.width = 500;
       canvas2.height = 300;
       this.ctx = canvas2.getContext('2d');
@@ -1071,15 +1067,15 @@ export default {
       // Prediction 2: run input through teachable machine classification model
       const prediction = await this.model.predict(posenetOutput);
 
-      if (prediction[1].probability.toFixed(2) > 0.99) { // 스쿼트
+      if (prediction[1].probability.toFixed(2) > 0.9) { // 스쿼트
         if (this.check) {
-          this.count += 1;
-          console.log('squat', this.count);
+          this.sqcount += 1;
+          console.log('squat', this.sqcount);
           this.session
             .signal({
-              data: `${this.myUserName},${this.count}`, // Any string (optional)
+              data: `${this.myUserName},${this.sqcount}`, // Any string (optional)
               to: [], // Array of Connection objects (optional. Broadcast to everyone if empty)
-              type: 'count', // The type of message (optional)
+              type: 'sqcount', // The type of message (optional)
             })
             .then(() => {
               // this.setState({ check: false });
@@ -1089,7 +1085,7 @@ export default {
         }
         this.status = 'squat';
         // this.setState({ status: 'ready' });
-      } else if (prediction[0].probability.toFixed(2) > 0.99) { // 서 있는 자세
+      } else if (prediction[0].probability.toFixed(2) > 0.9) { // 서 있는 자세
         // const countTemp = this.count;
         // this.count = countTemp + 1;
 
@@ -1110,13 +1106,13 @@ export default {
       );
       const prediction = await this.model.predict(posenetOutput);
 
-      if (prediction[1].probability.toFixed(2) > 0.99) { // 런지
+      if (prediction[1].probability.toFixed(2) > 0.9) { // 런지
         if (this.check) {
-          this.count += 1;
-          console.log('lunge', this.count);
+          this.lgcount += 1;
+          console.log('lunge', this.lgcount);
           this.session
             .signal({
-              data: `${this.myUserName},${this.count}`, // Any string (optional)
+              data: `${this.myUserName},${this.lgcount}`, // Any string (optional)
               to: [], // Array of Connection objects (optional. Broadcast to everyone if empty)
               type: 'count', // The type of message (optional)
             })
@@ -1128,7 +1124,7 @@ export default {
         }
         this.status = 'lunge';
         // this.setState({ status: 'ready' });
-      } else if (prediction[0].probability.toFixed(2) > 0.99) { // 서 있는 자세
+      } else if (prediction[0].probability.toFixed(2) > 0.9) { // 서 있는 자세
         this.status = 'ready';
         this.check = true;
       }
@@ -1141,34 +1137,33 @@ export default {
       );
       const prediction = await this.model.predict(posenetOutput);
 
-      if (prediction[2].probability.toFixed(2) > 0.99) { // 서 있는 자세
-        if (this.check && this.check2) {
-          this.count += 1;
-          console.log('burpee', this.count);
+      if (prediction[2].probability.toFixed(2) > 0.9) { // 서 있는 자세
+        if (this.check) {
+          this.bpcount += 1;
+          console.log('burpee', this.bpcount);
           this.session
             .signal({
-              data: `${this.myUserName},${this.count}`, // Any string (optional)
+              data: `${this.myUserName},${this.bpcount}`, // Any string (optional)
               to: [], // Array of Connection objects (optional. Broadcast to everyone if empty)
-              type: 'count', // The type of message (optional)
+              type: 'bpcount', // The type of message (optional)
             })
             .then(() => {
               // this.setState({ check: false });
               this.check = false;
-              this.check2 = false;
+              // this.check2 = false;
             })
             .catch(() => {});
         }
         this.status = 'go';
         // this.setState({ status: 'ready' });
-      } else if (prediction[1].probability.toFixed(2) > 0.99) { // 쪼그려 앉아 있는 자세
+      } else if (prediction[1].probability.toFixed(2) > 0.9) { // 쪼그려 앉아 있는 자세
         this.status = 'ready';
-        if (this.check) {
-          this.check = true;
-        }
-      } else if (prediction[0].probability.toFixed(2) > 0.99) { // 엎드려 있는 자세
-        this.status = 'set';
-        this.check2 = true;
+        this.check = true;
       }
+      // else if (prediction[0].probability.toFixed(2) > 0.99) { // 엎드려 있는 자세
+      //   this.status = 'set';
+      //   this.check2 = true;
+      // }
       this.drawPose(pose);
     },
   },
