@@ -31,6 +31,8 @@
                 <a class="days day-a" href="#" @click="selectDay(currentYear, currentMonth, day)"
                   v-b-modal="'myModal'">{{day}}</a>
               </span>
+              <img v-if="day"
+              class="dot" src="@/assets/icon/dot.png" alt="">
             </td>
           </tr>
         </tbody>
@@ -42,62 +44,55 @@
       class="myModal"
         :title="`${currentYear}년 ${currentMonth}월 ${day}일`" hide-header>
         <div class="carousel-box">
-          <div class="modal-title">
+          <div class="modal-title text-center">
             <a class="month-change-btn" href="#"
               @click.prevent="onClickPrevDay(currentYear, currentMonth, day)">◀</a>
-              <span class="lg-title">{{currentYear}}년 {{currentMonth}}월 {{day}}일 운동 기록</span>
+              <span class="lg-title">
+                {{currentYear}}년 {{currentMonth}}월 {{day}}일 운동 기록</span>
             <a class="month-change-btn" href="#"
               v-on:click.prevent="onClickNextDay(currentYear, currentMonth, day)">▶</a>
           </div>
+          {{ monthRecord }}
           <!--카로셀-->
-          <div>
-            <!-- <img :src="recordPicture" alt=""> -->
-          </div>
-
           <div class="row">
-            <div v-for="(exercise, i) in dayExerciseList" :key="i">
-              recordId: {{ exercise.recordId }} <br>
-              memberId: {{ exercise.memberId }} <br>
-              meetingRoomId: {{ exercise.meetingRoomId }} <br>
-              tags: {{ exercise.tags }} <br>
-              recordHour: {{ exercise.recordHour }} <br>
-              recordMemo: {{ exercise.recordMemo }} <br>
-              datetime: {{ exercise.datetime }} <br>
-              recordSecret: {{ exercise.recordSecret }} <br>
-              exercise: {{ exercise.exercise }} <hr>
-            </div>
-          </div>
+            <!-- <img :src="imageUrl" alt=""> -->
+            <div class="pt-5" v-for="(exercise, i) in dayExerciseList" :key="i">
+              <!-- recordId: {{ exercise.recordId }} <br> -->
+              <!-- memberId: {{ exercise.memberId }} <br> -->
+              <!-- meetingRoomId: {{ exercise.meetingRoomId }} <br> -->
 
-          <!--태그-->
-          <div class="tags row">
-            <button
-              v-for="(tag, tagI) in tags"
-              :key="tagI"
-              class="tag"
-            >
-              <p class="tag-name"># {{tag}}</p>
-            </button>
-          </div>
+              <div class="picture-wrapper d-flex justify-content-center">
+                <img class="picture" :src="dayPictures[i].fileUrl" alt="">
+              </div>
 
-          <!--운동 종류-->
-          <div class="exercise-type-box">
-            <p>{{ exerciseType }}</p>
-          </div>
+              <!--태그-->
+              <!-- tags: {{ exercise.tags }} <br> -->
+              <div class="tags row">
+                <button
+                  v-for="(tag, tagI) in exercise.tags"
+                  :key="tagI"
+                  class="tag"
+                >
+                  <p class="tag-name"># {{tag.tagContent}}</p>
+                </button>
+              </div>
 
-          <!--메모-->
-          <div class="memo-box">
-            <p class="memo">
-              사레레 10*20*3 , 밀리터리 프레스 10*20*3 , 프레 10*20*3 , 벤치프레스 10*20*3 , 스쿼트 40*20*3 ,
-              레그레이즈 20*3 함. 힘들다.. 그래도 친구들이랑 같이 해서 재밌었다!
-            </p>
-          </div>
+              <!-- 운동시간 -->
+              운동 시간 : {{ exercise.recordHour }}분 <br>
 
-          <!--함께 운동한 사람-->
-          <div class="people-list">
-            <p class="people-title">함께 운동한 사람</p>
-            <div class="d-flex container-fluid people-img-div justify-content-evenly">
-              <img v-for="(profile, recordI) in record.profiles"
-                :key="recordI" src="https://picsum.photos/50" alt="" class="people-img">
+              <!--운동 종류-->
+              <div class="exercise-type-box">
+                <p>{{ exercise.exercise }}</p>
+              </div>
+
+              <!--메모-->
+              <div class="memo-box">
+                <p class="memo">
+                  {{ exercise.recordMemo }}
+                </p>
+              </div>
+              <!-- recordSecret: {{ exercise.recordSecret }} <br> -->
+              <hr>
             </div>
           </div>
         </div>
@@ -143,23 +138,18 @@ export default {
       day: null,
       tags: ['오운완', '상체', '등', '어깨', '복근'],
       exerciseType: '헬스',
-      record: {
-        profiles: [
-          'https://picsum.photos/50', 'https://picsum.photos/50', 'https://picsum.photos/50', 'https://picsum.photos/50', 'https://picsum.photos/50', 'https://picsum.photos/50',
-        ],
-      },
-      memo: '사레레 10*20*3 , 사레레 10*20*3 , 사레레 10*20*3 , 사레레 10*20*3 , 사레레 10*20*3 , 사레레 10*20*3 함. 개힘들었다 정말... 내일도 해야하는데 정말 미쳐버리겠다 운동을 좋아서 하는 사람들은 대체 어떤 사람',
-      // dayExerciseList: '',
     };
   },
   computed: {
-    ...mapGetters('record', ['dayExerciseList']),
+    ...mapGetters('record', ['dayExerciseList', 'dayPictures']),
+    ...mapGetters('accounts', ['monthRecord']),
   },
   mounted() {
     this.init();
   },
   methods: {
-    ...mapActions('record', ['fetchDayExerciseList']),
+    ...mapActions('record', ['fetchDayExerciseList', 'fetchDayPictures']),
+    ...mapActions('accounts', ['fetchMonthRecord']),
     hideModal() {
       console.log(this.$refs.myModal);
       this.$refs.myModal.hide();
@@ -246,6 +236,9 @@ export default {
         this.currentMonth -= 1;
       }
       this.init();
+      const payload = [this.currentYear, this.currentMonth];
+      console.log(payload);
+      this.fetchMonthRecord(payload);
     },
     onClickNext(month) {
       this.month += 1;
@@ -283,6 +276,7 @@ export default {
       // console.log(stringDay);
       // console.log(this.stringDate);
       this.fetchDayExerciseList(this.stringDate);
+      this.fetchDayPictures(this.stringDate);
     },
     onClickNextDay(year, month, day) {
       const date = new Date(year, month - 1, day);
@@ -306,6 +300,7 @@ export default {
       }
       this.stringDate = stringYear + stringMonth + stringDay;
       this.fetchDayExerciseList(this.stringDate);
+      this.fetchDayPictures(this.stringDate);
     },
 
     isToday(year, month, day) {
@@ -331,6 +326,7 @@ export default {
       }
       this.stringDate = stringYear + stringMonth + stringDay;
       this.fetchDayExerciseList(this.stringDate);
+      this.fetchDayPictures(this.stringDate);
     },
     cancle() {
       const modal = document.querySelector('.modal');
@@ -505,6 +501,11 @@ export default {
   font-size: 20px;
   font-weight: 900;
   font-family: 'Righteous', cursive;
+  padding: 0;
+  margin: 0;
+}
+.dot{
+  padding: 0 0 30px 0;
 }
 
 .tag-name {
@@ -528,7 +529,7 @@ export default {
   padding: 20px;
 }
 td {
-  border: 0.5px solid #c5c5c5;
+  /* border: 0.5px solid #c5c5c5; */
   /* text-align: left; */
   height: 70px;
   width: 70px;
@@ -551,8 +552,30 @@ td {
 }
 
 /* 모달 스타일링 */
+.modal-dialog-scrollable .modal-body::-webkit-scrollbar {
+  width: 10px;
+  background-color: black;
+}
 .myModal a, .myModal p:not(.memo) {
   font-family: 'NanumSquareRound';
+}
+.picture-wrapper {
+  position: relative;
+  width: 400px;
+  height: 277px;
+  margin: 0 auto;
+}
+.picture-wrapper img {
+  /* border-radius: 50%; */
+  /* margin: 0 auto; */
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translate(50, 50);
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  margin: auto;
 }
 .lg-title {
   font-weight: 900;

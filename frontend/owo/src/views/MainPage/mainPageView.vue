@@ -2,21 +2,16 @@
   <div>
     <div v-if="!isLogin">
       <Carousel></Carousel>
-      <!-- <rankingList/> -->
+      <rankingList/>
       <roomTab></roomTab>
-      <p>{{roomList.freeRoomList}}</p>
-      <hr>
-      <p>{{roomList.gameRoomList}}</p>
-      <hr>
-      <p>{{roomList.streamingRoomList}}</p>
     </div>
     <div v-if="isLogin">
-      <!-- <rankingList/> -->
+      <Carousel></Carousel>
+      <rankingList/>
       <roomTab></roomTab>
-      <p>{{roomList}}</p>
     </div>
     <!--TEST -->
-    <br><br><br><br>
+    <!-- <br><br><br><br>
     <button type="button" class="btn btn-primary"
       data-bs-toggle="modal" data-bs-target="#exampleModal">
         Launch demo modal
@@ -45,13 +40,13 @@
               <button class="send-btn" @click="onClickImgButton">이미지버튼</button>
             </form>
           </div>
-          <!-- <div class="modal-footer">
+          <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             <button type="button" class="btn btn-primary">Save changes</button>
-          </div> -->
+          </div>
         </div>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -59,7 +54,7 @@
 // import { useStore } from 'vuex';
 // import { reactive, computed } from 'vue';
 import Carousel from '@/components/MainPage/Carousel.vue';
-// import rankingList from '@/components/MainPage/rankingList.vue';
+import rankingList from '@/components/MainPage/rankingList.vue';
 import roomTab from '@/components/MainPage/roomTab.vue';
 import swal from 'sweetalert2';
 import { mapGetters, mapActions } from 'vuex';
@@ -71,26 +66,17 @@ const accounts = 'accounts';
 export default {
   components: {
     Carousel,
-    // rankingList,
+    rankingList,
     roomTab,
   },
   computed: {
-    ...mapGetters(accounts, ['userInfo', 'isLogin', 'roomList']),
-  },
-  setup() {
-    const onInputImage = () => {
-      const input = document.querySelector('.input-image');
-      console.log(input.files[0].type);
-    };
-    return {
-      onInputImage,
-    };
+    ...mapGetters(accounts, ['userInfo', 'isLogin']),
   },
   methods: {
-    ...mapActions(accounts, ['getRoomList']),
     setCookie() {
       this.$cookies.set('nosee', 'Y', '7d');
     },
+    ...mapActions(accounts, ['getRoomList']),
   },
   created() {
     const check = this.$cookies.get('nosee');
