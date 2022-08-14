@@ -233,7 +233,8 @@
         </button>
 <!-- 여기에 방장 이름이 들어가야함 -->
         <!-- eslint-disable-next-line -->
-        <button v-if="(!isExercising) & (this.subscribers.length >= 1)" class="mybtn5" @click="startround1">
+        <!-- <button v-if="(!isExercising) & (this.subscribers.length >= 1)" class="mybtn5" @click="startround1"> -->
+        <button v-if="!isExercising" class="mybtn5" @click="startround1">
           <img class="menu_icon4" src="@/assets/icon/start.png" alt="Start">
         </button>
         <!-- eslint-disable-next-line -->
@@ -618,6 +619,7 @@ export default {
       'startMeetingRoom',
     ]),
     ...mapActions(exercise, [
+      'changeExerciseName',
       'changeSquatCountList',
       'changeLungeCountList',
       'changeBurpeeCountList',
@@ -832,6 +834,7 @@ export default {
         }, 2000);
         setTimeout(() => {
           this.gameType = 1;
+          this.changeExerciseName(1);
           this.init();
           this.init();
         }, 5000);
@@ -862,6 +865,7 @@ export default {
           this.isStarted = false;
           this.$refs.setTimer3.pauseTimer();
           this.gameType = 2;
+          this.changeExerciseName(2);
         }, 6000);
         setTimeout(() => {
           this.startround3();
@@ -886,9 +890,11 @@ export default {
           this.isStarted = false;
           this.$refs.setTimer3.pauseTimer();
           this.gameType = 3;
+          this.changeExerciseName(3);
         }, 6000);
         setTimeout(() => {
           this.isExercising = false;
+          this.changeExerciseName(0);
         }, 36000);
       });
     },
@@ -1153,13 +1159,12 @@ export default {
     async init() {
       this.setmodel();
       const flip = false;
-      this.webcam = new tmPose.Webcam(500, 700, flip);
+      this.webcam = new tmPose.Webcam(800, 700, flip);
       await this.webcam.setup();
       await this.webcam.play();
-      // console.log('init_webcam >> ', this.webcam);
       window.requestAnimationFrame(this.loop);
       const canvas2 = this.webcam.canvas;
-      canvas2.width = 500;
+      canvas2.width = 800;
       canvas2.height = 700;
       this.ctx = canvas2.getContext('2d');
     },

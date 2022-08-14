@@ -11,9 +11,12 @@
       <!-- eslint-disable-next-line -->
       <div class="myreaction" v-if="myReaction.connectionId == this.myconnectionId">{{myReaction.userEmoji}}</div>
       <p class="myname">&ensp;{{ clientData }}&ensp;</p>
-      <div class="myexercise">{{ mySquat.userSquatCount }} 회</div>
-      <!-- <div class="myexercise">런지 : {{ myLunge.userLungeCount }} 회</div>
-      <div class="myexercise">버피테스트 : {{ myBurpee.userBurpeeCount }} 회</div> -->
+      <!-- eslint-disable-next-line -->
+      <div v-if="(exerciseName == 1)" class="myexercise">&ensp;{{ mySquat.userSquatCount }} 회&ensp;</div>
+      <!-- eslint-disable-next-line -->
+      <div v-if="(exerciseName == 2)" class="myexercise">&ensp;{{ myLunge.userLungeCount }} 회&ensp;</div>
+      <!-- eslint-disable-next-line -->
+      <div v-if="(exerciseName == 3)" class="myexercise">&ensp;{{ myBurpee.userBurpeeCount }} 회&ensp;</div>
     </div>
   </div>
 </template>
@@ -57,6 +60,7 @@ export default {
       'allSquatCountList',
       'allLungeCountList',
       'allburpeeCountList',
+      'exerciseName',
     ]),
     ...mapState(accounts, ['userInfo']),
     myReaction() {
@@ -169,6 +173,8 @@ export default {
   position:absolute;
   top:-2px;
   right:-2px;
+  width: 70px;
+  text-align:right;
   background-color:#4e8aff;
   font-size:24px;
   border-radius: 0px 20px 0px 10px;

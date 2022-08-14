@@ -66,7 +66,6 @@ export default {
       this.displayTimeLeft(seconds);
       this.intervalTimer = setInterval(() => {
         this.timeLeft = Math.round((remainTime - Date.now()) / 1000);
-        console.log(this.timeLeft);
         if (this.timeLeft < 0) {
           clearInterval(this.intervalTimer);
           this.isStarted = false;
