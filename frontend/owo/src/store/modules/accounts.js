@@ -812,6 +812,7 @@ export const accounts = {
         });
     },
     fetchLastingDay({ state, commit }) {
+      console.log('lastingday axios 전');
       axios({
         url: `https://i7c202.p.ssafy.io:8282/api/user/record/lastingDay/${state.userInfo.id}`,
         method: 'get',
