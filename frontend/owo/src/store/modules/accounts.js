@@ -659,6 +659,7 @@ export const accounts = {
               commit('SET_FREE_SIGNAL', res.data.data);
               commit('SET_FREE_ROOM_LIST', '');
             } else {
+              console.log('자유방 생성리스트');
               console.log(res.data.data);
               commit('SET_FREE_SIGNAL', res.data.data);
               commit('SET_FREE_ROOM_LIST', res.data.data);
@@ -670,6 +671,7 @@ export const accounts = {
               commit('SET_GAME_SIGNAL', res.data.data);
               commit('SET_GAME_ROOM_LIST', '');
             } else {
+              console.log('경쟁방 생성리스트');
               console.log(res.data.data);
               commit('SET_GAME_SIGNAL', res.data.data);
               commit('SET_GAME_ROOM_LIST', res.data.data);
@@ -681,6 +683,7 @@ export const accounts = {
               commit('SET_STREAMING_SIGNAL', res.data.data);
               commit('SET_STREAMING_ROOM_LIST', '');
             } else {
+              console.log('운동방 생성리스트');
               console.log(res.data.data);
               commit('SET_STREAMING_SIGNAL', res.data.data);
               commit('SET_STREAMING_ROOM_LIST', res.data.data);
@@ -712,12 +715,16 @@ export const accounts = {
         });
     },
     enterroom({ state }, payload) {
-      console.log(payload.mode, payload.roomId);
+      console.log(payload);
       axios({
-        url: `https://i7c202.p.ssafy.io:8282/api/user/room/${payload.roomId}`,
-        method: 'get',
+        url: 'https://i7c202.p.ssafy.io:8282/api/user/room/enter',
+        method: 'post',
         headers: {
           'X-AUTH-TOKEN': state.accessToken,
+        },
+        data: {
+          roomId: payload.roomId,
+          password: payload.password,
         },
       })
         .then((res) => {
