@@ -156,14 +156,14 @@ export default {
   },
   computed: {
     ...mapGetters('record', ['dayExerciseList', 'dayPictures']),
-    ...mapGetters('accounts', ['monthRecord']),
+    // ...mapGetters('accounts', ['monthRecord']),
   },
   mounted() {
     this.init();
   },
   methods: {
     ...mapActions('record', ['fetchDayExerciseList', 'fetchDayPictures']),
-    ...mapActions('accounts', ['fetchMonthRecord']),
+    // ...mapActions('accounts', ['fetchMonthRecord']),
     hideModal() {
       console.log(this.$refs.myModal);
       this.$refs.myModal.hide();
@@ -410,6 +410,9 @@ export default {
 </script>
 
 <style scoped>
+.container-fluid {
+  height: 100%;
+}
 .calendar {
   color: #2E2E2E;
   max-width: 610px;
@@ -553,7 +556,7 @@ export default {
 }
 
 .table {
-  /* --bs-table-hover-bg: rgba(75, 172, 237, 0.08); */
+  margin-top: 20px;
 }
 .day-td  {
   --bs-table-hover-bg: rgba(0, 6, 10, 0.08);
@@ -618,12 +621,14 @@ td {
   padding-bottom: 20px;
 }
 .memo-box {
-  border: solid black 1px;
+  border: solid #DFDFDF 1px;
+  box-shadow: 1px 1px 2px #DFDFDF;
   margin: 20px;
   padding: 20px;
   margin-bottom: 50px;
   border-radius: 10px;
   width: 400px;
+  /* color: #2E2E2E; */
 }
 .memo {
   text-align: justify;
@@ -632,6 +637,7 @@ td {
   font-size: 20px;
   letter-spacing: -1.2;
   margin-bottom: 4px;
+  /* color: #2E2E2E; */
 }
 .no-record-day {
   font-weight: 700;
