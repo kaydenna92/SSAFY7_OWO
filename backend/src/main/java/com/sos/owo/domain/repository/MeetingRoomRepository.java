@@ -4,6 +4,7 @@ import com.sos.owo.domain.MeetingRoom;
 import com.sos.owo.domain.Member;
 import com.sos.owo.domain.Mode;
 import com.sos.owo.domain.RoomStatus;
+import com.sos.owo.error.Exception.custom.SomethingNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +30,7 @@ public class MeetingRoomRepository {
 
     public MeetingRoom findOne(int id){
         MeetingRoom meetingRoom = em.find(MeetingRoom.class, id);
+        if(meetingRoom==null) throw new SomethingNotFoundException("meetingRoom(id:"+id+")");
         return meetingRoom;
     }
 
@@ -48,16 +50,16 @@ public class MeetingRoomRepository {
         em.flush();
     }
 
-    public void startRoom(int roomID){
-        MeetingRoom findRoom = em.find(MeetingRoom.class, roomID);
+    public void startRoom(int roomId){
+        MeetingRoom findRoom = findOne(roomId);
         findRoom.setStatus(RoomStatus.START);
         findRoom.setStartDate(LocalDateTime.now());
         em.persist(findRoom);
         em.flush();
     }
 
-    public void endRoom(int roomID){
-        MeetingRoom findRoom = em.find(MeetingRoom.class, roomID);
+    public void endRoom(int roomId){
+        MeetingRoom findRoom = findOne(roomId);
         findRoom.setStatus(RoomStatus.END);
         findRoom.setEndDate(LocalDateTime.now());
         em.persist(findRoom);

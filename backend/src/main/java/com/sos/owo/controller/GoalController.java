@@ -75,23 +75,23 @@ public class GoalController {
         Message message = new Message();
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(new MediaType("application","json", Charset.forName("UTF-8")));
-        try {
+//        try {
             goalService.updateGoal(memberId,goalSaveRequestDto.toEntity());
             message.setStatus(StatusEnum.OK);
             message.setMessage("운동 목표 수정 성공");
             message.setData(goalSaveRequestDto);
             return new ResponseEntity<>(message,httpHeaders,HttpStatus.OK);
-        } catch (IllegalStateException e){
-            e.printStackTrace();
-            message.setStatus(StatusEnum.BAD_REQUEST);
-            message.setMessage("잘못된 요청(ex. memberId가 null인 경우)");
-            return new ResponseEntity<>(message,httpHeaders,HttpStatus.BAD_REQUEST);
-        } catch (Exception e){
-            e.printStackTrace();
-            message.setStatus(StatusEnum.INTERNAL_SERVER_ERROR);
-            message.setMessage("내부 서버 에러");
-            return new ResponseEntity<>(message,httpHeaders,HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+//        } catch (IllegalStateException e){
+//            e.printStackTrace();
+//            message.setStatus(StatusEnum.BAD_REQUEST);
+//            message.setMessage("잘못된 요청(ex. memberId가 null인 경우)");
+//            return new ResponseEntity<>(message,httpHeaders,HttpStatus.BAD_REQUEST);
+//        } catch (Exception e){
+//            e.printStackTrace();
+//            message.setStatus(StatusEnum.INTERNAL_SERVER_ERROR);
+//            message.setMessage("내부 서버 에러");
+//            return new ResponseEntity<>(message,httpHeaders,HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
     }
 
     //운동 목표 삭제
@@ -105,7 +105,7 @@ public class GoalController {
         Message message = new Message();
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(new MediaType("application","json", Charset.forName("UTF-8")));
-        try {
+//        try {
             int result = goalService.deleteGoal(memberId,goalId);
             if(result==0){
                 message.setMessage("잘못된 요청. memberId나 goalId가 존재하는 값인지 잘 맞는지 확인");
@@ -114,17 +114,17 @@ public class GoalController {
             message.setStatus(StatusEnum.OK);
             message.setMessage("운동 목표 삭제 성공");
             return new ResponseEntity<>(message,httpHeaders,HttpStatus.OK);
-        } catch (IllegalStateException e){
-            e.printStackTrace();
-            message.setStatus(StatusEnum.BAD_REQUEST);
-            message.setMessage("잘못된 요청(ex. memberId/goalId가 null인 경우)");
-            return new ResponseEntity<>(message,httpHeaders,HttpStatus.BAD_REQUEST);
-        } catch (Exception e){
-            e.printStackTrace();
-            message.setStatus(StatusEnum.INTERNAL_SERVER_ERROR);
-            message.setMessage("내부 서버 에러");
-            return new ResponseEntity<>(message,httpHeaders,HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+//        } catch (IllegalStateException e){
+//            e.printStackTrace();
+//            message.setStatus(StatusEnum.BAD_REQUEST);
+//            message.setMessage("잘못된 요청(ex. memberId/goalId가 null인 경우)");
+//            return new ResponseEntity<>(message,httpHeaders,HttpStatus.BAD_REQUEST);
+//        } catch (Exception e){
+//            e.printStackTrace();
+//            message.setStatus(StatusEnum.INTERNAL_SERVER_ERROR);
+//            message.setMessage("내부 서버 에러");
+//            return new ResponseEntity<>(message,httpHeaders,HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
     }
 
     //운동 목표 리스트 조회
@@ -135,23 +135,23 @@ public class GoalController {
         Message message = new Message();
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(new MediaType("application","json", Charset.forName("UTF-8")));
-        try {
+//        try {
             List<GoalResponseDto> goalList = goalService.findGoal(memberId);
             message.setStatus(StatusEnum.OK);
             message.setMessage("운동 목표 리스트 조회 성공");
             message.setData(goalList);
             return new ResponseEntity<>(message,httpHeaders,HttpStatus.OK);
-        } catch (IllegalStateException e){
-            e.printStackTrace();
-            message.setStatus(StatusEnum.BAD_REQUEST);
-            message.setMessage("잘못된 요청(ex. memberId가 null인 경우)");
-            return new ResponseEntity<>(message,httpHeaders,HttpStatus.BAD_REQUEST);
-        } catch (Exception e){
-            e.printStackTrace();
-            message.setStatus(StatusEnum.INTERNAL_SERVER_ERROR);
-            message.setMessage("내부 서버 에러");
-            return new ResponseEntity<>(message,httpHeaders,HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+//        } catch (IllegalStateException e){
+//            e.printStackTrace();
+//            message.setStatus(StatusEnum.BAD_REQUEST);
+//            message.setMessage("잘못된 요청(ex. memberId가 null인 경우)");
+//            return new ResponseEntity<>(message,httpHeaders,HttpStatus.BAD_REQUEST);
+//        } catch (Exception e){
+//            e.printStackTrace();
+//            message.setStatus(StatusEnum.INTERNAL_SERVER_ERROR);
+//            message.setMessage("내부 서버 에러");
+//            return new ResponseEntity<>(message,httpHeaders,HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
     }
 
     //운동 주간 목표 시간 조회

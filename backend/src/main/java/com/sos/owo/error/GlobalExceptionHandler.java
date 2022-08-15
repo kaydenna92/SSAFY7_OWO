@@ -1,5 +1,6 @@
 package com.sos.owo.error;
 
+import com.sos.owo.dto.Message;
 import com.sos.owo.error.ErrorResponse;
 import com.sos.owo.error.Exception.BusinessException;
 import com.sos.owo.error.Exception.ErrorCode;
@@ -8,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.jdbc.Null;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.BindException;
@@ -34,7 +36,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     protected ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         log.error("handleMethodArgumentNotValidException", e);
-        final ErrorResponse response = ErrorResponse.of(ErrorCode.INVALID_INPUT_VALUE, e.getBindingResult());
+//        System.out.println(e.getBindingResult());
+        final ErrorResponse response = ErrorResponse.of(ErrorCode.INVALID_INPUT_VALUE,e.getMessage());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
@@ -45,7 +48,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BindException.class)
     protected ResponseEntity<ErrorResponse> handleBindException(BindException e) {
         log.error("handleBindException", e);
-        final ErrorResponse response = ErrorResponse.of(ErrorCode.INVALID_INPUT_VALUE, e.getBindingResult());
+        System.out.println(e.getBindingResult());
+        final ErrorResponse response = ErrorResponse.of(ErrorCode.INVALID_INPUT_VALUE, e.getMessage());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
@@ -56,7 +60,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     protected ResponseEntity<ErrorResponse> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e) {
         log.error("handleMethodArgumentTypeMismatchException", e);
-        final ErrorResponse response = ErrorResponse.of(e);
+        final ErrorResponse response = ErrorResponse.of(ErrorCode.INVALID_TYPE_VALUE,e.getMessage());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
@@ -66,7 +70,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     protected ResponseEntity<ErrorResponse> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
         log.error("handleHttpRequestMethodNotSupportedException", e);
-        final ErrorResponse response = ErrorResponse.of(ErrorCode.METHOD_NOT_ALLOWED);
+        final ErrorResponse response = ErrorResponse.of(ErrorCode.METHOD_NOT_ALLOWED,e.getMessage());
+        System.out.println("getMessage                 "+e.getMessage());
+        System.out.println("getClass            "+e.getClass());
+
         return new ResponseEntity<>(response, HttpStatus.METHOD_NOT_ALLOWED);
     }
 
@@ -76,7 +83,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AccessDeniedException.class)
     protected ResponseEntity<ErrorResponse> handleAccessDeniedException(AccessDeniedException e) {
         log.error("handleAccessDeniedException", e);
-        final ErrorResponse response = ErrorResponse.of(ErrorCode.HANDLE_ACCESS_DENIED);
+        final ErrorResponse response = ErrorResponse.of(ErrorCode.HANDLE_ACCESS_DENIED,e.getMessage());
         return new ResponseEntity<>(response, HttpStatus.valueOf(ErrorCode.HANDLE_ACCESS_DENIED.getStatus()));
     }
 
@@ -86,7 +93,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BadCredentialsException.class)
     protected ResponseEntity<ErrorResponse> handleBadCredentialsException(BadCredentialsException e) {
         log.error("handleBadCredentialsException", e);
-        final ErrorResponse response = ErrorResponse.of(ErrorCode.UNAUTHORIZED);
+        final ErrorResponse response = ErrorResponse.of(ErrorCode.UNAUTHORIZED,e.getMessage());
         return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
     }
 
@@ -98,32 +105,40 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<ErrorResponse> handleBusinessException(final BusinessException e) {
         log.error("handleBusinessException", e);
         final ErrorCode errorCode = e.getErrorCode();
+//        final Message response =
         final ErrorResponse response = ErrorResponse.of(errorCode,e.getMessage());
+
         return new ResponseEntity<>(response, HttpStatus.valueOf(errorCode.getStatus()));
     }
 
     @ExceptionHandler(IllegalStateException.class)
     protected ResponseEntity<ErrorResponse> handleIllegalStateException(final IllegalStateException e) {
         log.error("handleIllegalStateExceptionException", e);
-        final ErrorResponse response = ErrorResponse.of(ErrorCode.INVALID_INPUT_VALUE);
+        final ErrorResponse response = ErrorResponse.of(ErrorCode.INVALID_INPUT_VALUE,e.getMessage());
         return new ResponseEntity<>(response, HttpStatus.valueOf(ErrorCode.INVALID_INPUT_VALUE.getStatus()));
     }
 
     @ExceptionHandler(NullPointerException.class)
     protected ResponseEntity<ErrorResponse> handleNullPointerException(final NullPointerException e) {
         log.error("handleNullPointerException", e);
-        final ErrorResponse response = ErrorResponse.of(ErrorCode.INVALID_INPUT_VALUE,String.valueOf(e.getClass()));
+        final ErrorResponse response = ErrorResponse.of(ErrorCode.INVALID_INPUT_VALUE,e.getMessage(),String.valueOf(e.getClass()));
         return new ResponseEntity<>(response, HttpStatus.valueOf(ErrorCode.INVALID_INPUT_VALUE.getStatus()));
     }
 
     @ExceptionHandler(ExpiredJwtException.class)
     protected ResponseEntity<ErrorResponse> handleNExpiredJwtException(final ExpiredJwtException e) {
         log.error("handleExpiredJwtException", e);
-        final ErrorResponse response = ErrorResponse.of(ErrorCode.JWT_TOKEN_EXPIRED);
+        final ErrorResponse response = ErrorResponse.of(ErrorCode.JWT_TOKEN_EXPIRED,e.getMessage());
         return new ResponseEntity<>(response,HttpStatus.valueOf(ErrorCode.JWT_TOKEN_EXPIRED.getStatus()));
     }
 
 
+    @ExceptionHandler(JpaSystemException.class)
+    protected ResponseEntity<ErrorResponse> handleNExpiredJwtException(final JpaSystemException e) {
+        log.error("handleJpaSystemException", e);
+        final ErrorResponse response = ErrorResponse.of(ErrorCode.SOME_VALUE_EMPTY,e.getMessage());
+        return new ResponseEntity<>(response,HttpStatus.valueOf(ErrorCode.SOME_VALUE_EMPTY.getStatus()));
+    }
     /**
      * 그 외의 다른 예외들 처리
      */
@@ -131,7 +146,7 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<ErrorResponse> handleException(Exception e) {
         log.error("handleEntityNotFoundException+++++", e);
         System.out.println(">>>"+e.getLocalizedMessage());
-        final ErrorResponse response = ErrorResponse.of(ErrorCode.INTERNAL_SERVER_ERROR, String.valueOf(e.getClass()));
+        final ErrorResponse response = ErrorResponse.of(ErrorCode.INTERNAL_SERVER_ERROR,e.getMessage());
 
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
