@@ -2,7 +2,7 @@
   <div class="body container-fluid">
     <h1 class="title">오늘의 운동왕은 누구?</h1>
     <b-card-group deck class="d-flex justify-content-evenly"
-    v-if="isLogin === true">
+    >
       <b-card class="rounded-5 cards">
         <h5 class="card-title">어제 운동왕</h5>
         <div class="ranking" v-for="(rank, index) in rankingList" :key="index">
@@ -38,7 +38,7 @@
       </b-card>
     </b-card-group>
     <!--로그인 전  화면 부분-->
-    <a v-if="isLogin === false"><router-link to="/login">로그인 후 이용해주세요.</router-link></a>
+    <!-- <a v-if="isLogin === false"><router-link to="/login">로그인 후 이용해주세요.</router-link></a>
     <b-card-group deck class="d-flex justify-content-evenly" v-if="isLogin === false">
         <b-card class="rounded-5 cards">
           <h5 class="card-title"> 저번 주 운동왕</h5>
@@ -76,7 +76,7 @@
           <h5 class="card-title">나의 운동 기록</h5>
           <MySmCalendar/>
         </b-card>
-      </b-card-group>
+      </b-card-group> -->
   </div>
 </template>
 
