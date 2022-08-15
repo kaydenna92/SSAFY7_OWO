@@ -54,4 +54,11 @@ public class MeetingRoomService {
     public void endRoom(int roomID) throws SomethingNotFoundException{
         meetingRoomRepository.endRoom(roomID);
     }
+
+    @Transactional
+    public boolean checkSecret(int roomID, String password){return meetingRoomRepository.checkSecret(roomID, password);}
+
+    @Transactional
+    public boolean checkWAIT(int roomID){return meetingRoomRepository.checkWAIT(roomID);}
+
 }

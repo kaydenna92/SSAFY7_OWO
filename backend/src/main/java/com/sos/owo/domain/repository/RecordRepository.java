@@ -268,6 +268,7 @@ public class RecordRepository {
         return recordImg.getId();
     }
 
+
     public RecordImg getImg(int recordId) {
         Record record = em.find(Record.class,recordId);
         if(record == null) throw new SomethingNotFoundException("record(id:"+recordId+")");

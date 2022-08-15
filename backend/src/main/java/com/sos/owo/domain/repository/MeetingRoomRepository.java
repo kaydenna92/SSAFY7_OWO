@@ -6,6 +6,7 @@ import com.sos.owo.domain.Mode;
 import com.sos.owo.domain.RoomStatus;
 import com.sos.owo.error.Exception.custom.SomethingNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,20 +51,34 @@ public class MeetingRoomRepository {
         em.flush();
     }
 
-    public void startRoom(int roomId){
-        MeetingRoom findRoom = findOne(roomId);
+    public void startRoom(int roomID) {
+        MeetingRoom findRoom = (MeetingRoom)this.em.find(MeetingRoom.class, roomID);
         findRoom.setStatus(RoomStatus.START);
         findRoom.setStartDate(LocalDateTime.now());
-        em.persist(findRoom);
-        em.flush();
+        this.em.persist(findRoom);
+        this.em.flush();
     }
 
-    public void endRoom(int roomId){
-        MeetingRoom findRoom = findOne(roomId);
+    public void endRoom(int roomID) {
+        MeetingRoom findRoom = (MeetingRoom)this.em.find(MeetingRoom.class, roomID);
         findRoom.setStatus(RoomStatus.END);
         findRoom.setEndDate(LocalDateTime.now());
-        em.persist(findRoom);
-        em.flush();
+        this.em.persist(findRoom);
+        this.em.flush();
+    }
+
+    public boolean checkSecret(int roomID, String password) {
+        MeetingRoom findRoom = (MeetingRoom)this.em.find(MeetingRoom.class, roomID);
+        if (!findRoom.isSecret()) {
+            return true;
+        } else {
+            return findRoom.getPassword().equals(password);
+        }
+    }
+
+    public boolean checkWAIT(int roomID) {
+        MeetingRoom findRoom = (MeetingRoom)this.em.find(MeetingRoom.class, roomID);
+        return findRoom.getStatus() == RoomStatus.WAIT;
     }
 
 }
