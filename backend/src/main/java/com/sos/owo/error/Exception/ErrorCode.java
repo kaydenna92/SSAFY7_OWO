@@ -7,14 +7,13 @@ public enum ErrorCode {
 
     // Common
     OK(200,"C000", "OK"),
-    INVALID_INPUT_VALUE(400, "C001", " Invalid Input Value"),
+    INVALID_INPUT_VALUE(400, "C001", "INVALID_INPUT_VALUE"),
     METHOD_NOT_ALLOWED(405, "C002", " Invalid Input Value"),
     ENTITY_NOT_FOUND(404, "C003", " Entity Not Found"),
     INTERNAL_SERVER_ERROR(500, "C004", "Server Error"),
     INVALID_TYPE_VALUE(400, "C005", " Invalid Type Value"),
     HANDLE_ACCESS_DENIED(403, "C006", "Access is Denied"),
     UNAUTHORIZED(401, "C007", "UnAuthorized"),
-
 
     //User
     EMAIL_DUPLICATION(409, "U001", "Email is Duplication"),
@@ -23,13 +22,16 @@ public enum ErrorCode {
     CURRENT_PASSWORD_NOT_MATCH_EXCEPTION(400, "U004", "Current password not match exception"),
     LOGIN_DUPLICATION(409, "U005", "Current user is logined. You can not login to this account"),
 
+
     //Room
     ROOM_IS_NOT_AVAILABLE(409, "R001", "Room Status is Not Available"),
     ROOM_IS_FULL(409, "R001", "Room is Full"),
     ROOM_IS_ON_GAME(409, "R002", "Room is on Game"),
     ROOM_IS_OFFLINE(404, "R003", "Room is OFF"),
-    ROOM_PASSWORD_NOT_MATCH(400, "R004", "Room password is Not Match");
+    ROOM_PASSWORD_NOT_MATCH(400, "R004", "Room password is Not Match"),
 
+
+    JWT_TOKEN_EXPIRED(401,"T001","JWT Token is expired");
     //Record
 
     //Goal
@@ -38,15 +40,15 @@ public enum ErrorCode {
 
 
 
-
+    private int status;
     private final String code;
     private final String message;
-    private int status;
+
 
     ErrorCode(final int status, final String code, final String message) {
         this.status = status;
-        this.message = message;
         this.code = code;
+        this.message = message;
     }
 
     public String getMessage() {

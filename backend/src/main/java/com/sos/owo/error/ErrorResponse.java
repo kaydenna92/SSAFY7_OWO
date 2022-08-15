@@ -16,20 +16,26 @@ import java.util.stream.Collectors;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ErrorResponse {
     private String message;
-    private List<FieldError> errors;
     private String code;
+    private String detail;
+    private List<FieldError> errors;
 
 
     private ErrorResponse(final ErrorCode code, final List<FieldError> errors) {
         this.message = code.getMessage();
-        this.errors = errors;
         this.code = code.getCode();
+        this.errors = errors;
     }
 
     private ErrorResponse(final ErrorCode code) {
         this.message = code.getMessage();
         this.code = code.getCode();
         this.errors = new ArrayList<>();
+    }
+
+    private ErrorResponse(final ErrorCode code,String detail){
+        this.code = code.getCode();
+        this.detail = detail;
     }
 
     public static ErrorResponse of(final ErrorCode code, final BindingResult bindingResult) {
@@ -43,7 +49,9 @@ public class ErrorResponse {
     public static ErrorResponse of(final ErrorCode code, final List<FieldError> errors) {
         return new ErrorResponse(code, errors);
     }
-
+    public static ErrorResponse of(final ErrorCode code, final String detail){
+        return new ErrorResponse(code, detail);
+    }
     public static ErrorResponse of(MethodArgumentTypeMismatchException e) {
         final String value = e.getValue() == null ? "" : e.getValue().toString();
         final List<ErrorResponse.FieldError> errors = ErrorResponse.FieldError.of(e.getName(), value, e.getErrorCode());

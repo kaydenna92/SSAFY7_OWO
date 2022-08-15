@@ -494,7 +494,7 @@ public class RecordController {
 
     @ApiOperation(value = "하루 운동 사진들 요청" ,notes = "하루의 운동 기록에 대한 운동 사진파일을 리스트로 요청한다.")
     @ApiImplicitParam(name = "memberId",value = "사용자 recordId",dataType = "int",paramType = "path")
-    @GetMapping("/api/record/img/{memberId}/{date}")
+    @GetMapping("/api/user/record/img/{memberId}/{date}")
     public ResponseEntity<?> getRecordImgDay(@PathVariable("memberId") int memberId,@DateTimeFormat(pattern = "yyyyMMdd") @Parameter(schema = @Schema(type="string" ,format = "date", example = "20220805"))@PathVariable("date") LocalDate date) throws IOException {
         Message message = new Message();
         HttpHeaders httpHeaders = new HttpHeaders();
@@ -529,7 +529,7 @@ public class RecordController {
             @ApiImplicitParam(name = "year",value = "연도(ex.1998)",dataType = "int",paramType = "path"),
             @ApiImplicitParam(name = "month",value = "달(ex.8)",dataType = "int",paramType = "path"),
     })
-    @GetMapping("/api/user/ecord/img/{memberId}/{year}/{month}")
+    @GetMapping("/api/user/record/img/{memberId}/{year}/{month}")
     public ResponseEntity<?> getRecordImgMonth(@PathVariable("memberId") int memberId,@PathVariable("year")int year, @PathVariable("month")int month) throws IOException {
         Message message = new Message();
         HttpHeaders httpHeaders = new HttpHeaders();
@@ -559,4 +559,39 @@ public class RecordController {
     }
 
 
+    @ApiOperation(value = "한달의 운동기록 각 날짜별 최고 등수,총 운동시간 조회" ,notes = "한달의 운동 기록에 대한 각 날짜 별 최고 등수, 총 운동시간을 리스트로 요청한다.")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "memberId",value = "사용자 id",dataType = "int",paramType = "path"),
+            @ApiImplicitParam(name = "year",value = "연도(ex.1998)",dataType = "int",paramType = "path"),
+            @ApiImplicitParam(name = "month",value = "달(ex.8)",dataType = "int",paramType = "path"),
+    })
+    @GetMapping("/api/user/record/placeNtime/{memberId}/{year}/{month}")
+    public ResponseEntity<?> findPlaceByMonth(@PathVariable("memberId") int memberId,@PathVariable("year")int year, @PathVariable("month")int month) throws IOException {
+        Message message = new Message();
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(new MediaType("application","json", Charset.forName("UTF-8")));
+//        try {
+            List<RecordPlaceDto> result = recordService.findPlaceByMonth(memberId, year,month);
+            if (result == null) {
+                System.out.println("기록이 없음");
+                return new ResponseEntity<String>("null_기록이 없다", HttpStatus.OK);
+            }
+
+            message.setStatus(StatusEnum.OK);
+            message.setMessage("한달 운동 기록에 대한 각 날짜 별 최고 등수, 총 운동시간 리스트 조회 성공");
+            message.setData(result);
+            return new ResponseEntity<>(message,httpHeaders,HttpStatus.OK);
+
+//        }catch (IllegalStateException e){
+//            e.printStackTrace();
+//            message.setStatus(StatusEnum.BAD_REQUEST);
+//            message.setMessage("잘못된 요청");
+//            return new ResponseEntity<>(message,httpHeaders,HttpStatus.BAD_REQUEST);
+//        } catch (Exception e){
+//            e.printStackTrace();
+//            message.setStatus(StatusEnum.INTERNAL_SERVER_ERROR);
+//            message.setMessage("내부 서버 에러(테이블에 null값이 있을 수 있음)");
+//            return new ResponseEntity<>(message,httpHeaders,HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+    }
 }

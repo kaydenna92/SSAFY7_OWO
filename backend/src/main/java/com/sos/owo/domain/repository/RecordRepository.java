@@ -5,6 +5,7 @@ import com.sos.owo.domain.Member;
 import com.sos.owo.domain.Record;
 import com.sos.owo.domain.RecordImg;
 import com.sos.owo.dto.*;
+import com.sos.owo.error.Exception.custom.UserNotFoundException;
 import com.sos.owo.service.TagService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.connection.stream.RecordId;
@@ -14,13 +15,11 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Repository
 @RequiredArgsConstructor
@@ -43,7 +42,7 @@ public class RecordRepository {
         List<TagResponseDto> tagList = tagRepository.findTagList(recordId);
         RecordResponseDto recordResponse = new RecordResponseDto(recordId, f.getMember().getId(),f.getMeetingRoom().getId(),tagList,
                 f.getRecordTime(), f.getRecordImg().getId(),
-                f.getRecordMemo() ,f.getRecordDatetime(),f.isRecordSecret(),f.getRecordExercise().toString());
+                f.getRecordMemo() ,f.getRecordDatetime(),f.isRecordSecret(),f.getRecordExercise().toString(),f.getPlace());
 
         return recordResponse;
     }
@@ -81,6 +80,7 @@ public class RecordRepository {
     }
 
 
+
     public List<RecordResponseDto> findRecordByDay(int memberId, LocalDate dateTime){
         System.out.println(dateTime);
         List<Record> recordList = em.createQuery("SELECT r FROM Record as r WHERE r.member.id = :memberId and r.recordDatetime = :dateTime",Record.class)
@@ -92,7 +92,7 @@ public class RecordRepository {
             recordResponseDtoList.add(new RecordResponseDto(r.getRecordId(), r.getMember().getId(),r.getMeetingRoom().getId(),tagList,
                     r.getRecordTime(),
                     r.getRecordImg().getId(),
-                    r.getRecordMemo() ,r.getRecordDatetime(),r.isRecordSecret(),r.getRecordExercise().toString()));
+                    r.getRecordMemo() ,r.getRecordDatetime(),r.isRecordSecret(),r.getRecordExercise().toString(),r.getPlace()));
         }
 
         return recordResponseDtoList;
@@ -117,7 +117,7 @@ public class RecordRepository {
                 monthList.add(new RecordResponseDto(r.getRecordId(), r.getMember().getId(),r.getMeetingRoom().getId(),tagList,
                         r.getRecordTime(),
                         r.getRecordImg().getId(),
-                        r.getRecordMemo() ,r.getRecordDatetime(),r.isRecordSecret(),r.getRecordExercise().toString()));
+                        r.getRecordMemo() ,r.getRecordDatetime(),r.isRecordSecret(),r.getRecordExercise().toString(),r.getPlace()));
             }
         }
 
@@ -154,12 +154,13 @@ public class RecordRepository {
         Long sum = em.createQuery("SELECT count(r.recordTime) FROM Record as r WHERE r.member.id = :memberId and r.recordExercise not in ('GAME')",Long.class)
                 .setParameter("memberId",memberId).getSingleResult();
 
-        HashMap<String,Integer> percentage = new HashMap<>();
+        Map<String,Integer> percentage = new LinkedHashMap<>();
 
         for (Object[] r:recordList) {
-            System.out.println(">>>>>"+r);
+            System.out.println(">>>>>"+r[0].toString()+"  "+r[1]);
             percentage.put(r[0].toString(),(int)((double)Integer.parseInt(r[1].toString()) / sum * 100.0));
         }
+
         return percentage;
     }
 
@@ -291,5 +292,25 @@ public class RecordRepository {
             responseList.add(recordImgDto);
         }
         return responseList;
+    }
+
+    public List<RecordPlaceDto> findPlaceByMonth(int memberId, int year, int month){
+        Member findMember = em.find(Member.class,memberId);
+        if(findMember == null) throw new UserNotFoundException(memberId);
+
+        Query query = em.createQuery("SELECT r.recordDatetime, min(r.place), sum(r.recordTime) FROM Record as r WHERE r.member.id = :memberId group by r.recordDatetime")
+                .setParameter("memberId",memberId); // 사용자에 대한 모든 운동 기록 리스트
+        List<Object[]> recordList = query.getResultList();
+        List<RecordPlaceDto> monthList = new ArrayList<>();
+
+        for(Object[] r:recordList){
+            String dateString = String.valueOf(r[0]);
+            LocalDate date = LocalDate.parse(dateString);
+            if (date.getYear()==year && date.getMonthValue() == month){
+              monthList.add(new RecordPlaceDto(date,Integer.parseInt(String.valueOf(r[1])),Integer.parseInt(String.valueOf(r[2]))));
+            }
+        }
+
+        return monthList;
     }
 }

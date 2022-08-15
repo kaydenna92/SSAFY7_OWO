@@ -6,6 +6,8 @@ import com.sos.owo.dto.GoalResponseDto;
 import com.sos.owo.dto.GoalSaveRequestDto;
 import com.sos.owo.dto.Message;
 import com.sos.owo.dto.StatusEnum;
+import com.sos.owo.error.ErrorResponse;
+import com.sos.owo.error.Exception.ErrorCode;
 import com.sos.owo.service.GoalService;
 import io.swagger.annotations.*;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -13,6 +15,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.jdbc.Null;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -31,19 +34,24 @@ public class GoalController {
     private final GoalService goalService;
 
     //운동 목표 추가
+
     @ApiOperation(value = "운동 목표 추가",notes = "memberId와 목표운동, 목표시간을 받아서 추가한다.")
     @ApiImplicitParam(name = "memberId",value = "사용자 id",dataType = "int",paramType = "path")
     @PostMapping("/api/user/goal/{memberId}")
-    public ResponseEntity<?> saveGoal(@PathVariable("memberId") int memberId, @Valid @RequestBody GoalSaveRequestDto goalSaveRequestDto) throws IllegalStateException{
+    public ResponseEntity<?> saveGoal(@PathVariable("memberId") int memberId, @Valid @RequestBody GoalSaveRequestDto goalSaveRequestDto){
         Message message = new Message();
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(new MediaType("application","json", Charset.forName("UTF-8")));
 
-        goalService.saveGoal(memberId,goalSaveRequestDto.toEntity());
-        message.setStatus(StatusEnum.OK);
-        message.setMessage("운동 목표 추가 성공");
-        message.setData(goalSaveRequestDto);
-        return new ResponseEntity<>(message,httpHeaders,HttpStatus.OK);
+            goalService.saveGoal(memberId,goalSaveRequestDto.toEntity());
+            message.setStatus(StatusEnum.OK);
+//            message.setStatus(ErrorCode.OK);
+            message.setMessage("운동 목표 추가 성공");
+            message.setData(goalSaveRequestDto);
+
+            return new ResponseEntity<>(message,httpHeaders,HttpStatus.OK);
+
+
 
 //        try {
 //        } catch (IllegalStateException e){

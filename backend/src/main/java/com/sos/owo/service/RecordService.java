@@ -4,7 +4,9 @@ package com.sos.owo.service;
 import com.sos.owo.domain.Record;
 import com.sos.owo.domain.repository.RecordRepository;
 import com.sos.owo.dto.RecordDto;
+import com.sos.owo.dto.RecordPlaceDto;
 import com.sos.owo.dto.RecordResponseDto;
+import com.sos.owo.error.Exception.custom.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -67,5 +69,7 @@ public class RecordService {
         return recordRepository.findlastingDay(memberId);
     }
 
-
+    public List<RecordPlaceDto> findPlaceByMonth(int memberId, int year, int month) throws UserNotFoundException {
+        return recordRepository.findPlaceByMonth(memberId, year, month);
+    }
 }
