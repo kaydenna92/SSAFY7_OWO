@@ -12,10 +12,14 @@
         variant="outline-primary">{{ tab }}
         </b-button>
       </b-button-group>
-      <b-modal id="modal-makeSession" title="#오운완의 운동방 생성하기" hide-footer="true">
+      <b-modal centered id="modal-makeSession" title="#오운완의 운동방 생성하기"
+        hide-footer="true" hide-header="true">
         <div class="d-flex justify-content-center">
           <form class="makesessionForm">
             <div class="roomdata">
+              <p class="modal-title">
+                오운완 운동방 만들기
+              </p>
               <!--기본 입력폼-->
               <b-input-group prepend="방 이름" class="roomdata_input">
                 <b-form-input type="text" v-model="roomdatas.roomName"></b-form-input>
@@ -414,7 +418,14 @@ export default {
 };
 </script>
 
-<style scope>
+<style scoped>
+.body {
+  min-height: 500px;
+  height: 500px;
+  margin: 0 50px;
+  margin: 0;
+  /* background-color: aqua; */
+}
 .img_sport img {
   width: 150px;
   height: 150px;
@@ -439,15 +450,22 @@ export default {
 .wrap {
   max-width: 100%;
   margin: 50px auto;
-  background: #f8f8f8;
+  /* background: #f8f8f8; */
 }
 
+/* .tab-content {
+  height: 300px;
+} */
 /* 가로 스크롤 적용 */
 .scroll__wrap {
   overflow: auto;
   white-space: nowrap;
   font-size: 15px;
   margin-top: -30px;
+  height: 400px;
+  /* background-color: #f4f3f3; */
+  border-radius: 10px;
+  border: solid #DFDFDF 1px;
 }
 
 .scroll--element {
@@ -462,7 +480,9 @@ export default {
 .scroll--element+scroll--element {
   margin-left: 10px;
 }
-
+.rooms {
+  background-color: white;
+}
 .rooms p {
   width: max-content;
   padding: 5px;
@@ -472,14 +492,17 @@ export default {
   font-weight: bold;
   border-radius: 10%;
 }
-
+.card-footer {
+  /* background-color:#246dfe; */
+  background-color: var(--bs-card-cap-bg);
+}
 .rooms_btn {
   margin-top: 20px;
   width: 45%;
 }
 
 .roomdata {
-  display: justify-content-center;
+  /* display: justify-content-center; */
 }
 
 .makeSessionForm {
@@ -516,7 +539,10 @@ input {
   z-index: 1;
   border-radius: 10px;
 }
-html {
-  height: 400px;
+.modal-title {
+  font-family: 'Recipekorea';
+  font-size: 20px;
+  font-weight: 900;
+  padding: 20px;
 }
 </style>
