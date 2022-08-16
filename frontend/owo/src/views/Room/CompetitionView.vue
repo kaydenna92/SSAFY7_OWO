@@ -1577,7 +1577,7 @@ solid #cedfff; border-top: 10px solid transparent; border-bottom: 10px solid tra
   background-color:transparent;
   border:none;
   position:fixed;
-  top: 6px;
+  top: 16px;
   right: 120px;
   /* z-index: 500; */
 }
@@ -1586,7 +1586,7 @@ solid #cedfff; border-top: 10px solid transparent; border-bottom: 10px solid tra
   background-color:transparent;
   border:none;
   position:fixed;
-  top: 30px;
+  top: 40px;
   right: 30px;
   /* z-index: 500; */
 }
