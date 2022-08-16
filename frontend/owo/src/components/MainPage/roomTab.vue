@@ -84,12 +84,12 @@
     <div v-if="!noStreaming" class="tab-content wrap">
       <div v-show="currentTab == 0" class="scroll__wrap">
         <div v-for="(room, i) in roomList.streamingRoomList" :key="i" class="scroll--element">
-         <div class='darkness' v-if="!room.person === 6">
+          <div class='darkness' v-if="!room.person === 6">
             <p>
               모든 인원이 꽉 찼습니다.</p>
           </div>
               <b-card class="rooms" footer-tag="footer">
-               <div class="img_sport">
+                <div class="img_sport">
               <div v-if="room.type === 'GAME'">
                   <img src="@/assets/sport/game.png" alt="">
                 </div>
@@ -167,7 +167,7 @@
     <div v-if="!noFree" class="tab-content wrap">
       <div v-show="currentTab == 1" class="scroll__wrap">
         <div v-for="(room, i) in roomList.freeRoomList" :key="i" class="scroll--element">
-         <div class='darkness' v-if="!room.person === 6">
+          <div class='darkness' v-if="!room.person === 6">
             <p>
               모든 인원이 꽉 찼습니다.</p>
           </div>
@@ -222,7 +222,7 @@
               roomName: room.roomName,
               })">
               들어가기</b-button>
-               <template #footer>
+                <template #footer>
               <div class="d-flex justify-content-end">
                   <b-input-group prepend="PW" class="roomdata_input" v-show="room.secret===true"
                   style="width: 100%; padding: 0px;">
@@ -250,7 +250,7 @@
     <div v-if="!noGame" class="tab-content wrap">
       <div v-show="currentTab == 2" class="scroll__wrap">
         <div v-for="(room, i) in roomList.gameRoomList" :key="i" class="scroll--element">
-         <div class='darkness' v-if="!room.person === 6">
+          <div class='darkness' v-if="!room.person === 6">
             <p>
               모든 인원이 꽉 찼습니다.</p>
           </div>
@@ -326,7 +326,7 @@
         <h1>아직 운동중인 방이 없습니다!</h1>
       </div>
     </div>
- </div>
+  </div>
 </template>
 
 <script>
