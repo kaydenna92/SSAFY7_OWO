@@ -2,6 +2,7 @@ package com.sos.owo.controller;
 
 import com.sos.owo.domain.MeetingRoom;
 import com.sos.owo.domain.Mode;
+import com.sos.owo.domain.RoomStatus;
 import com.sos.owo.dto.*;
 import com.sos.owo.service.MeetingRoomService;
 import com.sos.owo.service.MemberService;
@@ -11,6 +12,7 @@ import io.openvidu.java.client.OpenViduJavaClientException;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import net.bytebuddy.asm.Advice;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -91,6 +93,7 @@ public class MeetingRoomController {
 
             for(MeetingRoom meetingRoom:meetingRoomList){
                 if(!roomSession.containsKey(meetingRoom.getId())) continue;
+                if(meetingRoom.getStatus() != RoomStatus.WAIT) continue;
                 meetingRooomDtoList.add(MeetingListRoomResponse.builder()
                         .roomId(meetingRoom.getId())
                         .memberId(meetingRoom.getManager())
@@ -114,25 +117,34 @@ public class MeetingRoomController {
         }
     }
 
-    @GetMapping("/api/user/room/{roomId}")
+    @PostMapping("/api/user/room/enter")
     @ApiOperation(value="방 입장 처리에 대한 API", notes = "특정 방번호(roomId)를 통해 방 입장에 대한 요청 처리를 수행합니다.")
-    @ApiImplicitParam(name = "roomId",value = "방의 번호",paramType = "path")
-    public ResponseEntity<?> enterMeetingRoom(@PathVariable int roomId) throws OpenViduJavaClientException, OpenViduHttpException {
+    public ResponseEntity<?> enterMeetingRoom(@RequestBody EnterRoomDto enterRoomDto) throws OpenViduJavaClientException, OpenViduHttpException {
         Message message = new Message();
         HttpHeaders headers= new HttpHeaders();
         headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
-        if(!this.roomSession.containsKey(roomId) || this.roomSession.get(roomId) == 0){
+        if(!this.roomSession.containsKey(enterRoomDto.getRoomId()) || this.roomSession.get(enterRoomDto.getRoomId()) == 0){
             message.setMessage("해당 운동방이 존재하지 않습니다.");
             return new ResponseEntity<>(message, headers, HttpStatus.BAD_REQUEST);
         }
 
-        if(this.roomSession.get(roomId) >= LIMIT){
+        if(!roomService.checkWAIT(enterRoomDto.getRoomId())){
+            message.setMessage("입장 가능한 방이 아닙니다.");
+            return new ResponseEntity<>(message, headers, HttpStatus.BAD_REQUEST);
+        }
+
+        if(!roomService.checkSecret(enterRoomDto.getRoomId(), enterRoomDto.getPassword())){
+            message.setMessage("입장 비밀번호가 틀렸습니다.");
+            return new ResponseEntity<>(message, headers, HttpStatus.BAD_REQUEST);
+        }
+
+        if(this.roomSession.get(enterRoomDto.getRoomId()) >= LIMIT){
             message.setMessage("해당 운동방의 인원이 꽉 찼습니다.");
             return new ResponseEntity<>(message, headers, HttpStatus.BAD_REQUEST);
         } else {
             message.setMessage("운동방 입장 성공");
-            this.roomSession.put(roomId, this.roomSession.get(roomId)+1);
-            message.setData(new MeetingRoomResponseDto(roomId));
+            this.roomSession.put(enterRoomDto.getRoomId(), this.roomSession.get(enterRoomDto.getRoomId())+1);
+            message.setData(new MeetingRoomResponseDto(enterRoomDto.getRoomId()));
             message.setStatus(StatusEnum.OK);
             return new ResponseEntity<>(message, headers, HttpStatus.OK);
         }
@@ -165,58 +177,35 @@ public class MeetingRoomController {
     @PutMapping("/api/user/room/start/{roomId}")
     @ApiOperation(value = "방 시작",notes = "방 시작. status start로 변경. start_date 저장")
     @ApiImplicitParam(name = "roomId",value = "방의 번호",paramType = "path")
-    public ResponseEntity<?> startRoom(@PathVariable int roomId){//}, @RequestBody GameStartDto gameStartDto){
+    public ResponseEntity<?> startRoom(@PathVariable int roomId){
         Message message = new Message();
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(new MediaType("application","json", Charset.forName("UTF-8")));
-        try {
-            roomService.startRoom(roomId);
-            message.setStatus(StatusEnum.OK);
-            message.setMessage("방 시작 성공");
-            return new ResponseEntity<>(message,httpHeaders, HttpStatus.OK);
-        }catch (IllegalStateException e){
-            e.printStackTrace();
-            message.setStatus(StatusEnum.BAD_REQUEST);
-            message.setMessage("잘못된 요청(방이 존재하지 않음)");
-            return new ResponseEntity<>(message,httpHeaders, HttpStatus.BAD_REQUEST);
-        }catch (Exception e){
-            e.printStackTrace();
-            message.setStatus(StatusEnum.INTERNAL_SERVER_ERROR);
-            message.setMessage("내부 서버 에러");
-            return new ResponseEntity<>(message,httpHeaders,HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+
+        roomService.startRoom(roomId);
+        message.setStatus(StatusEnum.OK);
+        message.setMessage("방 시작 성공");
+        return new ResponseEntity<>(message,httpHeaders, HttpStatus.OK);
     }
 
     @PutMapping("/api/user/room/end/{roomId}")
     @ApiOperation(value = "방 종료",notes = "방(운동) 끝. status end로 변경. end_date 저장")
     @ApiImplicitParam(name = "roomId",value = "방의 번호",paramType = "path")
-    public ResponseEntity<?> endRoom(@PathVariable("roomId") int roomId){//}, @RequestBody GameStartDto gameStartDto){
+    public ResponseEntity<?> endRoom(@PathVariable("roomId") int roomId){
         Message message = new Message();
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(new MediaType("application","json", Charset.forName("UTF-8")));
-        try {
-            // status end, end date 저장
-            roomService.endRoom(roomId);
 
-            //만약에 최종 한명 남아있다면 세션에서 방을 지우기.
-            if(this.roomSession.get(roomId)<=1 || this.roomSession.get(roomId)==null){
-                this.roomSession.remove(roomId);
-            }
-            System.out.println(roomSession);
-            message.setStatus(StatusEnum.OK);
-            message.setMessage("방 종료 성공");
-            return new ResponseEntity<>(message, httpHeaders, HttpStatus.OK);
-        }catch (IllegalStateException e){
-            e.printStackTrace();
-            message.setStatus(StatusEnum.BAD_REQUEST);
-            message.setMessage("잘못된 요청(방이 존재하지 않음)");
-            return new ResponseEntity<>(message,httpHeaders, HttpStatus.BAD_REQUEST);
-        }catch (Exception e){
-            e.printStackTrace();
-            message.setStatus(StatusEnum.INTERNAL_SERVER_ERROR);
-            message.setMessage("내부 서버 에러");
-            return new ResponseEntity<>(message,httpHeaders,HttpStatus.INTERNAL_SERVER_ERROR);
+        roomService.endRoom(roomId);
+
+        /* 만약에 최종 한명 남아있다면 세션에서 방을 지우기 */
+        if(this.roomSession.get(roomId)<=1 || this.roomSession.get(roomId)==null){
+            this.roomSession.remove(roomId);
         }
+        System.out.println(roomSession);
+        message.setStatus(StatusEnum.OK);
+        message.setMessage("방 종료 성공");
+        return new ResponseEntity<>(message, httpHeaders, HttpStatus.OK);
     }
 
 

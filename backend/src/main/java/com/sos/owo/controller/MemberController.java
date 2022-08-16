@@ -89,24 +89,49 @@ public class MemberController {
         Message message = new Message();
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(new MediaType("application","json", Charset.forName("UTF-8")));
-        try {
+//        try {
             List<Integer> bestScore = memberService.findBestScore(memberId);
-            model.addAttribute("bestScores", bestScore);
             message.setStatus(StatusEnum.OK);
             message.setMessage("경쟁모드 최고기록 조회 성공");
+            message.setData(bestScore);
             //return new ResponseEntity<List<Integer>>( memberService.findBestScore(memberId), HttpStatus.OK);
             return new ResponseEntity<>( message, httpHeaders, HttpStatus.OK);
-        } catch (IllegalStateException e){
-            e.printStackTrace();
-            message.setStatus(StatusEnum.BAD_REQUEST);
-            message.setMessage("잘못된 요청");
-            return new ResponseEntity<>(message,httpHeaders,HttpStatus.BAD_REQUEST);
-        } catch (Exception e){
-            e.printStackTrace();
-            message.setStatus(StatusEnum.INTERNAL_SERVER_ERROR);
-            message.setMessage("내부 서버 에러");
-            return new ResponseEntity<>(message,httpHeaders,HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+//        } catch (IllegalStateException e){
+//            e.printStackTrace();
+//            message.setStatus(StatusEnum.BAD_REQUEST);
+//            message.setMessage("잘못된 요청");
+//            return new ResponseEntity<>(message,httpHeaders,HttpStatus.BAD_REQUEST);
+//        } catch (Exception e){
+//            e.printStackTrace();
+//            message.setStatus(StatusEnum.INTERNAL_SERVER_ERROR);
+//            message.setMessage("내부 서버 에러");
+//            return new ResponseEntity<>(message,httpHeaders,HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+
+    }
+
+    @ApiOperation(value = "경쟁모드 최고기록 저장",notes = "memberId를 받아서 해당 사용자의 종목별 최고기록을 갱신한다.")
+    @PostMapping("/api/user/compete")
+    public ResponseEntity<?> saveBestScore(@RequestBody ScoreSaveDto scoreSaveDto){
+        Message message = new Message();
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(new MediaType("application","json", Charset.forName("UTF-8")));
+//        try {
+            message.setStatus(StatusEnum.OK);
+            memberService.saveBestScore(scoreSaveDto.getMemberId(), scoreSaveDto.getScore1(), scoreSaveDto.getScore2(), scoreSaveDto.getScore3());
+            message.setMessage("경쟁모드 최고기록 저장 성공");
+            return new ResponseEntity<>( message, httpHeaders, HttpStatus.OK);
+//        } catch (IllegalStateException e){
+//            e.printStackTrace();
+//            message.setStatus(StatusEnum.BAD_REQUEST);
+//            message.setMessage("잘못된 요청");
+//            return new ResponseEntity<>(message,httpHeaders,HttpStatus.BAD_REQUEST);
+//        } catch (Exception e){
+//            e.printStackTrace();
+//            message.setStatus(StatusEnum.INTERNAL_SERVER_ERROR);
+//            message.setMessage("내부 서버 에러");
+//            return new ResponseEntity<>(message,httpHeaders,HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
 
     }
 
@@ -120,24 +145,23 @@ public class MemberController {
         Message message = new Message();
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(new MediaType("application","json", Charset.forName("UTF-8")));
-        try {
-            System.out.println(point);
+//        try {
+//            System.out.println(point);
             memberService.savePoint(point, memberId);
             message.setStatus(StatusEnum.OK);
             message.setMessage("경쟁모드 경험치 저장성공");
-            //return new ResponseEntity<String>("경쟁모드 경험치 저장성공", HttpStatus.OK);
             return new ResponseEntity<>( message, httpHeaders, HttpStatus.OK);
-        } catch (IllegalStateException e){
-            e.printStackTrace();
-            message.setStatus(StatusEnum.BAD_REQUEST);
-            message.setMessage("잘못된 요청");
-            return new ResponseEntity<>(message,httpHeaders,HttpStatus.BAD_REQUEST);
-        } catch (Exception e){
-            e.printStackTrace();
-            message.setStatus(StatusEnum.INTERNAL_SERVER_ERROR);
-            message.setMessage("내부 서버 에러");
-            return new ResponseEntity<>(message,httpHeaders,HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+//        } catch (IllegalStateException e){
+//            e.printStackTrace();
+//            message.setStatus(StatusEnum.BAD_REQUEST);
+//            message.setMessage("잘못된 요청");
+//            return new ResponseEntity<>(message,httpHeaders,HttpStatus.BAD_REQUEST);
+//        } catch (Exception e){
+//            e.printStackTrace();
+//            message.setStatus(StatusEnum.INTERNAL_SERVER_ERROR);
+//            message.setMessage("내부 서버 에러");
+//            return new ResponseEntity<>(message,httpHeaders,HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
     }
 
     @ApiOperation(value = "자유/영상모드 경험치 저장",notes = "memberId와 자유/영상모드 경험치를 받아서 누적시킨다.")
@@ -150,23 +174,22 @@ public class MemberController {
         Message message = new Message();
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(new MediaType("application","json", Charset.forName("UTF-8")));
-        try {
+//        try {
             memberService.saveExp(exp, memberId);
             message.setStatus(StatusEnum.OK);
             message.setMessage("자유/영상모드 경험치 저장성공");
-            //return new ResponseEntity<String>("자유/영상모드 경험치 저장성공", HttpStatus.OK);
             return new ResponseEntity<>( message, httpHeaders, HttpStatus.OK);
-        } catch (IllegalStateException e){
-            e.printStackTrace();
-            message.setStatus(StatusEnum.BAD_REQUEST);
-            message.setMessage("잘못된 요청");
-            return new ResponseEntity<>(message,httpHeaders,HttpStatus.BAD_REQUEST);
-        } catch (Exception e){
-            e.printStackTrace();
-            message.setStatus(StatusEnum.INTERNAL_SERVER_ERROR);
-            message.setMessage("내부 서버 에러");
-            return new ResponseEntity<>(message,httpHeaders,HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+//        } catch (IllegalStateException e){
+//            e.printStackTrace();
+//            message.setStatus(StatusEnum.BAD_REQUEST);
+//            message.setMessage("잘못된 요청");
+//            return new ResponseEntity<>(message,httpHeaders,HttpStatus.BAD_REQUEST);
+//        } catch (Exception e){
+//            e.printStackTrace();
+//            message.setStatus(StatusEnum.INTERNAL_SERVER_ERROR);
+//            message.setMessage("내부 서버 에러");
+//            return new ResponseEntity<>(message,httpHeaders,HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
     }
 
     @ApiOperation(value = "비밀번호 찾기 요청",notes = "찾고자 하는 email로 비밀번호 찾기를 요청한다.(이메일 인증)")
@@ -213,7 +236,6 @@ public class MemberController {
             message.setMessage("서버 에러 발생");
             return new ResponseEntity<>(message, headers,  HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
     }
 
     @ApiOperation(value = "로그인 요청",notes = "email과 password로 로그인을 요청한다.")
@@ -321,72 +343,7 @@ public class MemberController {
             return new ResponseEntity<>(message, headers,  HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-//    @ApiOperation(value = "사용자 프로필 사진 수정 요청" ,notes = "사용자의 프로필 사진을 수정 요청한다.")
-//    @ApiImplicitParams(
-//            {
-//                    @ApiImplicitParam(name = "file",value = "사용자 이미지 파일"),
-//                    @ApiImplicitParam(name = "memberId",value = "사용자 memberId"),
-//            })
-//    @PostMapping("/api/user/img/{memberId}")
-//    public ResponseEntity<?> updateProfileImg(@RequestParam("file") MultipartFile file, @PathVariable("memberId") int memberId) {
-//        Message message = new Message();
-//        HttpHeaders headers= new HttpHeaders();
-//        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
-//        try {
-//            if (file != null) {
-//                String fileOriName = file.getOriginalFilename();
-////                String fileName = new MD5Generator(fileOriName).toString() + "."+file.getOriginalFilename().split(".")[1];
-//                String fileName = memberId+"_"+fileOriName;
-//                String savePath = System.getProperty("user.dir") +"\\src\\main\\resources\\static\\img\\profile";
-//                if (!new File(savePath).exists()) {
-//                    try {
-//                        new File(savePath).mkdir();
-//                    } catch (Exception e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//                String fileUrl = savePath + "\\" + fileName;
-//                file.transferTo(new File(fileUrl));
-//                FileDto fileDto = profileImgService.saveFile(memberId, fileOriName, fileName, fileUrl);
-//                message.setStatus(StatusEnum.OK);
-//                message.setMessage("프로필 사진 수정 성공");
-//                return new ResponseEntity<>(message, headers, HttpStatus.OK);
-//            } else {
-//                message.setStatus(StatusEnum.BAD_REQUEST);
-//                message.setMessage("이미지 파일 오류 발생");
-//                return new ResponseEntity<>(message, headers, HttpStatus.BAD_REQUEST);
-//            }
-//
-//        } catch (IllegalStateException e){
-//            e.printStackTrace();
-//            message.setStatus(StatusEnum.BAD_REQUEST);
-//            message.setMessage("해당 이메일이 존재하지 않습니다.");
-//            return new ResponseEntity<>(message, headers, HttpStatus.BAD_REQUEST);
-//        } catch (Exception e){
-//            e.printStackTrace();
-//            message.setStatus(StatusEnum.INTERNAL_SERVER_ERROR);
-//            message.setMessage("서버 에러 발생");
-//            return new ResponseEntity<>(message, headers,  HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
 
-//    @ApiOperation(value = "사용자 프로필 사진파일 요청" ,notes = "사용자의 프로필 사진파일을 요청한다.")
-//    @ApiImplicitParam(name = "memberId",value = "사용자 memberId",dataType = "int",paramType = "path")
-//    @GetMapping("/api/user/{memberId}")
-//    public ResponseEntity<?> getProfileImg(@PathVariable("memberId") int memberId) throws IOException {
-//        FileDto fileDto = profileImgService.getFile(memberId);
-//        if(fileDto == null){
-//            return new ResponseEntity<String>("null", HttpStatus.OK);
-//        }
-//        Path path = Paths.get(fileDto.getFileUrl());
-//        Resource resource = new InputStreamResource(Files.newInputStream(path));
-//
-//
-//
-//        return ResponseEntity.ok().contentType(MediaType.parseMediaType("image/png"))
-//                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileDto.getFileOriName() + "\"")
-//                .body(resource);
-//    }
 
     @ApiOperation(value = "사용자 프로필 사진 수정 요청" ,notes = "사용자의 프로필 사진을 수정 요청한다.")
     @ApiImplicitParams(
@@ -400,54 +357,33 @@ public class MemberController {
         HttpHeaders headers= new HttpHeaders();
         headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
 
+        if (file != null) {
+            InputStream inputStream = null;
+            ByteArrayOutputStream byteArrayOutputStream = null;
+            String binaryString = "";
+            int id = 0;
+            try {
+                // dataURL String 생성하기
+                 byte[] encodeBase64 = Base64.encodeBase64(file.getBytes());
+                 binaryString = "data:image/png;base64," + new String(encodeBase64, "UTF-8"); // 실제 data url 생성!
 
-        try {
-            if (file != null) {
-                InputStream inputStream = null;
-                ByteArrayOutputStream byteArrayOutputStream = null;
-                String binaryString = "";
-                int id = 0;
-                try {
-
-//                    BufferedImage image = ImageIO.read(file.getInputStream());
-//                    byteArrayOutputStream = new ByteArrayOutputStream();
-//                    ImageIO.write(image,"png",byteArrayOutputStream);
-//                    String encodedImage = Base64.encodeBase64String(byteArrayOutputStream.toByteArray());
-
-                    // dataURL String 생성하기
-                     byte[] encodeBase64 = Base64.encodeBase64(file.getBytes());
-                     binaryString = "data:image/png;base64," + new String(encodeBase64, "UTF-8"); // 실제 data url 생성!
-//                     String fileName = memberId+"_"+file.getOriginalFilename();
-
-                    id = profileImgService.saveImg(memberId,file.getOriginalFilename(),binaryString);
+                id = profileImgService.saveImg(memberId,file.getOriginalFilename(),binaryString);
 
 
-                    } catch (IOException ex) {
-                    message.setStatus(StatusEnum.BAD_REQUEST);
-                    message.setMessage("이미지 파일 오류 발생");
-                    return new ResponseEntity<>(message, headers, HttpStatus.BAD_REQUEST);
-
-                }
-                message.setStatus(StatusEnum.OK);
-                message.setMessage("프로필 사진 수정 성공");
-                message.setData(id +" "+binaryString);
-                return new ResponseEntity<>(message, headers, HttpStatus.OK);
-            } else {
+                } catch (IOException ex) {
                 message.setStatus(StatusEnum.BAD_REQUEST);
                 message.setMessage("이미지 파일 오류 발생");
                 return new ResponseEntity<>(message, headers, HttpStatus.BAD_REQUEST);
-            }
 
-        } catch (IllegalStateException e){
-            e.printStackTrace();
+            }
+            message.setStatus(StatusEnum.OK);
+            message.setMessage("프로필 사진 수정 성공");
+            message.setData(id +" "+binaryString);
+            return new ResponseEntity<>(message, headers, HttpStatus.OK);
+        } else {
             message.setStatus(StatusEnum.BAD_REQUEST);
-            message.setMessage("해당 이메일이 존재하지 않습니다.");
+            message.setMessage("이미지 파일 오류 발생");
             return new ResponseEntity<>(message, headers, HttpStatus.BAD_REQUEST);
-        } catch (Exception e){
-            e.printStackTrace();
-            message.setStatus(StatusEnum.INTERNAL_SERVER_ERROR);
-            message.setMessage("서버 에러 발생");
-            return new ResponseEntity<>(message, headers,  HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }
@@ -476,17 +412,17 @@ public class MemberController {
         Message message = new Message();
         HttpHeaders headers= new HttpHeaders();
         headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
-        try {
+//        try {
             memberService.updateMemberSlogan(memberSloganDto);
             message.setStatus(StatusEnum.OK);
             message.setMessage("사용자 슬로건 수정 성공");
             return new ResponseEntity<>(message, headers, HttpStatus.OK);
-        } catch (Exception e){
-            e.printStackTrace();
-            message.setStatus(StatusEnum.INTERNAL_SERVER_ERROR);
-            message.setMessage("서버 에러 발생");
-            return new ResponseEntity<>(message, headers,  HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+//        } catch (Exception e){
+//            e.printStackTrace();
+//            message.setStatus(StatusEnum.INTERNAL_SERVER_ERROR);
+//            message.setMessage("서버 에러 발생");
+//            return new ResponseEntity<>(message, headers,  HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
     }
 
     @ApiOperation(value = "사용자 슬로건 정보 요청" ,notes = "사용자의 슬로건의 정보를 요청한다.")
@@ -496,39 +432,29 @@ public class MemberController {
         Message message = new Message();
         HttpHeaders headers= new HttpHeaders();
         headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
-        try {
-            MemberSloganDto memberSloganDto = memberService.getMemberSlogan(memberId);
-            message.setStatus(StatusEnum.OK);
-            message.setMessage("슬로건 불러오기 성공");
-            message.setData(memberSloganDto);
-            return new ResponseEntity<>(message, headers, HttpStatus.OK);
-        } catch (Exception e){
-            e.printStackTrace();
-            message.setStatus(StatusEnum.INTERNAL_SERVER_ERROR);
-            message.setMessage("서버 에러 발생");
-            return new ResponseEntity<>(message, headers,  HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+//        try {
+        MemberSloganDto memberSloganDto = memberService.getMemberSlogan(memberId);
+        message.setStatus(StatusEnum.OK);
+        message.setMessage("슬로건 불러오기 성공");
+        message.setData(memberSloganDto);
+        return new ResponseEntity<>(message, headers, HttpStatus.OK);
+
     }
 
     @ApiOperation(value = "사용자 포인트 상위 퍼센티지 요청" ,notes = "사용자 포인트 상위 퍼센티지 정보를 요청한다.")
     @ApiImplicitParam(name = "memberId",value = "사용자 memberId",dataType = "int",paramType = "path")
     @GetMapping("/api/user/point/percentage/{memberId}")
-    public ResponseEntity<?> getPercentage(@PathVariable int memberId){
+    public ResponseEntity<?> getPercentage(@PathVariable int memberId) throws Exception {
         Message message = new Message();
         HttpHeaders headers= new HttpHeaders();
         headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
-        try {
-            double percentage = memberService.getPointPercentage(memberId);
-            message.setStatus(StatusEnum.OK);
-            message.setMessage("포인트 퍼센테지 불러오기 성공");
-            message.setData(percentage);
-            return new ResponseEntity<>(message, headers, HttpStatus.OK);
-        } catch (Exception e){
-            e.printStackTrace();
-            message.setStatus(StatusEnum.INTERNAL_SERVER_ERROR);
-            message.setMessage("서버 에러 발생");
-            return new ResponseEntity<>(message, headers,  HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+
+        double percentage = memberService.getPointPercentage(memberId);
+        message.setStatus(StatusEnum.OK);
+        message.setMessage("포인트 퍼센테지 불러오기 성공");
+        message.setData(percentage);
+        return new ResponseEntity<>(message, headers, HttpStatus.OK);
+
     }
 
     @ApiOperation(value = "사용자 포인트 요청" ,notes = "사용자 포인트 정보를 요청한다.")
@@ -538,17 +464,13 @@ public class MemberController {
         Message message = new Message();
         HttpHeaders headers= new HttpHeaders();
         headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
-        try {
-            int point = memberService.getMemberPoint(memberId);
-            message.setStatus(StatusEnum.OK);
-            message.setMessage("포인트 불러오기 성공");
-            message.setData(point);
-            return new ResponseEntity<>(message, headers, HttpStatus.OK);
-        } catch (Exception e){
-            message.setStatus(StatusEnum.INTERNAL_SERVER_ERROR);
-            message.setMessage("서버 에러 발생");
-            return new ResponseEntity<>(message, headers,  HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+
+        int point = memberService.getMemberPoint(memberId);
+        message.setStatus(StatusEnum.OK);
+        message.setMessage("포인트 불러오기 성공");
+        message.setData(point);
+        return new ResponseEntity<>(message, headers, HttpStatus.OK);
+
     }
 
     @ApiOperation(value = "사용자 신체정보를 요청한다." ,notes = "사용자 신체정보(BMI/기초대사량/하루권장칼로리)에 대한 정보를 요청한다.")
@@ -578,23 +500,15 @@ public class MemberController {
     @ApiOperation(value = "소셜로그인 - 멤버정보 요청",notes = "발급받은 accessToken으로 멤버정보를 요청한다.")
     @GetMapping("/api/social")
     public ResponseEntity<?> getMember(
-            @RequestHeader(value="X-AUTH-TOKEN") String token) {
-        System.out.println("???????!!!!!!!!!!");
+            @RequestHeader(value="X-AUTH-TOKEN") String token) throws Exception {
         Message message = new Message();
         HttpHeaders headers= new HttpHeaders();
         headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
 
-        try {
-            message.setStatus(StatusEnum.OK);
-            message.setMessage("access token으로 정보 불러오기 성공");
-            message.setData(memberService.getMember(token));
-            return new ResponseEntity<>(message, headers, HttpStatus.OK);
-        }  catch (Exception e){
-            e.printStackTrace();
-            message.setStatus(StatusEnum.INTERNAL_SERVER_ERROR);
-            message.setMessage("서버 에러 발생");
-            return new ResponseEntity<>(message, headers,  HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        message.setStatus(StatusEnum.OK);
+        message.setMessage("access token으로 정보 불러오기 성공");
+        message.setData(memberService.getMember(token));
+        return new ResponseEntity<>(message, headers, HttpStatus.OK);
 
     }
 

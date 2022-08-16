@@ -30,7 +30,7 @@ public class RecordDto {
     @ApiParam(value = "기록의 공개여부",type = "boolean")
     private boolean secret;
 
-    @ApiModelProperty(example="false")
+
     @ApiParam(value = "기록에 대한 태그들 리스트",type = "List<String>")
     private List<String> tagList;
 
@@ -46,6 +46,7 @@ public class RecordDto {
     @ApiParam(value = "운동한 시간(단위 : 분)",type = "int")
     private int recordTime;
 
+
     @Builder
     public RecordDto(String recordMemo, LocalDate recordDatetime, boolean secret, List<String> tagList, String fileOriName, String fileUrl,int recordTime) {
         this.recordMemo = recordMemo;
@@ -54,7 +55,7 @@ public class RecordDto {
         this.tagList = tagList;
         this.fileOriName = fileOriName;
         this.fileUrl = fileUrl;
-        this.recordTime=recordTime;
+        this.recordTime = recordTime;
     }
 
     
