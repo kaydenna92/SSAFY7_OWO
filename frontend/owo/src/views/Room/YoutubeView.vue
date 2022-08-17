@@ -10,7 +10,7 @@
       <!-- eslint-disable-next-line -->
       <div class="d-flex align-items-start justify-content-start" style="position:relative; background-color: transparent; width: 1050px; height: 750px">
         <YouTube class="my-2 mx-2 col-8"
-          :src='this.link'
+          :src="this.youtubeURL"
           @ready="onReady"
           :vars="this.controls"
           @state-change="onChange"
@@ -26,7 +26,6 @@
         <div v-if="!isStarted2" class="my-2 mx-2 shadow2">
           오른쪽 위 START 버튼으로<br>
           시작해주세요 .<br>
-          {{this.youtubeURL}}
         </div>
         <!-- eslint-disable-next-line -->
         <div class="my-2 mx-2 col-4" style="overflow-y: auto; width:560px; max-height:750px;">
@@ -515,8 +514,8 @@ export default {
       if (this.volume === 100) {
         swal.fire({
           icon: 'error',
-          title: '볼륨 최대',
-          text: '볼륨이 최대에요!<br>5씩 조절돼요!',
+          title: '볼륨이 최대에요',
+          text: '5씩 조절돼요',
         });
       } else {
         this.volume += 5;
@@ -528,8 +527,8 @@ export default {
       if (this.volume === 0) {
         swal.fire({
           icon: 'error',
-          title: '볼륨 최소',
-          text: '볼륨이 최소에요!<br>5씩 조절돼요!',
+          title: '볼륨이 최소에요',
+          text: '5씩 조절돼요',
         });
       } else {
         this.volume -= 5;
@@ -679,6 +678,7 @@ export default {
     },
     ...mapActions(emoji, ['changeEmojiList', 'removeEmojiList']),
     ...mapMutations(meetingroom, ['SET_SESSION_ID']),
+    ...mapMutations(accounts, ['SET_YOUTUBE_LINK']),
     ...mapActions(meetingroom, [
       'enterMeetingRoom',
       'leaveMeetingRoom',
@@ -768,9 +768,7 @@ export default {
       });
 
       this.session.on('signal:startTimer', (event) => {
-        console.log('여기임', event);
-        console.log('여기임', event.data);
-        console.log('여기임', event.data.data);
+        this.SET_YOUTUBE_LINK(event.data);
         this.youtubeURL = event.data;
         this.start();
         setTimeout(() => {
@@ -1472,7 +1470,7 @@ solid #cedfff; border-top: 10px solid transparent; border-bottom: 10px solid tra
 
 .shadow {
   font-size:70px;
-  opacity:0.8;
+  opacity:1;
   background-color: white;
   position: absolute;
   top:0px;
