@@ -15,13 +15,16 @@
             <div style="font-size:50px;">게임타입 : {{gameType}}</div>
             <div style="font-size:50px;">현재 나의 점수 : {{ Score }}</div>
             <div style="font-size:50px;">전체 스쿼트 개수 : {{ allSquatCountList }}</div>
-            <div style="font-size:50px;">내 스쿼트 등수 : {{ this.$refs.webrtc.mySquatRanking }}</div>
+            <!-- eslint-disable-next-line -->
+            <!-- <div style="font-size:50px;">내 스쿼트 등수 : {{ this.$refs.webrtc.mySquat.userSquatCount }}</div> -->
             <div style="font-size:50px;">중복 없는 스쿼트 점수들 : {{ allSquatCountListSorted }}</div>
             <div style="font-size:50px;">전체 런지 점수들 : {{ allLungeCountList }}</div>
-            <div style="font-size:50px;">내 스쿼트 등수 : {{ this.$refs.webrtc.myLungeRanking }}</div>
+            <!-- eslint-disable-next-line -->
+            <!-- <div style="font-size:50px;">내 스쿼트 등수 : {{ this.$refs.webrtc.myLungeRanking }}</div> -->
             <div style="font-size:50px;">중복 없는 런지 점수들 : {{ allLungeCountListSorted }}</div>
             <div style="font-size:50px;">전체 버피 점수들 : {{ allBurpeeCountList }}</div>
-            <div style="font-size:50px;">내 스쿼트 등수 : {{ this.$refs.webrtc.myBurpeeRanking }}</div>
+            <!-- eslint-disable-next-line -->
+            <!-- <div style="font-size:50px;">내 스쿼트 등수 : {{ this.$refs.webrtc.myBurpeeRanking }}</div> -->
             <div style="font-size:50px;">중복 없는 버피 점수들 : {{ allBurpeeCountListSorted }}</div>
             <canvas id="canvasTM"></canvas>
             <WebRTC ref="webrtc" :stream-manager="mainStreamManager"/>
@@ -714,50 +717,50 @@ export default {
       setTimeout(() => {
         this.isExercising = true;
         this.startround2();
-        if (this.allSquatCountList.length === 2) {
-          if (this.$refs.webrtc.mySquatRanking === 1) {
+        if (this.allBurpeeCountList.length === 2) {
+          if (this.$refs.webrtc.myBurpeeRanking === 1) {
             this.Score += 5;
-          } else if (this.$refs.webrtc.mySquatRanking === 2) {
+          } else if (this.$refs.webrtc.myBurpeeRanking === 2) {
             this.Score -= 5;
           }
-        } else if (this.allSquatCountList.length === 3) {
-          if (this.$refs.webrtc.mySquatRanking === 1) {
+        } else if (this.allBurpeeCountList.length === 3) {
+          if (this.$refs.webrtc.myBurpeeRanking === 1) {
             this.Score += 10;
-          } else if (this.$refs.webrtc.mySquatRanking === 3) {
+          } else if (this.$refs.webrtc.myBurpeeRanking === 3) {
             this.Score -= 10;
           }
-        } else if (this.allSquatCountList.length === 4) {
-          if (this.$refs.webrtc.mySquatRanking === 1) {
+        } else if (this.allBurpeeCountList.length === 4) {
+          if (this.$refs.webrtc.myBurpeeRanking === 1) {
             this.Score += 20;
-          } else if (this.$refs.webrtc.mySquatRanking === 2) {
+          } else if (this.$refs.webrtc.myBurpeeRanking === 2) {
             this.Score += 10;
-          } else if (this.$refs.webrtc.mySquatRanking === 3) {
+          } else if (this.$refs.webrtc.myBurpeeRanking === 3) {
             this.Score -= 10;
-          } else if (this.$refs.webrtc.mySquatRanking === 4) {
+          } else if (this.$refs.webrtc.myBurpeeRanking === 4) {
             this.Score -= 20;
           }
-        } else if (this.allSquatCountList.length === 5) {
-          if (this.$refs.webrtc.mySquatRanking === 1) {
+        } else if (this.allBurpeeCountList.length === 5) {
+          if (this.$refs.webrtc.myBurpeeRanking === 1) {
             this.Score += 20;
-          } else if (this.$refs.webrtc.mySquatRanking === 2) {
+          } else if (this.$refs.webrtc.myBurpeeRanking === 2) {
             this.Score += 10;
-          } else if (this.$refs.webrtc.mySquatRanking === 4) {
+          } else if (this.$refs.webrtc.myBurpeeRanking === 4) {
             this.Score -= 10;
-          } else if (this.$refs.webrtc.mySquatRanking === 5) {
+          } else if (this.$refs.webrtc.myBurpeeRanking === 5) {
             this.Score -= 20;
           }
-        } else if (this.allSquatCountList.length === 6) {
-          if (this.$refs.webrtc.mySquatRanking === 1) {
+        } else if (this.allBurpeeCountList.length === 6) {
+          if (this.$refs.webrtc.myBurpeeRanking === 1) {
             this.Score += 30;
-          } else if (this.$refs.webrtc.mySquatRanking === 2) {
+          } else if (this.$refs.webrtc.myBurpeeRanking === 2) {
             this.Score += 20;
-          } else if (this.$refs.webrtc.mySquatRanking === 3) {
+          } else if (this.$refs.webrtc.myBurpeeRanking === 3) {
             this.Score += 10;
-          } else if (this.$refs.webrtc.mySquatRanking === 4) {
+          } else if (this.$refs.webrtc.myBurpeeRanking === 4) {
             this.Score -= 10;
-          } else if (this.$refs.webrtc.mySquatRanking === 5) {
+          } else if (this.$refs.webrtc.myBurpeeRanking === 5) {
             this.Score -= 20;
-          } else if (this.$refs.webrtc.mySquatRanking === 6) {
+          } else if (this.$refs.webrtc.myBurpeeRanking === 6) {
             this.Score -= 30;
           }
         }
@@ -868,50 +871,50 @@ export default {
         this.$refs.setTimer3.pauseTimer();
       }, 6000);
       setTimeout(() => {
-        if (this.allBurpeeCountList.length === 2) {
-          if (this.$refs.webrtc.myBurpeeRanking === 1) {
+        if (this.allSquatCountList.length === 2) {
+          if (this.$refs.webrtc.mySquat === this.allSquatCountListSorted[0]) {
             this.Score += 5;
-          } else if (this.$refs.webrtc.myBurpeeRanking === 2) {
+          } else if (this.$refs.webrtc.mySquat === this.allSquatCountListSorted[1]) {
             this.Score -= 5;
           }
-        } else if (this.allBurpeeCountList.length === 3) {
-          if (this.$refs.webrtc.myBurpeeRanking === 1) {
+        } else if (this.allSquatCountList.length === 3) {
+          if (this.$refs.webrtc.mySquatRanking === 1) {
             this.Score += 10;
-          } else if (this.$refs.webrtc.myBurpeeRanking === 3) {
+          } else if (this.$refs.webrtc.mySquatRanking === 3) {
             this.Score -= 10;
           }
-        } else if (this.allBurpeeCountList.length === 4) {
-          if (this.$refs.webrtc.myBurpeeRanking === 1) {
+        } else if (this.allSquatCountList.length === 4) {
+          if (this.$refs.webrtc.mySquatRanking === 1) {
             this.Score += 20;
-          } else if (this.$refs.webrtc.myBurpeeRanking === 2) {
+          } else if (this.$refs.webrtc.mySquatRanking === 2) {
             this.Score += 10;
-          } else if (this.$refs.webrtc.myBurpeeRanking === 3) {
+          } else if (this.$refs.webrtc.mySquatRanking === 3) {
             this.Score -= 10;
-          } else if (this.$refs.webrtc.myBurpeeRanking === 4) {
+          } else if (this.$refs.webrtc.mySquatRanking === 4) {
             this.Score -= 20;
           }
-        } else if (this.allBurpeeCountList.length === 5) {
-          if (this.$refs.webrtc.myBurpeeRanking === 1) {
+        } else if (this.allSquatCountList.length === 5) {
+          if (this.$refs.webrtc.mySquatRanking === 1) {
             this.Score += 20;
-          } else if (this.$refs.webrtc.myBurpeeRanking === 2) {
+          } else if (this.$refs.webrtc.mySquatRanking === 2) {
             this.Score += 10;
-          } else if (this.$refs.webrtc.myBurpeeRanking === 4) {
+          } else if (this.$refs.webrtc.mySquatRanking === 4) {
             this.Score -= 10;
-          } else if (this.$refs.webrtc.myBurpeeRanking === 5) {
+          } else if (this.$refs.webrtc.mySquatRanking === 5) {
             this.Score -= 20;
           }
-        } else if (this.allBurpeeCountList.length === 6) {
-          if (this.$refs.webrtc.myBurpeeRanking === 1) {
+        } else if (this.allSquatCountList.length === 6) {
+          if (this.$refs.webrtc.mySquatRanking === 1) {
             this.Score += 30;
-          } else if (this.$refs.webrtc.myBurpeeRanking === 2) {
+          } else if (this.$refs.webrtc.mySquatRanking === 2) {
             this.Score += 20;
-          } else if (this.$refs.webrtc.myBurpeeRanking === 3) {
+          } else if (this.$refs.webrtc.mySquatRanking === 3) {
             this.Score += 10;
-          } else if (this.$refs.webrtc.myBurpeeRanking === 4) {
+          } else if (this.$refs.webrtc.mySquatRanking === 4) {
             this.Score -= 10;
-          } else if (this.$refs.webrtc.myBurpeeRanking === 5) {
+          } else if (this.$refs.webrtc.mySquatRanking === 5) {
             this.Score -= 20;
-          } else if (this.$refs.webrtc.myBurpeeRanking === 6) {
+          } else if (this.$refs.webrtc.mySquatRanking === 6) {
             this.Score -= 30;
           }
         }
