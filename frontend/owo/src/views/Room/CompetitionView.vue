@@ -11,14 +11,14 @@
       <div id="session" v-if="session">
         <div>
           <div id="" class="row d-flex align-items-start justify-content-center">
-            <div style="font-size:100px;">게임타입 : {{gameType}}</div>
-            <div style="font-size:100px;">현재 나의 점수 : {{ Score }}</div>
-            <div style="font-size:100px;">전체 스쿼트 개수 : {{ allSquatCountList }}</div>
-            <div style="font-size:100px;">중복 없는 스쿼트 점수들 : {{ allSquatCountListSorted }}</div>
-            <div style="font-size:100px;">전체 런지 점수들 : {{ allLungeCountList }}</div>
-            <div style="font-size:100px;">중복 없는 런지 점수들 : {{ allLungeCountListSorted }}</div>
-            <div style="font-size:100px;">전체 버피 점수들 : {{ allBurpeeCountList }}</div>
-            <div style="font-size:100px;">중복 없는 버피 점수들 : {{ allBurpeeCountListSorted }}</div>
+            <div style="font-size:50px;">게임타입 : {{gameType}}</div>
+            <div style="font-size:50px;">현재 나의 점수 : {{ Score }}</div>
+            <div style="font-size:50px;">전체 스쿼트 개수 : {{ allSquatCountList }}</div>
+            <div style="font-size:50px;">중복 없는 스쿼트 점수들 : {{ allSquatCountListSorted }}</div>
+            <div style="font-size:50px;">전체 런지 점수들 : {{ allLungeCountList }}</div>
+            <div style="font-size:50px;">중복 없는 런지 점수들 : {{ allLungeCountListSorted }}</div>
+            <div style="font-size:50px;">전체 버피 점수들 : {{ allBurpeeCountList }}</div>
+            <div style="font-size:50px;">중복 없는 버피 점수들 : {{ allBurpeeCountListSorted }}</div>
             <canvas id="canvasTM"></canvas>
             <WebRTC ref="webrtc" :stream-manager="mainStreamManager"/>
             <WebRTC :stream-manager="sub"
