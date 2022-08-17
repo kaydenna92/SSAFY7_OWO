@@ -13,9 +13,12 @@
           <div id="" class="row d-flex align-items-start justify-content-center">
             <div style="font-size:100px;">게임타입 : {{gameType}}</div>
             <div style="font-size:100px;">현재 나의 점수 : {{ Score }}</div>
-            <div style="font-size:100px;">스쿼트 점수들 : {{ allSquatCountListSorted }}</div>
-            <div style="font-size:100px;">런지 점수들 : {{ allLungeCountListSorted }}</div>
-            <div style="font-size:100px;">버피 점수들 : {{ allBurpeeCountListSorted }}</div>
+            <div style="font-size:100px;">전체 스쿼트 개수 : {{ allSquatCountList }}</div>
+            <div style="font-size:100px;">중복 없는 스쿼트 점수들 : {{ allSquatCountListSorted }}</div>
+            <div style="font-size:100px;">전체 런지 점수들 : {{ allLungeCountList }}</div>
+            <div style="font-size:100px;">중복 없는 런지 점수들 : {{ allLungeCountListSorted }}</div>
+            <div style="font-size:100px;">전체 버피 점수들 : {{ allBurpeeCountList }}</div>
+            <div style="font-size:100px;">중복 없는 버피 점수들 : {{ allBurpeeCountListSorted }}</div>
             <canvas id="canvasTM"></canvas>
             <WebRTC ref="webrtc" :stream-manager="mainStreamManager"/>
             <WebRTC :stream-manager="sub"
@@ -309,7 +312,16 @@ export default {
     ...mapState(accounts, ['accessToken', 'userInfo', 'refreshToken', 'roomName', 'masterId']),
     ...mapState(openvidu, ['OPENVIDU_SERVER_URL', 'OPENVIDU_SERVER_SECRET']),
     ...mapState(meetingroom, ['mySessionId', 'meetingRoomList', 'camera', 'mic']),
-    ...mapState(exercise, ['allSquatCountListSorted', 'allLungeCountListSorted', 'allBurpeeCountListSorted', 'allScoreListSorted', 'allScoreList']),
+    ...mapState(exercise, [
+      'allSquatCountListSorted', 
+      'allSquatCountList', 
+      'allLungeCountListSorted', 
+      'allLungeCountList', 
+      'allBurpeeCountListSorted', 
+      'allBurpeeCountList', 
+      'allScoreListSorted', 
+      'allScoreList'
+      ]),
     myExercisePoints() {
       // eslint-disable-next-line
       if (this.allScoreList.length === 2) {
@@ -698,19 +710,19 @@ export default {
       setTimeout(() => {
         this.isExercising = true;
         this.startround2();
-        if (this.allSquatCountListSorted.length === 2) {
+        if (this.allSquatCountList.length === 2) {
           if (this.$refs.webrtc.mySquatRanking === 1) {
             this.Score += 5;
           } else if (this.$refs.webrtc.mySquatRanking === 2) {
             this.Score -= 5;
           }
-        } else if (this.allSquatCountListSorted.length === 3) {
+        } else if (this.allSquatCountList.length === 3) {
           if (this.$refs.webrtc.mySquatRanking === 1) {
             this.Score += 10;
           } else if (this.$refs.webrtc.mySquatRanking === 3) {
             this.Score -= 10;
           }
-        } else if (this.allSquatCountListSorted.length === 4) {
+        } else if (this.allSquatCountList.length === 4) {
           if (this.$refs.webrtc.mySquatRanking === 1) {
             this.Score += 20;
           } else if (this.$refs.webrtc.mySquatRanking === 2) {
@@ -720,7 +732,7 @@ export default {
           } else if (this.$refs.webrtc.mySquatRanking === 4) {
             this.Score -= 20;
           }
-        } else if (this.allSquatCountListSorted.length === 5) {
+        } else if (this.allSquatCountList.length === 5) {
           if (this.$refs.webrtc.mySquatRanking === 1) {
             this.Score += 20;
           } else if (this.$refs.webrtc.mySquatRanking === 2) {
@@ -730,7 +742,7 @@ export default {
           } else if (this.$refs.webrtc.mySquatRanking === 5) {
             this.Score -= 20;
           }
-        } else if (this.allSquatCountListSorted.length === 6) {
+        } else if (this.allSquatCountList.length === 6) {
           if (this.$refs.webrtc.mySquatRanking === 1) {
             this.Score += 30;
           } else if (this.$refs.webrtc.mySquatRanking === 2) {
@@ -781,19 +793,19 @@ export default {
       setTimeout(() => {
         this.isExercising = true;
         this.startround3();
-        if (this.allLungeCountListSorted.length === 2) {
+        if (this.allLungeCountList.length === 2) {
           if (this.$refs.webrtc.myLungeRanking === 1) {
             this.Score += 5;
           } else if (this.$refs.webrtc.myLungeRanking === 2) {
             this.Score -= 5;
           }
-        } else if (this.allLungeCountListSorted.length === 3) {
+        } else if (this.allLungeCountList.length === 3) {
           if (this.$refs.webrtc.myLungeRanking === 1) {
             this.Score += 10;
           } else if (this.$refs.webrtc.myLungeRanking === 3) {
             this.Score -= 10;
           }
-        } else if (this.allLungeCountListSorted.length === 4) {
+        } else if (this.allLungeCountList.length === 4) {
           if (this.$refs.webrtc.myLungeRanking === 1) {
             this.Score += 20;
           } else if (this.$refs.webrtc.myLungeRanking === 2) {
@@ -803,7 +815,7 @@ export default {
           } else if (this.$refs.webrtc.myLungeRanking === 4) {
             this.Score -= 20;
           }
-        } else if (this.allLungeCountListSorted.length === 5) {
+        } else if (this.allLungeCountList.length === 5) {
           if (this.$refs.webrtc.myLungeRanking === 1) {
             this.Score += 20;
           } else if (this.$refs.webrtc.myLungeRanking === 2) {
@@ -813,7 +825,7 @@ export default {
           } else if (this.$refs.webrtc.myLungeRanking === 5) {
             this.Score -= 20;
           }
-        } else if (this.allLungeCountListSorted.length === 6) {
+        } else if (this.allLungeCountList.length === 6) {
           if (this.$refs.webrtc.myLungeRanking === 1) {
             this.Score += 30;
           } else if (this.$refs.webrtc.myLungeRanking === 2) {
@@ -852,19 +864,19 @@ export default {
         this.$refs.setTimer3.pauseTimer();
       }, 6000);
       setTimeout(() => {
-        if (this.allBurpeeCountListSorted.length === 2) {
+        if (this.allBurpeeCountList.length === 2) {
           if (this.$refs.webrtc.myBurpeeRanking === 1) {
             this.Score += 5;
           } else if (this.$refs.webrtc.myBurpeeRanking === 2) {
             this.Score -= 5;
           }
-        } else if (this.allBurpeeCountListSorted.length === 3) {
+        } else if (this.allBurpeeCountList.length === 3) {
           if (this.$refs.webrtc.myBurpeeRanking === 1) {
             this.Score += 10;
           } else if (this.$refs.webrtc.myBurpeeRanking === 3) {
             this.Score -= 10;
           }
-        } else if (this.allBurpeeCountListSorted.length === 4) {
+        } else if (this.allBurpeeCountList.length === 4) {
           if (this.$refs.webrtc.myBurpeeRanking === 1) {
             this.Score += 20;
           } else if (this.$refs.webrtc.myBurpeeRanking === 2) {
@@ -874,7 +886,7 @@ export default {
           } else if (this.$refs.webrtc.myBurpeeRanking === 4) {
             this.Score -= 20;
           }
-        } else if (this.allBurpeeCountListSorted.length === 5) {
+        } else if (this.allBurpeeCountList.length === 5) {
           if (this.$refs.webrtc.myBurpeeRanking === 1) {
             this.Score += 20;
           } else if (this.$refs.webrtc.myBurpeeRanking === 2) {
@@ -884,7 +896,7 @@ export default {
           } else if (this.$refs.webrtc.myBurpeeRanking === 5) {
             this.Score -= 20;
           }
-        } else if (this.allBurpeeCountListSorted.length === 6) {
+        } else if (this.allBurpeeCountList.length === 6) {
           if (this.$refs.webrtc.myBurpeeRanking === 1) {
             this.Score += 30;
           } else if (this.$refs.webrtc.myBurpeeRanking === 2) {
