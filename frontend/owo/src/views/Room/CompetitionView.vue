@@ -11,6 +11,7 @@
       <div id="session" v-if="session">
         <div>
           <div id="" class="row d-flex align-items-start justify-content-center">
+            <button style="width:100px; height:100px;" @click="init()">시작 버튼</button>
             <div style="font-size:50px;">게임타입 : {{gameType}}</div>
             <div style="font-size:50px;">현재 나의 점수 : {{ Score }}</div>
             <div style="font-size:50px;">전체 스쿼트 개수 : {{ allSquatCountList }}</div>
@@ -313,15 +314,15 @@ export default {
     ...mapState(openvidu, ['OPENVIDU_SERVER_URL', 'OPENVIDU_SERVER_SECRET']),
     ...mapState(meetingroom, ['mySessionId', 'meetingRoomList', 'camera', 'mic']),
     ...mapState(exercise, [
-      'allSquatCountListSorted', 
-      'allSquatCountList', 
-      'allLungeCountListSorted', 
-      'allLungeCountList', 
-      'allBurpeeCountListSorted', 
-      'allBurpeeCountList', 
-      'allScoreListSorted', 
-      'allScoreList'
-      ]),
+      'allSquatCountListSorted',
+      'allSquatCountList',
+      'allLungeCountListSorted',
+      'allLungeCountList',
+      'allBurpeeCountListSorted',
+      'allBurpeeCountList',
+      'allScoreListSorted',
+      'allScoreList',
+    ]),
     myExercisePoints() {
       // eslint-disable-next-line
       if (this.allScoreList.length === 2) {
