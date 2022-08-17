@@ -18,7 +18,7 @@
         </button>
       </div>
       <div v-if="burpee" class="forCarousel">
-        <div class="notebook" style="width:800px; height:450px; margin-top:70px;">
+        <div class="notebook" style="width:800px; height:450px; transform:translate(0, 7%);">
           <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
             <div class="carousel-indicators">
               <!-- eslint-disable -->
@@ -85,7 +85,7 @@
         </div>
       </div>
       <div v-if="lunge" class="forCarousel">
-        <div class="notebook" style="width:800px; height:450px; margin-top:70px;">
+        <div class="notebook" style="width:800px; height:450px; transform:translate(0, 8%);">
           <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
             <div class="carousel-indicators">
               <!-- eslint-disable -->
@@ -136,7 +136,7 @@
         </div>
       </div>
       <div v-if="squat" class="forCarousel">
-        <div class="notebook" style="width:800px; height:450px; margin-top:70px;">
+        <div class="notebook" style="width:800px; height:450px; transform:translate(0, 8%);">
           <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
             <div class="carousel-indicators">
               <!-- eslint-disable -->
@@ -244,8 +244,8 @@ export default {
 }
 
 img {
-  width:500px;
-  height:450px;
+  width:800px;
+  height:530px;
 }
 
 .carousel-inner {
