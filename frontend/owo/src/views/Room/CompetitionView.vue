@@ -15,10 +15,13 @@
             <div style="font-size:50px;">게임타입 : {{gameType}}</div>
             <div style="font-size:50px;">현재 나의 점수 : {{ Score }}</div>
             <div style="font-size:50px;">전체 스쿼트 개수 : {{ allSquatCountList }}</div>
+            <div style="font-size:50px;">내 스쿼트 등수 : {{ this.$refs.webrtc.mySquatRanking }}</div>
             <div style="font-size:50px;">중복 없는 스쿼트 점수들 : {{ allSquatCountListSorted }}</div>
             <div style="font-size:50px;">전체 런지 점수들 : {{ allLungeCountList }}</div>
+            <div style="font-size:50px;">내 스쿼트 등수 : {{ this.$refs.webrtc.myLungeRanking }}</div>
             <div style="font-size:50px;">중복 없는 런지 점수들 : {{ allLungeCountListSorted }}</div>
             <div style="font-size:50px;">전체 버피 점수들 : {{ allBurpeeCountList }}</div>
+            <div style="font-size:50px;">내 스쿼트 등수 : {{ this.$refs.webrtc.myBurpeeRanking }}</div>
             <div style="font-size:50px;">중복 없는 버피 점수들 : {{ allBurpeeCountListSorted }}</div>
             <canvas id="canvasTM"></canvas>
             <WebRTC ref="webrtc" :stream-manager="mainStreamManager"/>
@@ -1146,7 +1149,7 @@ export default {
     },
 
     async init() {
-      this.setmodel();
+      await this.setmodel();
       const flip = false;
       this.webcam = new tmPose.Webcam(800, 700, flip);
       await this.webcam.setup();
