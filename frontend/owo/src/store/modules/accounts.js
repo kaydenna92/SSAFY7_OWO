@@ -96,6 +96,7 @@ export const accounts = {
   }),
   mutations: {
     SET_YOUTUBE_LINK: (state, payload) => {
+      console.log('payload', payload);
       state.link = payload;
     },
     SET_MASTER_TIER: (state, payload) => {

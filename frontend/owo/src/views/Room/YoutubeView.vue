@@ -10,7 +10,7 @@
       <!-- eslint-disable-next-line -->
       <div class="d-flex align-items-start justify-content-start" style="position:relative; background-color: transparent; width: 1050px; height: 750px">
         <YouTube class="my-2 mx-2 col-8"
-          src="https://www.youtube.com/watch?v=sqgxcCjD04s"
+          :src='this.link'
           @ready="onReady"
           :vars="this.controls"
           @state-change="onChange"
@@ -26,6 +26,7 @@
         <div v-if="!isStarted2" class="my-2 mx-2 shadow2">
           오른쪽 위 START 버튼으로<br>
           시작해주세요 .<br>
+          {{this.youtubeURL}}
         </div>
         <!-- eslint-disable-next-line -->
         <div class="my-2 mx-2 col-4" style="overflow-y: auto; width:560px; max-height:750px;">
@@ -512,7 +513,11 @@ export default {
     volumeUp() {
       console.log(`==============${this.volume}`);
       if (this.volume === 100) {
-        alert('볼륨 최대 수치');
+        swal.fire({
+          icon: 'error',
+          title: '볼륨 최대',
+          text: '볼륨이 최대에요!<br>5씩 조절돼요!',
+        });
       } else {
         this.volume += 5;
         this.$refs.youtube.setVolume(this.volume);
@@ -521,7 +526,11 @@ export default {
     volumeDown() {
       console.log(`==============${this.volume}`);
       if (this.volume === 0) {
-        alert('볼륨 최소 수치');
+        swal.fire({
+          icon: 'error',
+          title: '볼륨 최소',
+          text: '볼륨이 최소에요!<br>5씩 조절돼요!',
+        });
       } else {
         this.volume -= 5;
         this.$refs.youtube.setVolume(this.volume);
@@ -759,6 +768,9 @@ export default {
       });
 
       this.session.on('signal:startTimer', (event) => {
+        console.log('여기임', event);
+        console.log('여기임', event.data);
+        console.log('여기임', event.data.data);
         this.youtubeURL = event.data;
         this.start();
         setTimeout(() => {
