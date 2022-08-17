@@ -5,28 +5,15 @@
       <!-- eslint-disable-next-line -->
       <div class="d-flex justify-content-center align-items-center" style="width: 100%; height: 80px;">
       <!-- eslint-disable-next-line -->
-        <h3 class="game-name m-0" style="font-size:3rem; font-family: 'LeferiPoint-WhiteObliqueA';">{{ roomName }}<span v-if="roundGameName"> | <span style="color:#274c95"><strong>{{ roundGameName }}</strong></span></span></h3>
+        <h3 class="game-name m-0" style="font-size:3rem; font-family: 'LeferiPoint-WhiteObliqueA';"><strong>{{ roomName }}</strong><span v-if="roundGameName"> | <span style="color:#274c95"><strong>{{ roundGameName }}</strong></span></span></h3>
       </div>
       <!-- 세션 -->
       <div id="session" v-if="session">
         <div>
-          <div id="" class="row d-flex align-items-start justify-content-center">
-            <button style="width:100px; height:100px;" @click="init()">시작 버튼</button>
-            <div style="font-size:50px;">게임타입 : {{gameType}}</div>
-            <div style="font-size:50px;">현재 나의 점수 : {{ Score }}</div>
-            <div style="font-size:50px;">전체 스쿼트 개수 : {{ allSquatCountList }}</div>
+          <!-- eslint-disable-next-line -->
+          <div style="position:relative;" class="row d-flex align-items-start justify-content-center">
             <!-- eslint-disable-next-line -->
-            <!-- <div style="font-size:50px;">내 스쿼트 등수 : {{ this.$refs.webrtc.mySquat.userSquatCount }}</div> -->
-            <div style="font-size:50px;">중복 없는 스쿼트 점수들 : {{ allSquatCountListSorted }}</div>
-            <div style="font-size:50px;">전체 런지 점수들 : {{ allLungeCountList }}</div>
-            <!-- eslint-disable-next-line -->
-            <!-- <div style="font-size:50px;">내 스쿼트 등수 : {{ this.$refs.webrtc.myLungeRanking }}</div> -->
-            <div style="font-size:50px;">중복 없는 런지 점수들 : {{ allLungeCountListSorted }}</div>
-            <div style="font-size:50px;">전체 버피 점수들 : {{ allBurpeeCountList }}</div>
-            <!-- eslint-disable-next-line -->
-            <!-- <div style="font-size:50px;">내 스쿼트 등수 : {{ this.$refs.webrtc.myBurpeeRanking }}</div> -->
-            <div style="font-size:50px;">중복 없는 버피 점수들 : {{ allBurpeeCountListSorted }}</div>
-            <canvas id="canvasTM"></canvas>
+            <canvas style="position:absolute; top:10px; left:20px; padding:0; width:480px; height:340px; opacity:0;" class="mx-2 my-2" id="canvasTM"></canvas>
             <WebRTC ref="webrtc" :stream-manager="mainStreamManager"/>
             <WebRTC :stream-manager="sub"
               v-for="sub in subscribers"
@@ -160,7 +147,11 @@
       <!-- eslint-disable-next-line -->
       <div v-if="round3Game" class="roundGame" style="font-size:5rem; color:white; font-family: 'LeferiPoint-BlackObliqueA';">#Final Round&ensp;:&ensp;{{ roundGameName }}</div>
       <!-- eslint-disable-next-line -->
-      <div v-if="restTime" class="roundGame" style="font-size:5rem; color:white; font-family: 'LeferiPoint-BlackObliqueA';">휴식시간</div>
+      <div v-if="restTime" class="roundGame" style="font-size:5rem; color:white; font-family: 'LeferiPoint-BlackObliqueA';">휴식 시간</div>
+      <!-- eslint-disable-next-line -->
+      <div v-if="restTime" class="roundGame2" style="font-size:2rem; color:white; font-family: 'LeferiPoint-BlackObliqueA';">휴식 시간의 횟수는&ensp;<span style="color:#de7474;"><U>포인트</U></span>에 반영되지 않아요.</div>
+      <!-- eslint-disable-next-line -->
+      <div v-if="restTime" class="roundGame3" style="font-size:2rem; color:white; font-family: 'LeferiPoint-BlackObliqueA';">단,&ensp;<span style="color:#de7474;"><U>최대횟수</U></span>에는 반영된답니다!</div>
     </div>
   </div>
 </template>
@@ -395,6 +386,20 @@ export default {
     },
   },
   methods: {
+    async tempInit() {
+      this.gameType = 3;
+      await this.setmodel();
+      const flip = false;
+      this.webcam = new tmPose.Webcam(400, 400, flip);
+      await this.webcam.setup();
+      await this.webcam.play();
+      await window.requestAnimationFrame(this.loop);
+      // // const canvas2 = this.webcam.canvas;
+      const canvas2 = document.getElementById('canvasTM');
+      canvas2.width = 400;
+      canvas2.height = 400;
+      this.ctx = canvas2.getContext('2d');
+    },
     sendMyRecords() {
       axios({
         url: 'https://i7c202.p.ssafy.io:8282/api/user/compete',
@@ -413,20 +418,14 @@ export default {
     },
     sendMyPoints() {
       axios({
-        url: `https://i7c202.p.ssafy.io:8282/api/user/exp/${this.myExercisePoints}/${this.credentialsUser.memberId}`,
+        url: `https://i7c202.p.ssafy.io:8282/api/user/point/${this.myExercisePoints}/${this.credentialsUser.memberId}`,
         method: 'put',
         headers: {
           'X-AUTH-TOKEN': this.accessToken,
         },
-      }).then((res) => {
-        console.log('이걸 보냈음1', res);
-        console.log('이걸 보냈음2', res.data);
-        console.log('마이엑서사이즈포인츠제출', this.myExercisePoints);
+      }).then(() => {
         this.gameType = undefined;
-        this.leaveSession();
-      }).catch(
-        console.log('액서사이즈포인츠제출실패!!!'),
-      );
+      });
     },
     myBestRecord(memberId) {
       axios({
@@ -610,7 +609,7 @@ export default {
       this.roundGameName = '버피';
       setTimeout(() => {
         this.gameType = 3;
-        this.init();
+        this.tempInit();
         this.changeExerciseName(3);
         this.round1Game = false;
         // eslint-disable-next-line
@@ -701,7 +700,6 @@ export default {
         // }, 100);
       }, 2000);
       setTimeout(() => {
-        this.init();
       }, 5000);
       setTimeout(() => {
         this.isStarted = false;
@@ -710,15 +708,10 @@ export default {
       setTimeout(() => {
         this.isExercising = false;
         this.restTime = true;
+        // eslint-disable-next-line
+        const audio = new Audio(require('@/assets/music/rest.mp3'));
+        audio.play();
         this.$refs.setTimer4.pauseTimer();
-        // this.webcam.stop();
-      }, 36000);
-      setTimeout(() => {
-        this.restTime = false;
-      }, 39000);
-      setTimeout(() => {
-        this.isExercising = true;
-        this.startround2();
         if (this.allBurpeeCountList.length === 2) {
           if (this.$refs.webrtc.myBurpeeRanking === 1) {
             this.Score += 5;
@@ -766,6 +759,14 @@ export default {
             this.Score -= 30;
           }
         }
+        // this.webcam.stop();
+      }, 36000);
+      setTimeout(() => {
+        this.restTime = false;
+      }, 42000);
+      setTimeout(() => {
+        this.isExercising = true;
+        this.startround2();
       }, 46000);
     },
     startround2() {
@@ -776,7 +777,6 @@ export default {
       this.round2Game = true;
       this.roundGameName = '런지';
       setTimeout(() => {
-        this.gameType = 2;
         this.changeExerciseName(2);
         this.round2Game = false;
         // eslint-disable-next-line
@@ -785,6 +785,7 @@ export default {
         this.$refs.setTimer2.pauseTimer();
       }, 2000);
       setTimeout(() => {
+        this.gameType = 2;
         // this.webcam.play();
         this.isStarted = false;
         this.$refs.setTimer3.pauseTimer();
@@ -793,15 +794,9 @@ export default {
         this.isExercising = false;
         this.restTime = true;
         this.$refs.setTimer4.pauseTimer();
-        // this.gameType = 4;
-        // this.webcam.stop();
-      }, 36000);
-      setTimeout(() => {
-        this.restTime = false;
-      }, 39000);
-      setTimeout(() => {
-        this.isExercising = true;
-        this.startround3();
+        // eslint-disable-next-line
+        const audio = new Audio(require('@/assets/music/rest.mp3'));
+        audio.play();
         if (this.allLungeCountList.length === 2) {
           if (this.$refs.webrtc.myLungeRanking === 1) {
             this.Score += 5;
@@ -849,6 +844,15 @@ export default {
             this.Score -= 30;
           }
         }
+        // this.gameType = 4;
+        // this.webcam.stop();
+      }, 36000);
+      setTimeout(() => {
+        this.restTime = false;
+      }, 42000);
+      setTimeout(() => {
+        this.isExercising = true;
+        this.startround3();
       }, 46000);
     },
     startround3() {
@@ -859,7 +863,6 @@ export default {
       this.round3Game = true;
       this.roundGameName = '스쿼트';
       setTimeout(() => {
-        this.gameType = 1;
         this.changeExerciseName(1);
         this.round3Game = false;
         // eslint-disable-next-line
@@ -868,6 +871,7 @@ export default {
         this.$refs.setTimer2.pauseTimer();
       }, 2000);
       setTimeout(() => {
+        this.gameType = 1;
         // this.webcam.play();
         this.isStarted = false;
         this.$refs.setTimer3.pauseTimer();
@@ -922,22 +926,36 @@ export default {
         }
         this.webcam.stop();
         this.sendScore();
-        this.isExercising = false;
         this.sendMyRecords();
+        this.isExercising = false;
         swal.fire({
-          icon: 'success',
-          // eslint-disable-next-line
-          html: `<strong>${this.userInfo.nick}</strong>님의 기록입니다.<br>
-          <strong>#Round 1. </strong>Burpee : <strong>${this.$refs.webrtc.myBurpee.userBurpeeCount}</strong>회 / 최고 기록 : <strong>${this.myBestBurpeeCount}회</strong><br>
-          <strong>#Round 2. </strong>Lunge  : <strong>${this.$refs.webrtc.myLunge.userLungeCount}</strong>회 / 최고 기록 : <strong>${this.myBestLungeCount}회</strong><br>
-          <strong>#Round 3. </strong>Squat  : <strong>${this.$refs.webrtc.mySquat.userSquatCount}</strong>회 / 최고 기록 : <strong>${this.myBestSquatCount}회</strong><br>`,
+          icon: 'info',
+          title: '획득 포인트 정산중입니다...',
+          text: '잠시만 기다려주세요!',
         });
       }, 36000);
       setTimeout(() => {
-        console.log('포인트 보낼 데이터', this.myExercisePoints, this.credentialsUser.memberId);
         this.sendMyPoints();
-        this.webcam.stop();
       }, 37000);
+      setTimeout(() => {
+        // eslint-disable-next-line
+        const audio = new Audio(require('@/assets/music/record.mp3'));
+        audio.play();
+        swal.fire({
+          icon: 'success',
+          // eslint-disable-next-line
+          html: `방 제목 : <strong>${this.roomName}</strong> | 참여자 : <strong>${this.subscribers.length} 명</strong><br>
+          <br>
+          <strong>${this.userInfo.nick}</strong>님의 기록입니다.<br>
+          <br>
+          <strong>#Round 1. </strong>Burpee : <strong>${this.$refs.webrtc.myBurpee.userBurpeeCount}회</strong> / 최고 기록 : <strong>${this.myBestBurpeeCount}회</strong><br>
+          <strong>#Round 2. </strong>Lunge  : <strong>${this.$refs.webrtc.myLunge.userLungeCount}회</strong> / 최고 기록 : <strong>${this.myBestLungeCount}회</strong><br>
+          <strong>#Round 3. </strong>Squat  : <strong>${this.$refs.webrtc.mySquat.userSquatCount}회</strong> / 최고 기록 : <strong>${this.myBestSquatCount}회</strong><br>
+          <br>
+          이번 경쟁의 포인트 변동 : <strong><U>${this.myExercisePoints}</U></strong> point`,
+        });
+        this.webcam.stop();
+      }, 39000);
     },
     sendScore() {
       this.session
@@ -1171,15 +1189,12 @@ export default {
       switch (this.gameType) {
         case 1:
           await this.squatpredict();
-          console.log('스쿼트중');
           break;
         case 2:
           await this.lungepredict();
-          console.log('런지중');
           break;
         case 3:
           await this.burpeepredict();
-          console.log('버피중');
           break;
         default:
           break;
@@ -1193,7 +1208,6 @@ export default {
       );
       const prediction = await this.model.predict(posenetOutput);
       if (prediction[1].probability.toFixed(2) > 0.99) { // 스쿼트
-        console.log('1번 스쿼트 자세');
         if (this.check) {
           this.squatCount += 1;
           console.log('squatCount', this.squatCount);
@@ -1211,7 +1225,6 @@ export default {
         }
         this.status = 'squat';
       } else if (prediction[0].probability.toFixed(2) > 0.99) { // 서 있는 자세
-        console.log('2번 서있는 자세');
         this.status = 'ready';
         this.check = true;
       }
@@ -1224,7 +1237,6 @@ export default {
       );
       const prediction = await this.model.predict(posenetOutput);
       if (prediction[1].probability.toFixed(2) > 0.99) { // 런지
-        console.log('1번 런지 자세');
         if (this.check) {
           this.lungeCount += 1;
           console.log('lungeCount', this.lungeCount);
@@ -1243,7 +1255,6 @@ export default {
         this.status = 'lunge';
         // this.setState({ status: 'ready' });
       } else if (prediction[0].probability.toFixed(2) > 0.99) { // 서 있는 자세
-        console.log('2번 서있는 자세');
         this.status = 'ready';
         this.check = true;
       }
@@ -1256,7 +1267,6 @@ export default {
       );
       const prediction = await this.model.predict(posenetOutput);
       if (prediction[2].probability.toFixed(2) > 0.99) { // 서 있는 자세
-        console.log('1번 서있는 자세');
         if (this.check && this.check2) {
           this.burpeeCount += 1;
           console.log('burpeeCount', this.burpeeCount);
@@ -1274,11 +1284,9 @@ export default {
         }
         this.status = 'go';
       } else if (prediction[1].probability.toFixed(2) > 0.99) { // 쪼그려 앉아 있는 자세
-        console.log('2번 쪼그리 자세');
         this.status = 'ready';
         this.check = true;
       } else if (prediction[0].probability.toFixed(2) > 0.99) { // 엎드려 있는 자세
-        console.log('3번 엎드려 자세');
         this.status = 'set';
         this.check2 = true;
       }
@@ -1518,20 +1526,6 @@ solid #cedfff; border-top: 10px solid transparent; border-bottom: 10px solid tra
   width: 100%;
 }
 
-.photo-row {
-  /* width:100%; */
-}
-
-.photo {
-  /* border: solid 1px black; */
-  /* padding: 0 10px; */
-  /* margin: 10px; */
-  /* background-color:gray; */
-  /* width:10%; */
-  /* width: 100px;
-  height:100px; */
-}
-
 .exerciseMemo {
   font-size: 20px;
   font-weight: 700;
@@ -1700,6 +1694,34 @@ solid #cedfff; border-top: 10px solid transparent; border-bottom: 10px solid tra
   width:100%;
   height:40%;
   top: 50%;
+  left:0%;
+  transform: translate(0, -50%);
+  opacity: 0.9;
+}
+.roundGame2 {
+  font-size:1rem;
+  color:gray;
+  position: absolute;
+  display:flex;
+  align-items: center;
+  justify-content: center;
+  width:100%;
+  height:40%;
+  top: 58%;
+  left:0%;
+  transform: translate(0, -50%);
+  opacity: 0.9;
+}
+.roundGame3 {
+  font-size:1rem;
+  color:gray;
+  position: absolute;
+  display:flex;
+  align-items: center;
+  justify-content: center;
+  width:100%;
+  height:40%;
+  top: 64%;
   left:0%;
   transform: translate(0, -50%);
   opacity: 0.9;
