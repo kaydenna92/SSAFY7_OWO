@@ -2,7 +2,7 @@
 <div style="font-family: 'LeferiPoint-WhiteObliqueA';">
   <NavBar/>
   <div style="display:flex; justify-content:center; position:relative;">
-    <div style="position:fixed; top:50%; left:50%; transform:translate(-50%, -50%);">
+    <div style="position:fixed; top:50%; left:50%; transform:translate(-50%, -47%);">
       <div class="d-flex justify-content-around">
         <button style="border:none;" class="btn" @click="burpeeExercise()">
           <img style="width:100px; height:auto;" src="@/assets/icon/burpee.png" alt="">
@@ -99,7 +99,7 @@
                 <img src="@/assets/icon/lunge1.png" alt="...">
                 <div class="carousel-caption d-none d-md-block" style="color:white;">
                   <div style="font-size:50px; font-weight:bold;">런지 #1</div>
-                  <div style="font-size:28px;">머리부터 발끝까지 잡히게 자세를 취해주세요.</div>
+                  <div style="font-size:28px;">머리부터 발끝까지 잡히게 발 벌려 자세를 취해주세요.</div>
                 </div>
               </div>
               <div class="carousel-item">
