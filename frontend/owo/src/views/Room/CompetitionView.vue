@@ -418,7 +418,9 @@ export default {
         headers: {
           'X-AUTH-TOKEN': this.accessToken,
         },
-      }).then(() => {
+      }).then((res) => {
+        console.log('이걸 보냈음1', res);
+        console.log('이걸 보냈음2', res.data);
         console.log('마이엑서사이즈포인츠제출', this.myExercisePoints);
         this.gameType = undefined;
         this.leaveSession();
@@ -872,9 +874,9 @@ export default {
       }, 6000);
       setTimeout(() => {
         if (this.allSquatCountList.length === 2) {
-          if (this.$refs.webrtc.mySquat === this.allSquatCountListSorted[0]) {
+          if (this.$refs.webrtc.mySquatRanking === 1) {
             this.Score += 5;
-          } else if (this.$refs.webrtc.mySquat === this.allSquatCountListSorted[1]) {
+          } else if (this.$refs.webrtc.mySquatRanking === 2) {
             this.Score -= 5;
           }
         } else if (this.allSquatCountList.length === 3) {
