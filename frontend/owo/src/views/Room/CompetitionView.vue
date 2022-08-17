@@ -11,6 +11,12 @@
       <div id="session" v-if="session">
         <div>
           <div id="" class="row d-flex align-items-start justify-content-center">
+            <div style="font-size:100px;">게임타입 : {{gameType}}</div>
+            <div style="font-size:100px;">현재 나의 점수 : {{ Score }}</div>
+            <div style="font-size:100px;">스쿼트 점수들 : {{ allSquatCountListSorted }}</div>
+            <div style="font-size:100px;">런지 점수들 : {{ allLungeCountListSorted }}</div>
+            <div style="font-size:100px;">버피 점수들 : {{ allBurpeeCountListSorted }}</div>
+            <canvas id="canvasTM"></canvas>
             <WebRTC ref="webrtc" :stream-manager="mainStreamManager"/>
             <WebRTC :stream-manager="sub"
               v-for="sub in subscribers"
@@ -1133,7 +1139,8 @@ export default {
       await this.webcam.setup();
       await this.webcam.play();
       await window.requestAnimationFrame(this.loop);
-      const canvas2 = this.webcam.canvas;
+      // const canvas2 = this.webcam.canvas;
+      const canvas2 = document.getElementById('canvasTM');
       canvas2.width = 800;
       canvas2.height = 700;
       this.ctx = canvas2.getContext('2d');
@@ -1143,12 +1150,15 @@ export default {
       switch (this.gameType) {
         case 1:
           await this.squatpredict();
+          console.log('스쿼트중');
           break;
         case 2:
           await this.lungepredict();
+          console.log('런지중');
           break;
         case 3:
           await this.burpeepredict();
+          console.log('버피중');
           break;
         default:
           break;
@@ -1162,6 +1172,7 @@ export default {
       );
       const prediction = await this.model.predict(posenetOutput);
       if (prediction[1].probability.toFixed(2) > 0.99) { // 스쿼트
+        console.log('1번 스쿼트 자세');
         if (this.check) {
           this.squatCount += 1;
           console.log('squatCount', this.squatCount);
@@ -1179,6 +1190,7 @@ export default {
         }
         this.status = 'squat';
       } else if (prediction[0].probability.toFixed(2) > 0.99) { // 서 있는 자세
+        console.log('2번 서있는 자세');
         this.status = 'ready';
         this.check = true;
       }
@@ -1191,6 +1203,7 @@ export default {
       );
       const prediction = await this.model.predict(posenetOutput);
       if (prediction[1].probability.toFixed(2) > 0.99) { // 런지
+        console.log('1번 런지 자세');
         if (this.check) {
           this.lungeCount += 1;
           console.log('lungeCount', this.lungeCount);
@@ -1209,6 +1222,7 @@ export default {
         this.status = 'lunge';
         // this.setState({ status: 'ready' });
       } else if (prediction[0].probability.toFixed(2) > 0.99) { // 서 있는 자세
+        console.log('2번 서있는 자세');
         this.status = 'ready';
         this.check = true;
       }
@@ -1221,6 +1235,7 @@ export default {
       );
       const prediction = await this.model.predict(posenetOutput);
       if (prediction[2].probability.toFixed(2) > 0.99) { // 서 있는 자세
+        console.log('1번 서있는 자세');
         if (this.check && this.check2) {
           this.burpeeCount += 1;
           console.log('burpeeCount', this.burpeeCount);
@@ -1238,9 +1253,11 @@ export default {
         }
         this.status = 'go';
       } else if (prediction[1].probability.toFixed(2) > 0.99) { // 쪼그려 앉아 있는 자세
+        console.log('2번 쪼그리 자세');
         this.status = 'ready';
         this.check = true;
       } else if (prediction[0].probability.toFixed(2) > 0.99) { // 엎드려 있는 자세
+        console.log('3번 엎드려 자세');
         this.status = 'set';
         this.check2 = true;
       }
