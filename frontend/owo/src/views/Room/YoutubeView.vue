@@ -547,7 +547,7 @@ export default {
     },
     pickmyImg(Img, i) {
       this.credentials.fileOriName = `${this.userInfo.nick}_${format}.png`;
-      this.credentials.fileUrl = Img;
+      this.credentials.fileUrl = Img.replace('data:image/png;base64,', '');
       const el1 = document.getElementById('0');
       const el2 = document.getElementById('1');
       const el3 = document.getElementById('2');

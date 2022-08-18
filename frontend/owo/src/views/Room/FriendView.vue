@@ -130,6 +130,7 @@
                 <div style="width: 95%; text-align: right; color:red;">종료 / 새로 고침 시 기록이 저장되지 않아요!</div>
               </div>
             </form>
+            {{ credentials }}
           </b-modal>
         </div>
       </div>
@@ -269,8 +270,8 @@
       v-if="is_take_photo">
         <!-- eslint-disable-next-line -->
         <WebRTCPhoto id="take_photo_WebRTC" :stream-manager="mainStreamManager"/>
-        <div id="take_photo_WebRTC_warning">&ensp;사진은 최신 3장까지 저장됩니다!&ensp;</div>
         <img v-if="this.photoDisplay" id="take_photo_WebRTC_photo" :src="this.mypictures[0]" alt="">
+        <div id="take_photo_WebRTC_warning">&ensp;사진은 최신 3장까지 저장됩니다!&ensp;</div>
       </div>
       <!-- eslint-disable-next-line -->
       <div class="d-flex justify-content-center align-items-center text-white mt-4" v-if="is_take_photo" id="take_photo_timer">
@@ -467,7 +468,7 @@ export default {
     },
     pickmyImg(Img, i) {
       this.credentials.fileOriName = `${this.userInfo.nick},${format}.png`;
-      this.credentials.fileUrl = Img;
+      this.credentials.fileUrl = Img.replace('data:image/png;base64,', '');
       const el1 = document.getElementById('0');
       const el2 = document.getElementById('1');
       const el3 = document.getElementById('2');
