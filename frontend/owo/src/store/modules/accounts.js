@@ -57,7 +57,7 @@ export const accounts = {
     //   workout3: '', // 운동3 최고기록
     // },
     goals: '',
-    profileImg: '',
+    profileImg: 'https://cdn-icons-png.flaticon.com/512/8214/8214562.png',
     // record
     percentage: {
       recordNames: [],
@@ -466,6 +466,24 @@ export const accounts = {
       dispatch('fetchThisWeekHours');
       dispatch('fetchLastingDay');
     },
+    fetchUSerInfo({ state, dispatch }) {
+      axios({
+        url: `https://i7c202.p.ssafy.io:8282/api/user/userInfo/${state.userInfo.id}`,
+        method: 'get',
+        headers: {
+          'X-AUTH-TOKEN': state.accessToken,
+          'REFRESH-TOKEN': state.refreshToken,
+        },
+      })
+        .then((res) => {
+          console.log('내정보 업데이트');
+          console.log(res.data.data);
+          dispatch('setUserInfo', res.data.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
     fetchPhysicalInfo({ state, commit }) {
       axios({
         url: `https://i7c202.p.ssafy.io:8282/api/user/bmi/${state.userInfo.id}`,
@@ -527,10 +545,10 @@ export const accounts = {
           console.log(err);
         });
     },
-    updateUserInfo({ state, dispatch }, payload) {
+    async updateUserInfo({ state, dispatch }, payload) {
       console.log(payload);
       console.log('액시오스하기전');
-      axios({
+      await axios({
         url: 'https://i7c202.p.ssafy.io:8282/api/user',
         method: 'put',
         headers: {
@@ -542,6 +560,7 @@ export const accounts = {
         .then((res) => {
           dispatch('setUserInfo', res.data.data);
           swal.fire('정보가 수정되었습니다.');
+          dispatch('fetchUserInfo');
           dispatch('fetchPhysicalInfo');
           // router.push({ name: 'MyPageMainView' });
         })

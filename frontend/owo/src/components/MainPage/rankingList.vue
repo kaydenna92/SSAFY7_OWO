@@ -26,7 +26,7 @@
       </b-card>
       <!--운동왕의 레코드  -->
       <b-card class="rounded-5 cards">
-        <h5 class="card-title">{{ rankingList[0].name }}님의 record</h5>
+        <h5 class="card-title">{{ userInfo.nick }}님의 record</h5>
         <div class="d-flex justify-content-center align-items-center"
           style="margin-bottom: 10px">
           <circle-progress class="progress-bar" :percent="percents"
@@ -124,13 +124,17 @@ export default {
   color: black;
 }
 p {
-  font-size: 1.5vh;
+  font-size: 13px;
 }
 .card-title {
+  font-family: 'yg-jalnan';
+  /* color: #585858; */
+  font-size: 24px;
+  font-weight: 700;
   font-size: 1vw;
   font-weight: 700;
-  padding-top: 2vh;
-  margin-bottom: 2vh;
+  padding-top: 15px;
+  margin-bottom: 15px;
 }
 .card-bottom {
   margin-top: 10px;
@@ -138,8 +142,9 @@ p {
 
 .cards {
   position: relative;
-  max-width: 25vw;
-  height: 25vw;
+  max-width: 320px;
+  min-height: 320px;
+  height: 320px;
   max-height: 50vh
 }
 .text {
