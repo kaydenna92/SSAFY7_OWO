@@ -4,7 +4,7 @@
     <Intro/>
     <Intro2/>
     <Carousel></Carousel>
-    <!-- <rankingList style="height: 80vh;"/> -->
+    <rankingList style="height: 80vh;"/>
     <!-- <roomTab class="room"></roomTab> -->
      <router-link to="/rooms" class="h1-rem2" id="fixedbutton">
             <span class="h1-rem">운동하러</span> GO!</router-link>
@@ -18,7 +18,7 @@
 import Intro from '@/components/MainPage/Intro.vue';
 import Intro2 from '@/components/MainPage/Intro2.vue';
 import Carousel from '@/components/MainPage/Carousel.vue';
-// import rankingList from '@/components/MainPage/rankingList.vue';
+import rankingList from '@/components/MainPage/rankingList.vue';
 // import roomTab from '@/components/MainPage/roomTab.vue';
 import FooFooter from '@/components/FooFooter.vue';
 import swal from 'sweetalert2';
@@ -32,7 +32,7 @@ const accounts = 'accounts';
 export default {
   components: {
     Carousel,
-    // rankingList,
+    rankingList,
     // roomTab,
     NavBar,
     Intro,
