@@ -14,6 +14,7 @@ import login from '../views/accounts/loginView.vue';
 import register from '../views/accounts/registerView.vue';
 import redirectView from '../views/accounts/RedirectView.vue';
 import TutorialView from '../views/Room/ATutorial.vue';
+import roomTab from '../components/MainPage/roomTab.vue';
 
 const routes = [
   {
@@ -26,6 +27,12 @@ const routes = [
     path: '/rooms',
     name: 'roomTabView',
     component: RoomTabView,
+    // meta: { unauthorized: true },
+  },
+  {
+    path: '/roomtabs',
+    name: 'roomTab',
+    component: roomTab,
     // meta: { unauthorized: true },
   },
   {
