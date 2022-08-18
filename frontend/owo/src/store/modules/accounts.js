@@ -173,7 +173,11 @@ export const accounts = {
       state.profileImg = payload;
     },
     SET_POINT: (state, payload) => {
-      state.record.point = payload;
+      if (payload < 0) {
+        state.record.point = 0;
+      } else {
+        state.record.point = payload;
+      }
     },
     // SET_COMPETE: (state, payload) => {
     //   state.compete.workout1 = payload.workout1;
@@ -204,7 +208,12 @@ export const accounts = {
       state.percentage.best = bestExercise;
     },
     SET_POINT_PERCENT: (state, payload) => {
-      state.pointPercent = payload;
+      if (payload < 0) {
+        console.log('포인트 퍼센트 0보다 작음 => 0으로 변환');
+        state.pointPercent = 0;
+      } else {
+        state.pointPercent = payload;
+      }
     },
     SET_ACHIEVEMENT_RATE: (state, payload) => {
       const achievementRate = payload;
@@ -777,7 +786,7 @@ export const accounts = {
         },
       })
         .then((res) => {
-          console.log('fetchPointPercent응답');
+          console.log('fetchPointPercent응답', res.data.data);
           console.log(res.data.message);
           console.log(res.data.data);
           commit('SET_POINT_PERCENT', res.data.data);
