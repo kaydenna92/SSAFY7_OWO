@@ -387,7 +387,8 @@ public class MemberController {
             if (file != null) {
                 String fileOriName = file.getOriginalFilename();
                 String fileName = new MD5Generator(fileOriName).toString();
-                String savePath = System.getProperty("user.dir") +"\\src\\main\\resources\\static\\img\\profile";
+                String savePath = "\\home\\ubuntu\\img\\profile";
+//                String savePath = System.getProperty("user.dir") +"\\src\\main\\resources\\static\\img\\profile";
                 if (!new File(savePath).exists()) {
                     try {
                         new File(savePath).mkdir();
@@ -425,6 +426,7 @@ public class MemberController {
 
         ProfileImg profileImg = profileImgService.getImg(memberId);
         System.out.println(">>>>profileImg       "+profileImg.getId()+" "+profileImg.getFileOriName()+" "+profileImg.getFileName()+" "+profileImg.getFileUrl());
+        //>>>>fileDto    0 icebearp.png dabe596bd70952e97be965dbbbfe58f1 /\src\main\resources\static\img\profile\dabe596bd70952e97be965dbbbfe58f1
         FileDto result = new FileDto(profileImg.getId(),profileImg.getFileOriName(),profileImg.getFileName(),profileImg.getFileUrl());
 
         message.setStatus(StatusEnum.OK);
