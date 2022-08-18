@@ -661,7 +661,7 @@ export default {
         },
         data: {
           fileOriName: credentials.fileOriName, //
-          fileUrl: credentials.fileUrl, //
+          fileEncoding: credentials.fileUrl, //
           recordDatetime: credentials.recordDatetime, //
           recordMemo: credentials.recordMemo, //
           recordTime: credentials.recordTime, // time만 양식에 맞춰서 반영하면 될듯?
