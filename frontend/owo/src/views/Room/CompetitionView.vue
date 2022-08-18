@@ -786,6 +786,7 @@ export default {
       }, 2000);
       setTimeout(() => {
         this.gameType = 2;
+        this.setmodel();
         // this.webcam.play();
         this.isStarted = false;
         this.$refs.setTimer3.pauseTimer();
@@ -872,6 +873,7 @@ export default {
       }, 2000);
       setTimeout(() => {
         this.gameType = 1;
+        this.setmodel();
         // this.webcam.play();
         this.isStarted = false;
         this.$refs.setTimer3.pauseTimer();
@@ -944,6 +946,9 @@ export default {
         swal.fire({
           icon: 'success',
           // eslint-disable-next-line
+          showDenyButton: true,
+          confirmButtonText: '머무르기',
+          denyButtonText: '나가기',
           html: `방 제목 : <strong>${this.roomName}</strong> | 참여자 : <strong>${this.subscribers.length} 명</strong><br>
           <br>
           <strong>${this.userInfo.nick}</strong>님의 기록입니다.<br>
@@ -952,7 +957,15 @@ export default {
           <strong>#Round 2. </strong>Lunge  : <strong>${this.$refs.webrtc.myLunge.userLungeCount}회</strong> / 최고 기록 : <strong>${this.myBestLungeCount}회</strong><br>
           <strong>#Round 3. </strong>Squat  : <strong>${this.$refs.webrtc.mySquat.userSquatCount}회</strong> / 최고 기록 : <strong>${this.myBestSquatCount}회</strong><br>
           <br>
-          이번 경쟁의 포인트 변동 : <strong><U>${this.myExercisePoints}</U></strong> point`,
+          이번 경쟁의 포인트 변동 : <strong><U>${this.myExercisePoints}</U></strong> point<br>
+          <br>
+          <div style="color:gray;">기록이 저장되었습니다.</div>`,
+        }).then((result) => {
+          if (result.isDenied) {
+            this.leaveSession();
+          } else if (result.isConfirmed) {
+            this.resetAllCountList();
+          }
         });
         this.webcam.stop();
       }, 39000);
