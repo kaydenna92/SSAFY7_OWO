@@ -357,33 +357,44 @@ public class MemberController {
         HttpHeaders headers= new HttpHeaders();
         headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
 
-        if (file != null) {
-            InputStream inputStream = null;
-            ByteArrayOutputStream byteArrayOutputStream = null;
-            String binaryString = "";
-            int id = 0;
-            try {
-                // dataURL String 생성하기
-                 byte[] encodeBase64 = Base64.encodeBase64(file.getBytes());
-                 binaryString = "data:image/png;base64," + new String(encodeBase64, "UTF-8"); // 실제 data url 생성!
+        try {
+            if (file != null) {
+                String fileOriName = file.getOriginalFilename();
+                String fileName = "" + memberId + "_" + fileOriName;
+                String savePath = System.getProperty("user.dir") + "\\src\\main\\resources\\static\\img\\profile";
+                if (!(new File(savePath)).exists()) {
+                    try {
+                        (new File(savePath)).mkdir();
+                    } catch (Exception var10) {
+                        var10.printStackTrace();
+                    }
+                }
 
-                id = profileImgService.saveImg(memberId,file.getOriginalFilename(),binaryString);
+                String fileUrl = savePath + "\\" + fileName;
+                file.transferTo(new File(fileUrl));
 
+                int profileImgId = profileImgService.saveImg(memberId,fileOriName,fileUrl);
 
-                } catch (IOException ex) {
+//                this.profileImgService.saveFile(memberId, fileOriName, fileName, fileUrl);
+                message.setStatus(StatusEnum.OK);
+                message.setMessage("프로필 사진 수정 성공");
+                message.setData(profileImgId);
+                return new ResponseEntity(message, headers, HttpStatus.OK);
+            } else {
                 message.setStatus(StatusEnum.BAD_REQUEST);
                 message.setMessage("이미지 파일 오류 발생");
-                return new ResponseEntity<>(message, headers, HttpStatus.BAD_REQUEST);
-
+                return new ResponseEntity(message, headers, HttpStatus.BAD_REQUEST);
             }
-            message.setStatus(StatusEnum.OK);
-            message.setMessage("프로필 사진 수정 성공");
-            message.setData(id +" "+binaryString);
-            return new ResponseEntity<>(message, headers, HttpStatus.OK);
-        } else {
+        } catch (IllegalStateException var11) {
+            var11.printStackTrace();
             message.setStatus(StatusEnum.BAD_REQUEST);
-            message.setMessage("이미지 파일 오류 발생");
-            return new ResponseEntity<>(message, headers, HttpStatus.BAD_REQUEST);
+            message.setMessage("해당 이메일이 존재하지 않습니다.");
+            return new ResponseEntity(message, headers, HttpStatus.BAD_REQUEST);
+        } catch (Exception var12) {
+            var12.printStackTrace();
+            message.setStatus(StatusEnum.INTERNAL_SERVER_ERROR);
+            message.setMessage("서버 에러 발생");
+            return new ResponseEntity(message, headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }
@@ -397,7 +408,7 @@ public class MemberController {
         headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
 
         ProfileImg profileImg = profileImgService.getImg(memberId);
-        FileDto result = new FileDto(profileImg.getId(),profileImg.getFileOriName(),new String(profileImg.getFileUrl()));
+        FileDto result = new FileDto(profileImg.getId(),profileImg.getFileOriName(),profileImg.getFileName(),profileImg.getFileUrl());
 
         message.setStatus(StatusEnum.OK);
         message.setMessage("사용자의 프로필 사진 조회 성공");
