@@ -122,7 +122,7 @@
         </button>
         <div v-if="(!this.subscribers.length)" class="mybtn7">2명 이상 모여야 시작 가능!!</div>
         <!-- eslint-disable-next-line -->
-        <div v-if="(this.subscribers.length) & !(this.credentialsUser.memberId === this.masterId)" class="mybtn7">방장 >> 오른쪽 위 START 버튼!</div>
+        <div v-if="!(this.credentialsUser.memberId === this.masterId) & !this.gameType & (this.subscribers.length >= 1)" class="mybtn7">방장 >> 오른쪽 위 START 버튼!</div>
         <!-- eslint-disable-next-line -->
         <button v-if="(this.credentialsUser.memberId === this.masterId) & !this.gameType & (this.subscribers.length >= 1)" class="mybtn5" @click="startround">
           <img class="menu_icon4" src="@/assets/icon/start.png" alt="Start">
