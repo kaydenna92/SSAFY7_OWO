@@ -388,7 +388,7 @@ public class MemberController {
                 String fileOriName = file.getOriginalFilename();
                 String fileName = "" + memberId + "_" + fileOriName;
                 String savePath = "../img/profile";
-                System.out.println();
+                System.out.println(savePath);
 //                String savePath = System.getProperty("user.dir")+"\\src\\main\\resources\\static\\img\\profile";
 //                System.out.println("path+++++++++++++++++++++++++++++" + System.getProperty("user.dir"));
 //              //~/Jenkins/jenkins_home/workspace/owoProject/backend/
