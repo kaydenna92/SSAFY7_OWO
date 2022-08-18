@@ -278,11 +278,9 @@ export const accounts = {
     login({ dispatch, commit }, credentials) { // 로그인
       axios.post('https://i7c202.p.ssafy.io:8282/api/auth/login', credentials) //
         .then((res) => {
-          console.log('로그인!');
           const response = res.data.data;
           const access = response.accessToken;
           const refresh = response.refreshToken;
-          console.log(response);
           dispatch('saveAccessToken', access);
           dispatch('saveRefreshToken', refresh);
           dispatch('setUserInfo', response);
@@ -327,7 +325,7 @@ export const accounts = {
           }
         });
     },
-    socialLogin({ dispatch, state }, token) {
+    socialLogin({ dispatch }, token) {
       axios({
         url: 'https://i7c202.p.ssafy.io:8282/api/social',
         method: 'get',
@@ -336,19 +334,12 @@ export const accounts = {
         },
       })
         .then((res) => {
-          console.log('소셜로그인 in vuex');
-          console.log('------response 출력 res.data.data--------');
-          console.log(res.data.data);
           const response = res.data.data;
           // eslint-disable-next-line
           const accessToken = response.accessToken;
-          console.log('-------accessToken-------');
-          console.log(accessToken);
           // eslint-disable-next-line
-          console.log('-------refreshToken-------');
           // eslint-disable-next-line
           const refreshToken = response.refreshToken;
-          console.log(refreshToken);
           dispatch('saveAccessToken', accessToken);
           dispatch('saveRefreshToken', refreshToken);
           dispatch('setUserInfo', response);
@@ -361,15 +352,7 @@ export const accounts = {
           dispatch('fetchPointPercent');
           dispatch('fetchThisWeekHours');
           dispatch('fetchLastingDay');
-          console.log('-------state, accessToken-------');
-          console.log(state.accessToken);
-          console.log('-------state, refreshToken-------');
-          console.log(refreshToken);
-          console.log('-------state, userInfo-------');
-          console.log(state.userInfo);
           router.push('/');
-          console.log('---------res 출력----------');
-          console.log(res);
         })
         .catch((err) => {
           console.log(err);
