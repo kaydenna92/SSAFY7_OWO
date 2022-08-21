@@ -14,8 +14,8 @@
           @ready="onReady"
           :vars="this.controls"
           @state-change="onChange"
-          width="1050"
-          height="750"
+          width="0"
+          height="0"
           ref="youtube"
           disablekb=1
           fs="0"
@@ -516,7 +516,6 @@ export default {
           this.statusStart = true;
         } else {
           this.statusStart = false;
-          this.modalShow = !this.modalShow;
         }
       }
     },
