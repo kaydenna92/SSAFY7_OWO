@@ -996,19 +996,18 @@ export default {
           // eslint-disable-next-line
           const audio2 = new Audio(require('@/assets/music/takePhoto.mp3'));
           audio2.play();
+          html2canvas(el).then((canvas) => {
+            this.mypictures.unshift(canvas.toDataURL('image/png', 1.0));
+          }, 850);
         }
         if (this.timer === -1) {
           this.temp_timer_2 = '';
         }
         if (this.timer === -1) {
-          const el = document.querySelector('#take_photo_WebRTC');
-          html2canvas(el).then((canvas) => {
-            this.mypictures.unshift(canvas.toDataURL('image/png', 1.0));
-            this.photoDisplay = true;
-            setTimeout(() => {
-              this.photoDisplay = false;
-            }, 2000);
-          });
+          this.photoDisplay = true;
+          setTimeout(() => {
+            this.photoDisplay = false;
+          }, 2000);
           if (this.mypictures.length >= 3) { this.mypictures.pop(); }
           clearInterval(this.take_photo_timer);
           setTimeout(() => {

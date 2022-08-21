@@ -309,8 +309,8 @@
       v-if="is_take_photo">
         <!-- eslint-disable-next-line -->
         <WebRTCPhoto id="take_photo_WebRTC" :stream-manager="mainStreamManager"/>
-        <div id="take_photo_WebRTC_warning">&ensp;사진은 최신 3장까지 저장됩니다!&ensp;</div>
         <img v-if="this.photoDisplay" id="take_photo_WebRTC_photo" :src="this.mypictures[0]" alt="">
+        <div id="take_photo_WebRTC_warning">&ensp;사진은 최신 3장까지 저장됩니다!&ensp;</div>
       </div>
       <!-- eslint-disable-next-line -->
       <div class="d-flex justify-content-center align-items-center text-white mt-4" v-if="is_take_photo" id="take_photo_timer">
@@ -1014,19 +1014,18 @@ export default {
           // eslint-disable-next-line
           const audio2 = new Audio(require('@/assets/music/takePhoto.mp3'));
           audio2.play();
+          html2canvas(el).then((canvas) => {
+            this.mypictures.unshift(canvas.toDataURL('image/png', 1.0));
+          }, 850);
         }
         if (this.timer === -1) {
           this.temp_timer_2 = '';
         }
         if (this.timer === -1) {
-          const el = document.querySelector('#take_photo_WebRTC');
-          html2canvas(el).then((canvas) => {
-            this.mypictures.unshift(canvas.toDataURL('image/png', 1.0));
-            this.photoDisplay = true;
-            setTimeout(() => {
-              this.photoDisplay = false;
-            }, 2000);
-          });
+          this.photoDisplay = true;
+          setTimeout(() => {
+            this.photoDisplay = false;
+          }, 2000);
           if (this.mypictures.length >= 3) { this.mypictures.pop(); }
           clearInterval(this.take_photo_timer);
           setTimeout(() => {

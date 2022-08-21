@@ -1146,6 +1146,15 @@ export default {
       this.take_photo_timer = setInterval(() => {
         this.timer -= 1;
         this.temp_timer_2 -= 1;
+        if (this.timer === 1) {
+          setTimeout(() => {
+            const el = document.querySelector('#take_photo_WebRTC');
+            html2canvas(el).then((canvas) => {
+              this.mypictures.unshift(canvas.toDataURL('image/png', 1.0));
+              if (this.mypictures.length >= 3) { this.mypictures.pop(); }
+            });
+          }, 800);
+        }
         if (this.timer === 0) {
           const el = document.querySelector('#take_photo_WebRTC');
           el.style.opacity = '0';
@@ -1153,12 +1162,6 @@ export default {
           // eslint-disable-next-line
           const audio2 = new Audio(require('@/assets/music/takePhoto.mp3'));
           audio2.play();
-          setTimeout(() => {
-            html2canvas(el).then((canvas) => {
-              this.mypictures.unshift(canvas.toDataURL('image/png', 1.0));
-              if (this.mypictures.length >= 3) { this.mypictures.pop(); }
-            });
-          });
         } // 0초에 찰칵 사인 -> 소리가 나오는 시간을 체크해야겠네
         if (this.timer === -1) {
           this.temp_timer_2 = '';
