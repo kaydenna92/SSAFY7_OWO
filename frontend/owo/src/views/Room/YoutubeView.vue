@@ -372,7 +372,7 @@ export default {
       controls: {
         controls: 0,
       },
-      volume: 0,
+      volume: 20,
       isSetting: false,
       limitMininalTime: 15, // 최소한의 기록이 남는 시간(초)
       firstPictureTime: 10, // 첫 사진이 촬영되는 시간(초)
@@ -798,7 +798,7 @@ export default {
     startVideo() {
       this.$refs.youtube.playVideo();
       this.$refs.youtube.controls = 0;
-      this.$refs.youtube.getVolume(0);
+      this.$refs.youtube.setVolume(0);
     },
     start() {
       this.isSetting = true;
