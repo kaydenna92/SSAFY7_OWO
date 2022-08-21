@@ -12,7 +12,6 @@
         <div>
           <!-- eslint-disable-next-line -->
           <div style="position:relative;" class="row d-flex align-items-start justify-content-center">
-            <div>{{this.video }}, {{ this.restTime }}</div>
             <!-- eslint-disable-next-line -->
             <canvas style="position:absolute; top:10px; left:20px; padding:0; width:480px; height:340px; opacity:0;" class="mx-2 my-2" id="canvasTM"></canvas>
             <WebRTC ref="webrtc" :stream-manager="mainStreamManager"/>
