@@ -379,11 +379,11 @@ export const accounts = {
       })
         .then(() => {
           dispatch('removeToken');
-          swal.fire(
-            '#오운완',
-            '로그아웃 성공!',
-            'success',
-          );
+          swal.fire({
+            icon: 'success',
+            html: `<div style="font-family: 'LeferiPoint-BlackObliqueA';">#오운완<br><br></div>
+              <div style="font-weight: 700; font-family: 'LeferiPoint-WhiteObliqueA';">로그아웃성공!<br></div>`,
+          });
           router.push({ name: 'mainpage' });
         })
         .catch((err) => {
@@ -792,91 +792,91 @@ export const accounts = {
           console.log(err);
         });
     },
-    enterCompetitionRoom({ state, commit }, payload) {
-      console.log(payload);
-      // eslint-disable-next-line
-      const master = payload.master;
-      const user = state.userInfo.id;
-      axios({
-        url: `https://i7c202.p.ssafy.io:8282/api/user/point/percentage/${master}`,
-        method: 'get',
-        headers: {
-          'X-AUTH-TOKEN': state.accessToken,
-        },
-      })
-        .then((res) => {
-          console.log('마스터 티어 퍼센트');
-          console.log(res.data.data);
-          commit('SET_MASTER_TIER', Number(res.data.data));
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-      axios({
-        url: `https://i7c202.p.ssafy.io:8282/api/user/point/percentage/${user}`,
-        method: 'get',
-        headers: {
-          'X-AUTH-TOKEN': state.accessToken,
-        },
-      })
-        .then((res) => {
-          console.log('유저 티어 퍼센트');
-          console.log(res.data.data);
-          commit('SET_USER_TIER', Number(res.data.data));
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-      const masterMod = Number(state.masterTier / 20);
-      const userMod = Number(state.userTier / 20);
-      if (Math.trunc(masterMod) === Math.trunc(userMod)) {
-        axios({
-          url: 'https://i7c202.p.ssafy.io:8282/api/user/room/enter',
-          method: 'post',
-          headers: {
-            'X-AUTH-TOKEN': state.accessToken,
-          },
-          data: {
-            roomId: payload.roomId,
-            password: payload.password,
-          },
-        })
-          .then((res) => {
-            console.log('방장티어:', masterMod, '유저티어', userMod);
-            console.log('입장처리됫어?');
-            commit('SET_ROOM_NAME', payload.roomName);
-            console.log(res);
-            router.push(`/room/${state.enter_mode[payload.mode]}/${payload.roomId}`);
-            console.log('입장완료');
-          })
-          .catch((err) => {
-            swal.fire(
-              '#오운완',
-              err.response.data.message,
-            );
-          });
-      }
-      console.log('방장티어', masterMod);
-      console.log('유저티어', userMod);
-      console.log('방장티어', Math.trunc(masterMod));
-      console.log('유저티어', Math.trunc(userMod));
-      if (Math.trunc(masterMod) > Math.trunc(userMod)) {
-        console.log('방장:', Math.trunc(masterMod), '유저:', Math.trunc(userMod));
-        swal.fire(
-          '#오운완',
-          '티어가 높아 입장하실 수 없습니다.',
-          'warning',
-        );
-      }
-      if (Math.trunc(masterMod) < Math.trunc(userMod)) {
-        console.log('방장:', Math.trunc(masterMod), '유저:', Math.trunc(userMod));
-        swal.fire(
-          '#오운완',
-          '티어가 낮아 입장하실 수 없습니다.',
-          'warning',
-        );
-      }
-    },
+    // enterCompetitionRoom({ state, commit }, payload) {
+    //   console.log(payload);
+    //   // eslint-disable-next-line
+    //   const master = payload.master;
+    //   const user = state.userInfo.id;
+    //   axios({
+    //     url: `https://i7c202.p.ssafy.io:8282/api/user/point/percentage/${master}`,
+    //     method: 'get',
+    //     headers: {
+    //       'X-AUTH-TOKEN': state.accessToken,
+    //     },
+    //   })
+    //     .then((res) => {
+    //       console.log('마스터 티어 퍼센트');
+    //       console.log(res.data.data);
+    //       commit('SET_MASTER_TIER', Number(res.data.data));
+    //     })
+    //     .catch((err) => {
+    //       console.log(err);
+    //     });
+    //   axios({
+    //     url: `https://i7c202.p.ssafy.io:8282/api/user/point/percentage/${user}`,
+    //     method: 'get',
+    //     headers: {
+    //       'X-AUTH-TOKEN': state.accessToken,
+    //     },
+    //   })
+    //     .then((res) => {
+    //       console.log('유저 티어 퍼센트');
+    //       console.log(res.data.data);
+    //       commit('SET_USER_TIER', Number(res.data.data));
+    //     })
+    //     .catch((err) => {
+    //       console.log(err);
+    //     });
+    //   const masterMod = Number(state.masterTier / 20);
+    //   const userMod = Number(state.userTier / 20);
+    //   if (Math.trunc(masterMod) === Math.trunc(userMod)) {
+    //     axios({
+    //       url: 'https://i7c202.p.ssafy.io:8282/api/user/room/enter',
+    //       method: 'post',
+    //       headers: {
+    //         'X-AUTH-TOKEN': state.accessToken,
+    //       },
+    //       data: {
+    //         roomId: payload.roomId,
+    //         password: payload.password,
+    //       },
+    //     })
+    //       .then((res) => {
+    //         console.log('방장티어:', masterMod, '유저티어', userMod);
+    //         console.log('입장처리됫어?');
+    //         commit('SET_ROOM_NAME', payload.roomName);
+    //         console.log(res);
+    //         router.push(`/room/${state.enter_mode[payload.mode]}/${payload.roomId}`);
+    //         console.log('입장완료');
+    //       })
+    //       .catch((err) => {
+    //         swal.fire(
+    //           '#오운완',
+    //           err.response.data.message,
+    //         );
+    //       });
+    //   }
+    //   console.log('방장티어', masterMod);
+    //   console.log('유저티어', userMod);
+    //   console.log('방장티어', Math.trunc(masterMod));
+    //   console.log('유저티어', Math.trunc(userMod));
+    //   if (Math.trunc(masterMod) > Math.trunc(userMod)) {
+    //     console.log('방장:', Math.trunc(masterMod), '유저:', Math.trunc(userMod));
+    //     swal.fire(
+    //       '#오운완',
+    //       '티어가 높아 입장하실 수 없습니다.',
+    //       'warning',
+    //     );
+    //   }
+    //   if (Math.trunc(masterMod) < Math.trunc(userMod)) {
+    //     console.log('방장:', Math.trunc(masterMod), '유저:', Math.trunc(userMod));
+    //     swal.fire(
+    //       '#오운완',
+    //       '티어가 낮아 입장하실 수 없습니다.',
+    //       'warning',
+    //     );
+    //   }
+    // },
     enterroom({ state, commit }, payload) {
       axios({
         url: 'https://i7c202.p.ssafy.io:8282/api/user/room/enter',

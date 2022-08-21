@@ -115,50 +115,40 @@
               모든 인원이 꽉 찼습니다.
               </p>
           </div>
-              <b-card class="rooms" footer-tag="footer">
-                <div class="img_sport">
-              <div v-if="room.type === 'GAME'">
-                  <img src="@/assets/sport/game.png" alt="">
+              <b-card class="rooms">
+                <div class="img_sport2">
+                  <img :src="getThumbnail(room.link)" alt="">
                 </div>
-                <div v-if="room.type === 'AEROBIC'">
-                  <img src="@/assets/sport/running.png"
-                  alt="">
-                </div>
-                <div v-if="room.type === 'HEALTH'" >
-                  <img src="@/assets/sport/weight.png"
-                  alt="">
-                </div>
-                <div v-if="room.type === 'STRETCHING'" >
-                  <img src="@/assets/sport/stretching.png"
-                  alt="">
-                </div>
-                <div v-if="room.type === 'HOME'">
-                  <img src="@/assets/sport/home.png"
-                  alt="">
-                </div>
-                <div v-if="room.type === 'BODYWEIGHT'">
-                  <img src="@/assets/sport/push-up-bar.png"
-                  alt="">
-                </div>
-                <div v-if="room.type === 'YOGA'">
-                  <img src="@/assets/sport/yoga.png"
-                  alt="">
-                </div>
-                <div v-if="room.type === 'PILATES'">
-                  <img src="@/assets/sport/pilates.png"
-                  alt="">
-                </div>
-            </div>
-                <div class="d-flex">
+                <div class="d-flex align-items-center justify-content-between">
+                  <div class="d-flex align-items-center">
                     <p align="left" class="workoutType">{{ workout_reverse[room.type] }}</p>
+                    <span v-if="!room.secret"><img src="@/assets/icon/lock1.png"
+            alt="" style="width:25px"></span>
+            <span v-if="room.secret"><img src="@/assets/icon/lock2.png" alt="" style="width:25px"></span>
+                  </div>
+            <p align="right" style="font-size: 25px;"
+                class="workoutPerson"><img src="@/assets/icon/running.png"
+                    alt="" style="width: 30px"> {{ room.person }} / 6</p>
                 </div>
-            <div class="cardTitle d-flex align-items-center">
+            <div class="cardTitle d-flex justify-content-between align-items-center">
               <p style="font-size: 0.7em; margin-top: 20px;">{{ room.roomName }}</p>
-            <span v-if="!room.secret"><img src="@/assets/icon/lock1.png"
+            <!-- <span v-if="!room.secret"><img src="@/assets/icon/lock1.png"
             alt="" style="width:35px"></span>
-            <span v-if="room.secret"><img src="@/assets/icon/lock2.png" alt="" style="width:35px"></span>
+            <span v-if="room.secret"><img src="@/assets/icon/lock2.png" alt="" style="width:35px"></span> -->
+             <!-- <p align="right" style="font-size: 25px;"
+                class="workoutPerson"><img src="@/assets/icon/running.png"
+                    alt="" style="width: 30px"> {{ room.person }} / 6</p> -->
             </div>
-            <b-button size="lg" class="rooms_btn" variant="primary" style="margin-top: 60px;"
+            <div class="d-flex justify-content-between align-items-center">
+              <b-input-group prepend="" class="roomdata_input" v-show="room.secret===true"
+                  style="padding: 0px; width: 140px;">
+                    <b-form-input style="height: 46px; margin-top: 20px;"
+                    type="password"
+                    v-model="enterPassword"
+                    >
+                    </b-form-input>
+                  </b-input-group>
+            <b-button size="lg" class="rooms_btn" variant="primary"
               @click="enterroom({
               password: enterPassword,
               roomId: room.roomId,
@@ -167,7 +157,8 @@
               link: room.link,
               })">
               들어가기</b-button>
-              <template #footer>
+            </div>
+              <!-- <template #footer>
               <div class="d-flex justify-content-end">
                   <b-input-group prepend="PW" class="roomdata_input" v-show="room.secret===true"
                   style="width: 100%; padding: 0px;">
@@ -181,7 +172,7 @@
                 class="workoutPerson"><img src="@/assets/icon/running.png"
                     alt="" style="width: 30px"> {{ room.person }} / 6</p>
               </div>
-            </template>
+            </template> -->
           </b-card>
         </div>
       </div>
@@ -287,32 +278,32 @@
     <div v-if="!noGame" class="tab-content wrap">
       <div v-show="currentTab == 2" class="scroll__wrap">
         <div v-for="(room, i) in roomList.gameRoomList" :key="i" class="scroll--element">
-         <div class='darkness' v-if="room.person === 6">
-            <p>
-              모든 인원이 꽉 찼습니다.
-              </p>
-          </div>
           <b-card class="rooms" footer-tag="footer">
             <div class="img_sport">
               <!-- <p>{{Math.trunc(Number(masterTier))}}</p> -->
-              <div v-if="Math.trunc(Number(masterTier)) === 0">
+              <div v-if="masterTier[i] === 0">
                 <img src="@/assets/icon/tier5.png" alt="diamon">
               </div>
-                <div v-if="Math.trunc(Number(masterTier)) === 1">
+                <div v-if="masterTier[i] === 1">
                 <img src="@/assets/icon/tier4.png" alt="platinum">
               </div>
-                <div v-if="Math.trunc(Number(masterTier)) === 2">
+                <div v-if="masterTier[i] === 2">
                 <img src="@/assets/icon/tier3.png" alt="gold">
               </div>
-                <div v-if="Math.trunc(Number(masterTier)) === 3">
+                <div v-if="masterTier[i] === 3">
                 <img src="@/assets/icon/tier2.png" alt="silver">
               </div>
-                <div v-if="Math.trunc(Number(masterTier))=== 4">
+                <div v-if="masterTier[i] === 4">
                 <img src="@/assets/icon/tier1.png" alt="bronze">
               </div>
-                <div v-if="Math.trunc(Number(masterTier)) === 5">
+                <div v-if="masterTier[i] === 5">
                 <img src="@/assets/icon/tier1.png" alt="bronze">
               </div>
+            </div>
+            <div class='darkness' v-if="room.person === 6">
+              <p>
+                모든 인원이 꽉 찼습니다.
+              </p>
             </div>
             <div class="d-flex">
               <p align="left" class="workoutType">{{ workout_reverse[room.type] }}</p>
@@ -323,12 +314,11 @@
               <p style="font-size: 0.7em; margin-top: 20px;">{{ room.roomName }}</p>
             </div>
             <b-button size="lg" class="rooms_btn" variant="primary" style="margin-top: 60px;"
-              @click="enterCompetitionRoom({
+              @click="enterCheck(masterTier[i], userTier, {
               password: enterPassword,
               roomId: room.roomId,
               mode: room.mode,
               roomName: room.roomName,
-              master: room.memberId,
               })">
               들어가기</b-button>
               <template #footer>
@@ -366,7 +356,11 @@
 </template>
 
 <script>
-import { mapGetters, mapActions, mapState } from 'vuex';
+import {
+  mapGetters, mapActions, mapState,
+} from 'vuex';
+import swal from 'sweetalert2';
+import axios from 'axios';
 import NavBar from '../NavBar.vue';
 // eslint--disable-next-line
 const accounts = 'accounts';
@@ -428,6 +422,9 @@ export default {
         4: '브론즈', // 80 ~ 100  -> 4.dwe
         5: '브론즈',
       },
+      masterTier: [],
+      userTier: '',
+
     };
   },
   computed: {
@@ -449,6 +446,83 @@ export default {
       el[2].style.color = 'black';
       el[k].style.color = '#37beef';
     },
+    getmasterTier() {
+      let userInfo = sessionStorage.getItem('vuex');
+      userInfo = JSON.parse(userInfo);
+      // eslint-disable-next-line
+      const accessToken = userInfo['accounts']['accessToken'];
+      for (let i = 0; i < this.roomList.gameRoomList.length; i += 1) {
+        // eslint-disable-next-line
+        const memberId = this.roomList.gameRoomList[i].memberId;
+        axios({
+          url: `https://i7c202.p.ssafy.io:8282/api/user/point/percentage/${memberId}`,
+          method: 'get',
+          headers: {
+            'X-AUTH-TOKEN': accessToken,
+          },
+        })
+          .then((res) => {
+            this.masterTier.push(Math.trunc(Number(res.data.data) / 20));
+            console.log(this.masterTier);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
+    },
+    gerUserTier() {
+      console.log('userTier 불러오는 중....');
+      let userInfo = sessionStorage.getItem('vuex');
+      userInfo = JSON.parse(userInfo);
+      // eslint-disable-next-line
+      const userId = userInfo['accounts']['userInfo']['id'];
+      // eslint-disable-next-line
+      const accessToken = userInfo['accounts']['accessToken'];
+      axios({
+        url: `https://i7c202.p.ssafy.io:8282/api/user/point/percentage/${userId}`,
+        method: 'get',
+        headers: {
+          'X-AUTH-TOKEN': accessToken,
+        },
+      })
+        .then((res) => {
+          console.log('userTier 불러오기 성공.');
+          this.userTier = Math.trunc(Number(res.data.data) / 20);
+          console.log('내티어', this.userTier);
+        })
+        .catch((err) => {
+          console.log('userTier 불러오기 실패.');
+          console.log(err);
+        });
+      // return this.userTier;
+    },
+    enterCheck(masterTier, userTier, roomdata) {
+      console.log('enterCheck 실행 중');
+      console.log('masterTier VS userTier', masterTier, userTier);
+      if (masterTier > userTier) {
+        swal.fire(
+          '#오운완',
+          '티어가 높아 입장하실 수 없습니다.',
+          'warning',
+        );
+      }
+      if (masterTier < userTier) {
+        swal.fire(
+          '#오운완',
+          '티어가 낮아 입장하실 수 없습니다.',
+          'warning',
+        );
+      }
+      if (masterTier === userTier) {
+        this.enterroom(roomdata);
+      }
+    },
+    getThumbnail(url) {
+      const YoutubeId = url.split('=', 2)[1];
+      const requestUrl = `https://img.youtube.com/vi/${YoutubeId}/hqdefault.jpg`;
+      console.log(requestUrl);
+      return requestUrl;
+    },
   },
   created() {
     const mode = ['FREE', 'GAME', 'STREAMING'];
@@ -456,6 +530,8 @@ export default {
       console.log('실행중이다 roomtabvue.view');
       this.getRoomList(mode[i]);
     }
+    this.gerUserTier();
+    this.getmasterTier();
   },
 };
 </script>
@@ -487,6 +563,11 @@ export default {
 .img_sport img {
   width: 150px;
   height: 150px;
+}
+.img_sport2 img {
+  width: 100%;
+  height: 250px;
+  border-radius: 20px;
 }
 .workoutPerson {
   align-items: right;
