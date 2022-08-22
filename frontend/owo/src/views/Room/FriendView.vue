@@ -310,7 +310,7 @@ import 'emoji-mart-vue-fast/css/emoji-mart.css';
 import { Picker, EmojiIndex } from 'emoji-mart-vue-fast/src';
 import { mapState, mapActions, mapMutations } from 'vuex';
 import swal from 'sweetalert2';
-import YouTube from 'vue3-youtube';
+// import YouTube from 'vue3-youtube';
 
 window.Swal = swal;
 
@@ -339,7 +339,7 @@ export default {
     Picker,
     setTimer1,
     setTimer2,
-    YouTube,
+    // YouTube,
   },
   data() {
     return {
