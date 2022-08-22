@@ -793,7 +793,7 @@ export default {
         setTimeout(() => {
           const el = document.getElementsByClassName('ov-video')[0];
           html2canvas(el).then((canvas) => {
-            this.mypictures.unshift(canvas.toDataURL('image/png', 1.0));
+            this.mypictures.unshift(canvas.toDataURL('image/webp', 1.0));
           });
         }, this.firstPictureTime * 1000);
       });
