@@ -289,6 +289,6 @@ html, body {
 .divbtn {
   position: fixed;
   top:30%;
-  left:10%;
+  left:0%;
 }
 </style>

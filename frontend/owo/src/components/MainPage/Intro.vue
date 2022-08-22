@@ -4,7 +4,7 @@
       <div class="container-fluid">
         <div class="bg-video">
           <video class="bg-video__content" autoplay muted loop>
-            <source src="@/assets/video/yogaVideo.mp4" type="video/mp4" />
+            <source src="@/assets/video/yogaVideo2.mp4" type="video/mp4" />
           </video>
         </div>
         <div class="content">
@@ -84,7 +84,7 @@ export default {
   max-width: 100%;
   height: 50%;
   z-index: -1;
-  opacity: 0.65;
+  opacity: 0.76;
 }
 .bg-video__content {
   height: 100%;
