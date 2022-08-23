@@ -117,22 +117,6 @@
             중지
           </div>
         </button>
-        <button class="mybtn9" @click="bgmVolumeUp">
-          <img class="menu_icon2" src="@/assets/icon/soundup.png" alt="photo">
-          <div style="color:#4e8aff; font-size:12px;">볼륨
-          </div>
-          <div style="color:#4e8aff; font-size:12px; line-height:0.8;">
-            Up
-          </div>
-        </button>
-        <button class="mybtn10" @click="bgmVolumeDown">
-          <img class="menu_icon2" src="@/assets/icon/sounddown.png" alt="photo">
-          <div style="color:#4e8aff; font-size:12px;">볼륨
-          </div>
-          <div style="color:#4e8aff; font-size:12px; line-height:0.8;">
-            Down
-          </div>
-        </button>
         <button v-if="!this.gameType" @click="leaveSession" class="mybtn6">
           <img class="menu_icon2" src="@/assets/icon/roomout.png" alt="leaveSession">
         </button>
@@ -199,10 +183,6 @@ const emojiIndex = new EmojiIndex(emojidata);
 const emoji = 'emoji';
 const exercise = 'exercise';
 
-// eslint-disable-next-line
-const audioBattle = new Audio(require('@/assets/music/battle.mp3'));
-audioBattle.volume = 0.5;
-
 export default {
   name: 'CompetitionView',
   metaInfo: {
@@ -216,7 +196,6 @@ export default {
   },
   data() {
     return {
-      bgmVolume: 0.5,
       CamOnOff: true,
       myExerciseTime: undefined, // 운동 시간 소요 (초)
       myRestTime: undefined, // 휴식 시간 소요 (초)
@@ -307,7 +286,6 @@ export default {
   unmounted() {
     this.leaveSession();
     document.body.style.backgroundColor = 'white';
-    audioBattle.stop();
   },
   watch: {
     mySessionId() {},
@@ -494,18 +472,6 @@ export default {
     },
   },
   methods: {
-    bgmVolumeUp() {
-      if (audioBattle.volume >= 0) {
-        audioBattle.volume = ((audioBattle.volume * 10) + 1) / 10;
-        console.log('볼륨업', audioBattle.volume);
-      }
-    },
-    bgmVolumeDown() {
-      if (this.bgmVolume <= 1) {
-        audioBattle.volume = ((audioBattle.volume * 10) - 1) / 10;
-        console.log('볼륨다운', audioBattle.volume);
-      }
-    },
     async tempInit() {
       this.gameType = 3;
       await this.setmodel();
@@ -822,7 +788,6 @@ export default {
       setTimeout(() => {
         this.isStarted = false;
         this.$refs.setTimer3.pauseTimer();
-        audioBattle.play();
       }, 6000);
       setTimeout(() => {
         this.isExercising = false;
@@ -883,7 +848,6 @@ export default {
           }
         }
         // this.webcam.stop();
-        audioBattle.pause();
       }, 21000);
       setTimeout(() => {
         this.restTime = false;
@@ -914,7 +878,6 @@ export default {
         // this.webcam.play();
         this.isStarted = false;
         this.$refs.setTimer3.pauseTimer();
-        audioBattle.play();
       }, 6000);
       setTimeout(() => {
         this.isExercising = false;
@@ -976,7 +939,6 @@ export default {
         }
         // this.gameType = 4;
         // this.webcam.stop();
-        audioBattle.pause();
       }, 21000);
       setTimeout(() => {
         this.restTime = false;
@@ -1007,7 +969,6 @@ export default {
         // this.webcam.play();
         this.isStarted = false;
         this.$refs.setTimer3.pauseTimer();
-        audioBattle.play();
       }, 6000);
       setTimeout(() => {
         if (this.allSquatCountList.length === 2) {
@@ -1065,7 +1026,6 @@ export default {
         this.sendScore();
         this.sendMyRecords();
         this.isExercising = false;
-        audioBattle.pause();
         // eslint-disable-next-line
         const audio6 = new Audio(require('@/assets/music/setting.mp3'));
         audio6.play();
@@ -1382,7 +1342,7 @@ export default {
       );
       const prediction = await this.model.predict(posenetOutput);
       if (prediction[1].probability.toFixed(2) > 0.99) { // 스쿼트
-        if (this.check && !this.video && !this.restTime) {
+        if (this.check && !this.restTime) {
           this.squatCount += 1;
           console.log('squatCount', this.squatCount);
           this.session
@@ -1411,7 +1371,7 @@ export default {
       );
       const prediction = await this.model.predict(posenetOutput);
       if (prediction[1].probability.toFixed(2) > 0.99) { // 런지
-        if (this.check && !this.video && !this.restTime) {
+        if (this.check && !this.restTime) {
           this.lungeCount += 1;
           console.log('lungeCount', this.lungeCount);
           this.session
@@ -1441,7 +1401,7 @@ export default {
       );
       const prediction = await this.model.predict(posenetOutput);
       if (prediction[2].probability.toFixed(2) > 0.99) { // 서 있는 자세
-        if (this.check && this.check2 && !this.video && !this.restTime) {
+        if (this.check && this.check2 && !this.restTime) {
           this.burpeeCount += 1;
           console.log('burpeeCount', this.burpeeCount);
           this.session
